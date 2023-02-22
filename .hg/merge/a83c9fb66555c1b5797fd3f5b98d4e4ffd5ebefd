@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>An Intro to LLVM</h2>
+<p><br />
+
+Welcome! Depending on how long you have been reading my blog, you may have noticed that I speak about LLVM every now and then. LLVM is a newer tool to me. Although I've known about it for a quite a while, I never explored it much until last summer when my new job required it. I was very quickly hooked on LLVM, and it is probably my favorite compiler tool.
+<br /><br />
+In this post, I will introduce you to LLVM and the underlying concept behind it. In the next post, we will dive into a hands-on example in generating a "Hello World" program with it.
+<br /><br />
+Let's dive in!
+<br /><br />
+<h3>What is LLVM?</h3>
+<br /><br />
+At its most basic level, LLVM is a backend that can be used by any language frontend. In reality, it is more of a midend and a backend combined. LLVM is a huge framework that includes many tools in addition to the backend. One of them is Clang, a C and C++ frontend.
+<br /><br />
+LLVM provides an intermediate representation called LLVM IR. LLVM IR can be built using the provided APIs. Once you have built the IR, it is processed by LLVM, optimized if you wish over transformations, and finally, spits out assembly for your target platform. LLVM even allows you to implement and load your own transformations.
+<br /><br />
+LLVM also includes an interesting component called the "Low Level Virtual Machine" (the original meaning of the LLVM acronym). This allows you to run JIT code on any platform. I personally haven't used this feature too much, but it is used and can be very useful as it basically allows portable machine code. Newer versions of LLVM are also beginning to include support for GPU code generation, better SIMD support, and other neat features.
+<br /><br />
+<h3>The Structure of LLVM</h3>
+<br /><br />
+One of the beauties of LLVM is its rather simple, straightforward structure. At the top level are modules:
+<br /><br />
+<img class="img-fluid" src="assets/images/llvm_module-1024x726.png"></img>
+<br /><br />
+A module could be thought of as a single source file. It represents the information of the source file- what platform it will run on, what custom types it has, any external function declarations, and last but not least, the functions themselves.
+<br /><br />
+The functions look like this:
+<br /><br />
+<img class="img-fluid" src="assets/images/llvm_func-1024x729.png"></img>
+<br /><br />
+The first three blocks are expressed in a "FunctionType" class. As its name may imply, it represents the signature of the function.
+<br /><br />
+The function body is composed of at least one block, called "Basic Blocks" by LLVM. A block represents a segment of code. If you've ever seen assembly code, you may have noticed labels throughout a function's body. Basic blocks roughly correspond to these. Blocks are named (either explicitly or implicity), and will come out as labels when code is generated. So why are they important? When you do jumps, you need destinations. To LLVM, a block can be one of these destinations. Jumps form the basis of if-statements, loops, and other control structures. To LLVM or the final CPU itself, there is no such thing as an if-statement or a loop.
+<br /><br />
+Finally, within the block, are the instructions themselves. Instructions correspond to things like variable declarations, variable loads and stores, math, comparisons, jumps, and so forth. It is an abstract representation of the underlying CPU. All LLVM instructions are built around the Value class, which is really handy as it allows for easy translation from the AST.
+<br /><br />
+We will go over all this in more detail in future posts, but for now check out this API reference to get a sense of the instructions LLVM offers and how they are built: <a href="https://llvm.org/doxygen/classllvm_1_1IRBuilderBase.html">https://llvm.org/doxygen/classllvm\_1\_1IRBuilderBase.html</a>
+<br /><br />
+The final thing that is important to understand is that LLVM is a typed language, to to speak. While this does vary from language to language, in general the difference in types lies in the size. Computers operate on numbers, so in a sense there is not a deep distinction. The only distinction is in the size of the number. This is largely what LLVM represents. Although the type set may look a little limited, as you get into building an IR, it will make a lot of sense. For now check out the documentation on types: <a href="https://llvm.org/doxygen/classllvm_1_1Type.html">https://llvm.org/doxygen/classllvm\_1\_1Type.html</a>
+<br /><br />
+<h3>Why Would I Want to Use This?</h3>
+<br /><br />
+Although writing backends in my opinion are a lot of fun, they can also be a pain. This becomes especially the case when you are trying to get a working frontend for your language. Instead of the bug being in one place, it could be in many different places. And not to mention, developing a good midend IR is challenging. Finally, when you do get everything working, there is the whole problem of optimizations.
+<br /><br />
+LLVM makes this part of compiler development easier. Provided you write a good frontend, connecting it to LLVM is almost plug-and-play. And once its connected, you have a working compiler. Additionally, LLVM has a huge community behind it, with many big names such as Rust and Swift using it. As a result, it generates really good code, and has a massive suite of optimization passes. Using LLVM, you can write a very good language with a big part of the work being done for you.
+<br /><br />
+<h3>Should I Write My Own Backend or Use LLVM?</h3>
+<br /><br />
+This would be better titled as "Why would I not want to use LLVM?". I waited a long time before getting into LLVM for a few reasons, and hopefully you consider this if you are trying compiler development.
+<br /><br />
+First of all, writing your own backend, even if it completely sucks (and many of mine did), is a very good learning experience. By writing your own backend, you gain intimate knowledge of your underlying CPU architecture, and of architectures in general. Once you understand one architecture, all the others begin to make sense. Writing your own backend also teaches you how to write a good frontend. If you have a hard time translating your AST to your own backend, you will probably will have issues translating it to LLVM. Finally, writing backends are fun!
+<br /><br />
+The second thing to consider is that LLVM documentation can be really good or really bad depending on your skill level. There is a woeful lack of LLVM tutorials out there, which is why I'm writing this and subsequent posts (also see the credits below for another good one). There is an official LLVM tutorial, but I found it a little hard to weed through at first. If you want to use LLVM, you have to be ready to dive into documentation and example code. I picked up LLVM pretty quickly partly because I knew how to read documentation, but mainly because I understand how backends work, I was able to make educated guesses on how LLVM works.
+<br /><br />
+All that said, this is my opinion on the subject. Start by writing your own backends. Your language frontend doesn't need to be complex; just create an AST good enough that you can create a decent midend IR for, and then write a backend for it. Extend it until you can do most common operations (variables, math, arrays, loops, and conditionals). Once you understand the process enough, then take a dive into LLVM. By then, everything will make a lot more sense, and you'll be able to pick it up pretty quickly.
+<br /><br />
+<h3>Conclusion</h3>
+<br /><br />
+Hopefully this made some sort of sense, and provided a reasonable introduction to LLVM. In the next tutorial, we will write a "Hello World" program using the LLVM API. I hope in subsequent posts to extend that to provide more in-depth tutorials on LLVM to make the framework more accessible.
+<br /><br />
+Thanks for reading!
+<br /><br />
+<h4>Credits</h4>
+<br /><br />
+The two images were borrowed from this source. Thank you Mukul Rathi for your excellent tutorial! <a href="https://mukulrathi.co.uk/create-your-own-programming-language/llvm-ir-cpp-api-tutorial/">https://mukulrathi.co.uk/create-your-own-programming-language/llvm-ir-cpp-api-tutorial/</a>
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

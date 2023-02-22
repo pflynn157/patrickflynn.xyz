@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Distraction-Free Android</h2>
+<p><br />
+
+Being that I'm such a loyal Linux user, it may not surprise you that I'm also a loyal Android user. And yes, I did use iOS at one point, but I was not impressed with it. And I'm certainly not impressed with the prices iOS devices go for (keyword=iOS. I do want to try MacOS at some point).
+<br /><br />
+Anyway.
+<br /><br />
+One of the things I like about Android is how much you can customize it. The right combination of widgets and launchers can help you make it your very own. But Android is still a smartphone, and that equals convenience and lots of distractions. Especially distraction. After owning a smartphone for a year, and getting sucked into it in the process, I decided I needed to really take steps to take control of my phone. Deleting apps certainly help, but when the Play store and the browser are right there, it's too easy to succumb in a moment of weakness.
+<br /><br />
+The first tool I tried was the Android version of FocusMe, and it was really nice, and it did do a good job protecting you from distraction apps. However, you could still get around it at times, and it didn't block notifications (which kind of defeats the purpose in my opinion). I also feel like it used a lot of battery power. Because Android is so easy to open, I learned about and decided to go down a different route: Using the developer tools to uninstall distracting apps.
+<br /><br />
+<h2>Why Would I Want to Do This?</h2>
+<br /><br />
+True, this may seem like an extreme step. But let's take a step back. Is it really?
+<br /><br />
+There has been a lot of discussion regarding digital minimalism and social media over the past few years, with much of the discussion starting to address the harsh reality of mobile devices and apps: they are slot machines. Many of the big tech companies, and all the social media companies, build their business model around extracting attention. The more time you spend on an app, the more money they make. If you feel like you are literally addicted to your phone, it is not solely your fault. These devices are designed to be addictive.
+<br /><br />
+While a lot of this is aimed at social media, I'm not solely talking about that one aspect. Even the interfaces of the devices themselves and apps you normally wouldn't think to be addictive can keep you coming back and starting at them. Even if you succeed in removing these apps, reinstalling them are only a click away.
+<br /><br />
+In the past, I used to disable the Google Play Store and Chrome in the device settings, and while this certainly helped, it was still too easy to go back and re-enable everything. Eventually, I decided to go all the way and remove the Play Store and Chrome, and leaving only my most essential apps, essentially turning my phone into a dumb phone.
+<br /><br />
+<h2>Will This Break It?</h2>
+<br /><br />
+I have good news for you: it will not. Originally, I thought you would have to root the device to do this sort of thing, but this can easily be done through the developer tools. While I can't speak for every device, I tried this on three different devices, and in all cases everything else continued to work perfectly, and both the Play Store and Chrome could be restored without resetting the device.
+<br /><br />
+That said though, please do this at your own risk. I'm not responsible if anything goes wrong.
+<br /><br />
+<h2>Enabling Developer Mode</h2>
+<br /><br />
+Enabling developer mode is easy and can be done in settings. First, go to "About Phone" (this can vary slightly depending on device), find the software information, and find an option labeled "Build Number".
+<br /><br />
+Next, find the "System Settings", and find "Developer Options":
+<br /><br />
+<img class="img-fluid" src="assets/images/step2-473x1024.jpg"></img>
+<br /><br />
+Finally, enable "USB debugging":
+<br /><br />
+<img class="img-fluid" src="assets/images/step3-473x1024.jpg"></img>
+<br /><br />
+<h2>ADB</h2>
+<br /><br />
+Now that this done, we can remove the apps. To do this, you need to install the Android Debug Bridge (ADB) on your computer. On Linux, this can usually be found in the repositories with a search. On Windows and MacOS, it comes as part of Android Studio, but I'm sure you can install it as a standalone package.
+<br /><br />
+Once installed, go ahead and plug your phone in. On my Google Pixel phone, I had to go to "Connected devices" -&gt; "USB Preferences", and set the data transfer settings for "File Transfer" in order for the debugging to work. On my Samsung Tablet and an old Motorola, I didn't have to do this.
+<br /><br />
+Once you have your phone connected, type "adb devices". You should see a device listed, which will be the serial number I believe:
+<br /><br />
+<img class="img-fluid" src="assets/images/adb_devices.png"></img>
+<br /><br />
+Next, type "adb shell". This will give you access to the internal Android daemon that allows you to execute commands on your device. As a starter, let's see what packages we have. Type:
+<br /><br />
+<code>
+<br />#&nbsp;Only&nbsp;do&nbsp;the&nbsp;first&nbsp;if&nbsp;you&nbsp;haven't&nbsp;already<br />adb&nbsp;shell<br /><br />#&nbsp;List&nbsp;all&nbsp;installed&nbsp;apps.<br />pm&nbsp;list&nbsp;packages<br /></code>
+<br /><br />
+The output will vary by device, but it will be long:
+<br /><br />
+<img class="img-fluid" src="assets/images/adb_pm_full.png"></img>
+<br /><br />
+As you can see, that's not too helpful- it will be hard to go through all that. Fortunately, the shell works like and gives you access to tools commonly found on Linux. Let's use "grep" to kind something. Since Chrome is gone on my device, let's use "keep" (I use Google Keep). Type this:
+<br /><br />
+<code>
+<br />pm&nbsp;list&nbsp;packages&nbsp;|&nbsp;grep&nbsp;keep<br /></code>
+<br /><br />
+And you should see this:
+<br /><br />
+<img class="img-fluid" src="assets/images/pm_grep.png"></img>
+<br /><br />
+This is a very handy tool to figure out what the package names are. In the case of Chrome, the package name is "com.android.chrome", and in the case of Google Play, the package name is "com.android.vending". Let's go ahead and remove them. Type these commands:
+<br /><br />
+<code>
+<br />pm&nbsp;uninstall&nbsp;-k&nbsp;--user&nbsp;0&nbsp;com.android.vending<br />pm&nbsp;uninstall&nbsp;-k&nbsp;--user&nbsp;0&nbsp;com.android.chrome<br /></code>
+<br /><br />
+These commands keep the packages so you can reinstall them if you really need to later, but they delete them in such a way that you cannot re-enable them from the device. As proof, go into your device settings -&gt; "Apps & notifications" -&gt; "See all apps", and scroll down. As you can see, Chrome is still listed, but cannot be enabled. Neither can Google play:
+<br /><br />
+<ul>
+<li> <img class="img-fluid" src="assets/images/c1-473x1024.jpg"></img></li>
+    
+<ul>
+<li> <img class="img-fluid" src="assets/images/c2-473x1024.jpg"></img></li>
+    
+<br /><br />
+<h3>Important!</h3>
+<br /><br />
+Don't go crazy when removing stuff because you can mess up your device if you're not careful. Only remove stuff that you are sure isn't going to break the whole thing. One thing I have found- and don't hold me to this because it could vary by device- but if you can go into settings, disable the app, and everything works fine, then it is safe to perform these steps. I have disabled Chrome and Play on multiple devices several times without any huge issues.
+<br /><br />
+<h2>Reinstalling the Apps</h2>
+<br /><br />
+The good news about this is you can reinstall the application if you really need to. The following commands will re-enable both Chrome and Google Play. You can use them on any other application you want re-enabled (except for those you downloaded from Play. You probably have to reinstall those manually).
+<br /><br />
+<code>
+<br />pm&nbsp;install-existing&nbsp;com.android.vending<br />pm&nbsp;install-existing&nbsp;com.android.chrome<br /></code>
+<br /><br />
+<h2>Conclusion</h2>
+<br /><br />
+Hopefully you found this helpful. It will definitely be an adjustment at first as you learn to work without these applications, but I think it is well worth it. Removing applications that suck your time- and the ability to even install them on a whim- eliminates a large part of the problem up front.
+<br /><br />
+Thanks for reading!
+<br /><br />
+<br /><br />
+&lt;/ul&gt;
+&lt;/ul&gt;
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

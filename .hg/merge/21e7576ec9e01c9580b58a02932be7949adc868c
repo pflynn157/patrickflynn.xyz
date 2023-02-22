@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h1>Installing Pi-Hole</h1>
+<p><br />
+
+This is the second part of the tutorial on setting up a Raspberry Pi router/filter (I assume you've done <a href="/raspberry-pi-router.html">part 1</a>). To set up the filter, we are going to be using Pi-hole.
+<br /><br />
+Pi-hole is an excellent DNS filtering system. Or as some people call it, a black hole. Incoming or outgoing connections that are on the Pi's blacklist are simply dropped. Pi-hole is free, open source, and easy to use.
+<br /><br />
+<h4>Installing Pi-Hole</h4>
+<br /><br />
+Let's dive into this. First, download and install Pi-Hole: `sudo curl -sSL https://install.pi-hole.net | bash`.
+<br /><br />
+Click "Ok" through the first few screens. When you come to the screen asking about network interfaces, choose `wlan0`:
+<br /><br />
+<img class="img-fluid" src="assets/images/pihole1-1024x719.png"></img>
+<br /><br />
+On the next screen, it will ask about your DNS provider. I'm not sure how much it actually matters, so just go with Google (the default):
+<br /><br />
+<img class="img-fluid" src="assets/images/pihole2-1024x719.png"></img>
+<br /><br />
+The next screen will ask you about ad blocking lists. That's another cool thing about Pi-hole; other than blocking domains of your choice, it can also block ads. By default, both are selected; you can just leave it as is.
+<br /><br />
+<img class="img-fluid" src="assets/images/pihole3-1024x719.png"></img>
+<br /><br />
+The next screen will ask what protocols to use. You can just leave this as is.
+<br /><br />
+The following screen will ask about the static IP address. **Answer no** here. As you remember, the Pi serves domains in the 192.168.4 range. Your home router takes care of the rest.
+<br /><br />
+<img class="img-fluid" src="assets/images/pihole4-1024x719.png"></img>
+<br /><br />
+On the next screen, we specify that range:
+<br /><br />
+<img class="img-fluid" src="assets/images/pihole5-1024x719.png"></img>
+<br /><br />
+The next screen asks about the gateway; this is simply the Pi's IP address:
+<br /><br />
+<img class="img-fluid" src="assets/images/pihole6-1024x654.png"></img>
+<br /><br />
+Make sure the settings look like the image below. If so, you can continue.
+<br /><br />
+<img class="img-fluid" src="assets/images/pihole7-1024x719.png"></img>
+<br /><br />
+Click through the next screen. The one after will ask if you want to install the web interface. Click yes to this. It will make it much easier to configure if you do so. The screen following will ask if you want to install lighttpd server. Click yes to this.
+<br /><br />
+The next screen will ask about logging queries. I would say this depends on what you are trying to do. I would just leave it on by default, but if you have a reason not to, that is certainly okay. The web interface does require a password to login, so if you're the only one with the password... You're the only that can see. Actually, I think you change this setting later on through the interface. The screen afterward will ask what level of logging you wish.
+<br /><br />
+When everything is complete, you will see a screen with some information. **Important**: Make sure you take note of the generated password near the bottom. You will need this to log in.
+<br /><br />
+<h4>Pi-Hole Configuration</h4>
+<br /><br />
+Okay, now go to `<a href="http://192.168.4.1/admin">http://192.168.4.1/admin</a>`, click the login button on the left sidebar, and login. This is web interface for Pi-hole.
+<br /><br />
+<img class="img-fluid" src="assets/images/pihole_admin1-1024x584.png"></img>
+<br /><br />
+Once you're logged in, click on "settings" in the sidebar, and click on the DHCP tab. Check the box titled "DHCP server enabled". You can ignore the red flashing warning; you don't have to do anything to your home router. Nothing on your home network will be affected. **Make sure** to click save near the bottom.
+<br /><br />
+<img class="img-fluid" src="assets/images/pihole_admin2-1024x676.png"></img>
+<br /><br />
+At this point, you can start adding sites you want blocked. Click on the blacklist tab, and you should see a screen similar to below. When you add domains, one useful thing might be to add the domain, then add it again with that box "Add domain as wildcard" checked. This will prevent access to subdomains.
+<br /><br />
+<img class="img-fluid" src="assets/images/pihole-blacklist-1024x677.png"></img>
+<br /><br />
+<h4>Blocking DNS Bypassing</h4>
+<br /><br />
+This step is only necessary if you are trying to set this up as a parental control device. Remember the step where we chose our DNS server? In some cases, you can go around Pi-hole by changing this setting. The following commands will prevent this from happening and make sure that any requests go through the Pi.
+<br /><br />
+<code>
+<br />sudo&nbsp;iptables&nbsp;-A&nbsp;PREROUTING&nbsp;-t&nbsp;nat&nbsp;-p&nbsp;udp&nbsp;--destination-port&nbsp;53&nbsp;-j&nbsp;REDIRECT&nbsp;--to-ports&nbsp;53<br />sudo&nbsp;iptables&nbsp;-A&nbsp;PREROUTING&nbsp;-t&nbsp;nat&nbsp;-p&nbsp;tcp&nbsp;--destination-port&nbsp;53&nbsp;-j&nbsp;REDIRECT&nbsp;--to-ports&nbsp;53<br />sudo&nbsp;iptables-save&nbsp;|&nbsp;sudo&nbsp;tee&nbsp;/etc/iptables/rules.v4<br /></code>
+<br /><br />
+<h4>Clearing DNS Cache</h4>
+<br /><br />
+In some cases, you may notice that sites are still not blocked even after blacklisting them. This occurs because of DNS caching. Your computer caches the corresponding IP addresses for a DNS lookup so it can avoid this extra step on future visits. Sometimes restarting will do the trick, but not always. At least on Linux. If you're on something other than Linux, you'll have to Google "How to flush the DNS cache for Windows". Or whatever you're on.
+<br /><br />
+If you are on Linux, these commands should do the trick:
+<br /><br />
+<code>
+<br />#&nbsp;This&nbsp;seems&nbsp;to&nbsp;work&nbsp;for&nbsp;Debian-based&nbsp;systems<br />#&nbsp;Run&nbsp;this:<br />sudo&nbsp;systemctl&nbsp;is-active&nbsp;systemd-resolved.service<br /><br />#&nbsp;If&nbsp;the&nbsp;output&nbsp;of&nbsp;the&nbsp;last&nbsp;command&nbsp;was&nbsp;"active",&nbsp;run:<br />sudo&nbsp;systemd-resolve&nbsp;--flush-caches<br /><br />##################<br />#&nbsp;On&nbsp;Redhat&nbsp;systems&nbsp;(including&nbsp;Fedora),&nbsp;one&nbsp;of&nbsp;these&nbsp;should&nbsp;work:<br />sudo&nbsp;systemctl&nbsp;restart&nbsp;nscd.service<br />sudo&nbsp;service&nbsp;nscd&nbsp;restart<br /><br />##################<br />#&nbsp;If&nbsp;all&nbsp;else&nbsp;fails,&nbsp;try&nbsp;one&nbsp;of&nbsp;these:<br />sudo&nbsp;systemctl&nbsp;restart&nbsp;dnsmasq.service<br />sudo&nbsp;service&nbsp;dnsmasq&nbsp;restart<br /></code>
+<br /><br />
+<h4>Final Notes</h4>
+<br /><br />
+Once you are done with all the configuration, I would reboot just to be sure that all is working. You may have to reboot the Pi every now and then, but it shouldn't be too often- really just when you install updates. I ran mine 35 days straight before rebooting it for updates.
+<br /><br />
+<h4>Conclusion</h4>
+<br /><br />
+If all goes well, you should see the sites on your blacklist fail to load. Its easy to add new sites as needed. If you find any issues or have any suggestions, feel free to drop me an email.
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

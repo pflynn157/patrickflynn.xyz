@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Creating a Simple VM: Adding Variables</h2>
+<p><br />
+
+Welcome back! You probably remember a few weeks ago that we created a simple application-level virtual machine that could read a binary file, load numbers, add them, and print them. Today, we're going to extend that machine, and add variables. I don't think I need to tell you how important variables are to a programming language. Therefore, this is the logical next step. Before we dive into the implementation, let us briefly consider this conceptually.
+<br /><br />
+You will remember that registers on a real machine and the stack on our virtual machine are used to do operations. The data on these structures is operated upon and changed very quickly, making them unsuitable for storing data long-term. This is where memory comes in. On a real computer, this would be the volatile memory- the DRAM. When we want to save a variable, we save the data to a location in memory, and when we need that data, we load from that location. Variables are useful in programming languages because they are named values. The compiler takes care of determining the location, but you as the programmer only have to worry about the variables by their name.
+<br /><br />
+So how do we do this on a virtual machine? The answer: the exact same way. We are still utilizing the computer's DRAM, but because this is a virtual machine, we use an array. So now, the machine will have two data structures: an array for variables, and a stack for operations.
+<br /><br />
+This program will build off the original code we wrote a few weeks ago, so if you haven't read it, I encourage you to go back and do so. I will still post the code, but I'm only going over the parts we're adding.
+<br /><br />
+Let's dive into this!
+<br /><br />
+<h3>The Program</h3>
+<br /><br />
+This is the program we'll be writing:
+<br /><br />
+<code>
+<br />iconst&nbsp;50<br />istore&nbsp;1<br />iconst&nbsp;10<br />istore&nbsp;2<br /><br />iload&nbsp;1<br />iload&nbsp;2<br />imul<br />istore&nbsp;3<br /><br />iload&nbsp;1<br />iload&nbsp;2<br />idiv<br />istore&nbsp;4<br /><br />iload&nbsp;3<br />iprint<br />ipop<br /><br />iload&nbsp;4<br />iprint<br />ipop<br /><br />exit<br /></code>
+<br /><br />
+The program would roughly correspond to this in C:
+<br /><br />
+<code>
+<br />int&nbsp;x&nbsp;=&nbsp;50;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Location&nbsp;1<br />int&nbsp;y&nbsp;=&nbsp;10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Location&nbsp;2<br />int&nbsp;mulResult;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Location&nbsp;3<br />int&nbsp;divResult;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Location&nbsp;4<br /><br />mulResult&nbsp;=&nbsp;x&nbsp;*&nbsp;y;<br />printf("%d\n",&nbsp;mulResult);<br /><br />divResult&nbsp;=&nbsp;x&nbsp;/&nbsp;y;<br />printf("%d\n",&nbsp;divResult);<br /></code>
+<br /><br />
+You'll notice some changes and additions to our instructions. First, notice the "iconst" and the "iload" instructions. Originally, "iload" was used to load a number to the stack. Now, the "iconst" does that. The "iload" still follows the same syntax, but that number represents a location in memory. The number corresponds to an index in the array, and loads the value at that index to the stack.
+<br /><br />
+The "istore" does the inverse of the "iload" instruction. It pops from the top of the stack, and saves that value to a location represented by that number.
+<br /><br />
+Finally, notice the "ipop" instruction. All "ipop" does is pop a value from the top of the stack and discards it. Why? You'll remember that "iprint" doesn't pop from the stack; it only peeps. Therefore, we have to pop the loaded value before we can print the next one.
+<br /><br />
+<h3>Changing the Opcodes</h3>
+<br /><br />
+When you look at the source, you'll notice we included an additional file:
+<br /><br />
+<code>
+<br />#pragma&nbsp;once<br /><br />enum&nbsp;Opcode<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;I_CONST&nbsp;=&nbsp;0xA1,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_LOAD&nbsp;=&nbsp;0xA2,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_STORE&nbsp;=&nbsp;0xA3,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_POP&nbsp;=&nbsp;0xA4,<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;I_ADD&nbsp;=&nbsp;0xA5,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_SUB&nbsp;=&nbsp;0xA6,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_MUL&nbsp;=&nbsp;0xA7,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_DIV&nbsp;=&nbsp;0xA8,<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;I_PRINT&nbsp;=&nbsp;0xA9,<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;EXIT&nbsp;=&nbsp;0x73<br />};<br /><br /></code>
+This header contains our opcode enumeration for both the reader and the writer, which is handy so we don't have to keep two copies up to date.
+<br /><br />
+In addition to the new opcodes, notice how some of the numbers changed for the existing ones. This is the beauty of enumerations. If we had hard-coded the numbers, we would have had to either A) leave the existing ones alone and deal with a less-than-logical numbering sequence, or B) change everything. Because we are using enumerations, we can change the numbers, and the writer and VM will still work perfectly.
+<br /><br />
+In the real world, however, you want to be careful about doing things like this on production products. Of course, there's times you just have to, but this will break the ABI- the application binary interface, meaning that any older programs will not be compatible with newer versions of the VM. Breaking the ABI was a good idea in this case because we were changing the meaning of one of the instructions (the "iload").
+<br /><br />
+<h3>Updating the Writer</h3>
+<br /><br />
+I originally was going to skip this section, but I'll make a quick note.
+<br /><br />
+The writer (writer.c) will be basically the same. We do have to re-arrange the "WriteOpcode" function calls to create our own program, but that is the main difference.
+<br /><br />
+The one other thing we have to do is write an extra field to our binary file. Just after the version field, we need to write an integer indicating how many variables we have. I'll cover this more in a second, but in the meantime, see the source.
+<br /><br />
+<h3>Updating the VM</h3>
+<br /><br />
+This is where the fun really begins. First, scroll down to the main function, and look at the new fread call we make before calling the "run" function:
+<br /><br />
+<code>
+<br />//&nbsp;Get&nbsp;the&nbsp;variable&nbsp;size<br />int&nbsp;varSize&nbsp;=&nbsp;0;<br />fread(&varSize,&nbsp;sizeof(int),&nbsp;1,&nbsp;file);<br /></code>
+<br /><br />
+This integer tells the VM how many variables we have in the program so we can allocate our memory accordingly. Now, it is not strictly necessary that you have this, especially in today's world where memory is cheap. We could use a C++ container like the vector or map, or we could just create a huge array of 100 or so elements. However, using a C++ container incurs overhead, and allocating one big array wastes memory. By using this field, you only allocate what you need. This was inspired by Java, which has a similar field for each method.
+<br /><br />
+Okay, now let's go to the "run" function. The variables are all stored in this unimpressive array:
+<br /><br />
+<code>
+<br />int&nbsp;vars[varSize];<br /></code>
+<br /><br />
+Now we can start adding our new instructions. As you remember, "iconst" does the exact same thing as "iload" used to do, so we can just change the case statement:
+<br /><br />
+<code>
+<br />case&nbsp;I_CONST:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;arg&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;fread(&arg,&nbsp;sizeof(int),&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;stack.push(arg);<br />}&nbsp;break;<br /></code>
+<br /><br />
+Next, we'll create the new "iload". A load has an argument, so we must read that from the binary file. That argument will be the index of the array. We retrieve the value from that array index, and push it to the stack:
+<br /><br />
+<code>
+<br />case&nbsp;I_LOAD:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;arg&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;fread(&arg,&nbsp;sizeof(int),&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;val&nbsp;=&nbsp;vars[arg];<br />&nbsp;&nbsp;&nbsp;&nbsp;stack.push(val);<br />}&nbsp;break;<br /></code>
+<br /><br />
+The "istore" instruction is similar; it just works the opposite direction:
+<br /><br />
+<code>
+<br />case&nbsp;I_STORE:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;arg&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;fread(&arg,&nbsp;sizeof(int),&nbsp;1,&nbsp;file);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;val&nbsp;=&nbsp;stack.top();<br />&nbsp;&nbsp;&nbsp;&nbsp;stack.pop();<br />&nbsp;&nbsp;&nbsp;&nbsp;vars[arg]&nbsp;=&nbsp;val;<br />}&nbsp;break;<br /></code>
+<br /><br />
+Finally, we have the "ipop" instruction, which is really simple:
+<br /><br />
+<code>
+<br />case&nbsp;I_POP:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;stack.pop();<br />}&nbsp;break;<br /></code>
+<br /><br />
+You'll also notice that we have the two new "imul" and "idiv" instructions. These are simply add-ons to the two existing math instructions (add and subtract), so I'm not going to go over it here. See the source code if you're interested.
+<br /><br />
+<h3>Build and Run</h3>
+<br /><br />
+The writer is written in C (although you can use it as C++ if you want), and the VM is written in C++. You can use these commands to compile and run:
+<br /><br />
+<code>
+<br />gcc&nbsp;writer.c&nbsp;-o&nbsp;writer&nbsp;&&&nbsp;./writer<br />g++&nbsp;reader.cpp&nbsp;-o&nbsp;reader&nbsp;&&&nbsp;./reader<br /></code>
+<br /><br />
+One implementation idea for the VM if you're looking to extend it is to add command line argument support for input files. Currently, the input is hard-coded into the VM's main function, which is obviously wrong. Doing something similar with the writer would eventually be nice as well, but that will require you to write an assembler so you have something to read.
+<br /><br />
+<h3>Conclusion</h3>
+<br /><br />
+As you can see, adding variables was a straightforward process. Our VM is now a little more useful, and we can more easily do complicated math operations, or even several math operations. The variables themselves aside, you can see that adding instructions is a pretty easy process itself.
+<br /><br />
+Despite having variables, our VM is still not an accurate representation of a computer; if anything, it is more of a calculator. In order to make it a computer, we need compare and branch instructions, which allows us to make decisions and control the course of the program. That will be our next step, which we will return to in a future post.
+<br /><br />
+Thanks for reading!
+<br /><br />
+<h3>The Source</h3>
+<br /><br />
+Below is our source code, which is now three files. This source is in the public domain; use to your heart's content.
+<br /><br />
+opcodes.h
+<br /><br />
+<code>
+<br />#pragma&nbsp;once<br /><br />enum&nbsp;Opcode<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;I_CONST&nbsp;=&nbsp;0xA1,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_LOAD&nbsp;=&nbsp;0xA2,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_STORE&nbsp;=&nbsp;0xA3,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_POP&nbsp;=&nbsp;0xA4,<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;I_ADD&nbsp;=&nbsp;0xA5,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_SUB&nbsp;=&nbsp;0xA6,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_MUL&nbsp;=&nbsp;0xA7,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_DIV&nbsp;=&nbsp;0xA8,<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;I_PRINT&nbsp;=&nbsp;0xA9,<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;EXIT&nbsp;=&nbsp;0x73<br />};<br /></code>
+<br /><br />
+writer.c
+<br /><br />
+<code>
+<br />#include&nbsp;&lt;stdio.h&gt;<br />#include&nbsp;&lt;stdint.h&gt;<br /><br />#include&nbsp;"opcodes.h"<br /><br />void&nbsp;WriteOpcode1(uint8_t&nbsp;opcode,&nbsp;int&nbsp;arg,&nbsp;FILE&nbsp;*file)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;fputc(opcode,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;fwrite(&arg,&nbsp;sizeof(int),&nbsp;1,&nbsp;file);<br />}<br /><br />void&nbsp;WriteOpcode(uint8_t&nbsp;opcode,&nbsp;FILE&nbsp;*file)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;fputc(opcode,&nbsp;file);<br />}<br /><br />int&nbsp;main()<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Create&nbsp;the&nbsp;file<br />&nbsp;&nbsp;&nbsp;&nbsp;FILE&nbsp;*file&nbsp;=&nbsp;fopen("./program.bin",&nbsp;"wb");<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Write&nbsp;the&nbsp;signature&nbsp;and&nbsp;version<br />&nbsp;&nbsp;&nbsp;&nbsp;fputs("SimpleVM",&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;fputc(0x01,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Number&nbsp;of&nbsp;variables<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;count&nbsp;=&nbsp;5;<br />&nbsp;&nbsp;&nbsp;&nbsp;fwrite(&count,&nbsp;sizeof(int),&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iconst&nbsp;50<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;istore&nbsp;1<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iconst&nbsp;10<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;istore&nbsp;2<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode1(I_CONST,&nbsp;50,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode1(I_STORE,&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode1(I_CONST,&nbsp;10,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode1(I_STORE,&nbsp;2,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iload&nbsp;1<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iload&nbsp;2<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;imul<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;istore&nbsp;3<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode1(I_LOAD,&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode1(I_LOAD,&nbsp;2,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode(I_MUL,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode1(I_STORE,&nbsp;3,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iload&nbsp;1<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iload&nbsp;2<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;idiv<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;istore&nbsp;4<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode1(I_LOAD,&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode1(I_LOAD,&nbsp;2,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode(I_DIV,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode1(I_STORE,&nbsp;4,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iload&nbsp;3<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iprint<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;ipop<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode1(I_LOAD,&nbsp;3,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode(I_PRINT,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode(I_POP,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iload&nbsp;4<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iprint<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;ipop<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode1(I_LOAD,&nbsp;4,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode(I_PRINT,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode(I_POP,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;exit<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode(EXIT,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Close&nbsp;the&nbsp;file<br />&nbsp;&nbsp;&nbsp;&nbsp;fclose(file);<br />}<br /></code>
+<br /><br />
+reader.cpp
+<br /><br />
+<code>
+<br />#include&nbsp;&lt;cstdio&gt;<br />#include&nbsp;&lt;cstdint&gt;<br />#include&nbsp;&lt;stack&gt;<br />#include&nbsp;&lt;iostream&gt;<br /><br />#include&nbsp;"opcodes.h"<br /><br />void&nbsp;run(FILE&nbsp;*file,&nbsp;int&nbsp;varSize)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;vars[varSize];<br />&nbsp;&nbsp;&nbsp;&nbsp;std::stack&lt;int&gt;&nbsp;stack;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(!feof(file))<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uint8_t&nbsp;opcode;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fread(&opcode,&nbsp;sizeof(uint8_t),&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;isDone&nbsp;=&nbsp;false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch&nbsp;(opcode)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;I_CONST:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;arg&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fread(&arg,&nbsp;sizeof(int),&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack.push(arg);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;break;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;I_LOAD:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;arg&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fread(&arg,&nbsp;sizeof(int),&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;val&nbsp;=&nbsp;vars[arg];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack.push(val);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;break;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;I_STORE:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;arg&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fread(&arg,&nbsp;sizeof(int),&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;val&nbsp;=&nbsp;stack.top();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack.pop();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vars[arg]&nbsp;=&nbsp;val;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;break;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;I_POP:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack.pop();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;break;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;I_ADD:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;I_SUB:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;I_MUL:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;I_DIV:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;arg2&nbsp;=&nbsp;stack.top();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack.pop();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;arg1&nbsp;=&nbsp;stack.top();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack.pop();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(opcode&nbsp;==&nbsp;I_ADD)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack.push(arg1&nbsp;+&nbsp;arg2);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;if&nbsp;(opcode&nbsp;==&nbsp;I_SUB)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack.push(arg1&nbsp;-&nbsp;arg2);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;if&nbsp;(opcode&nbsp;==&nbsp;I_MUL)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack.push(arg1&nbsp;*&nbsp;arg2);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;if&nbsp;(opcode&nbsp;==&nbsp;I_DIV)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack.push(arg1&nbsp;/&nbsp;arg2);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;break;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;I_PRINT:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;stack.top()&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;break;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;EXIT:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isDone&nbsp;=&nbsp;true;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;break;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::cerr&nbsp;&lt;&lt;&nbsp;"Error:&nbsp;Unknown&nbsp;opcode."&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isDone&nbsp;=&nbsp;true;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;break;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(isDone)&nbsp;break;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />}<br /><br />int&nbsp;main()<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Open&nbsp;the&nbsp;file<br />&nbsp;&nbsp;&nbsp;&nbsp;FILE&nbsp;*file&nbsp;=&nbsp;fopen("./program.bin",&nbsp;"rb");<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Verify&nbsp;that&nbsp;our&nbsp;program&nbsp;is&nbsp;valid<br />&nbsp;&nbsp;&nbsp;&nbsp;char&nbsp;signature[9];<br />&nbsp;&nbsp;&nbsp;&nbsp;fread(&signature,&nbsp;sizeof(char),&nbsp;8,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;signature[8]&nbsp;=&nbsp;'\0';<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(std::string(signature)&nbsp;==&nbsp;"SimpleVM")&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;"File&nbsp;is&nbsp;valid."&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;"Invalid&nbsp;input&nbsp;file."&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;signature&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;1;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Check&nbsp;the&nbsp;version<br />&nbsp;&nbsp;&nbsp;&nbsp;uint8_t&nbsp;version&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;fread(&version,&nbsp;sizeof(uint8_t),&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;"Version:&nbsp;"&nbsp;&lt;&lt;&nbsp;(int)version&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Get&nbsp;the&nbsp;variable&nbsp;size<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;varSize&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;fread(&varSize,&nbsp;sizeof(int),&nbsp;1,&nbsp;file);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Run&nbsp;the&nbsp;program<br />&nbsp;&nbsp;&nbsp;&nbsp;run(file,&nbsp;varSize);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Close&nbsp;the&nbsp;file<br />&nbsp;&nbsp;&nbsp;&nbsp;fclose(file);&nbsp;&nbsp;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />}<br /></code>
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

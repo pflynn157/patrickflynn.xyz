@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Tiny Lang Updates & Why We Need A Better Way To Program</h2>
+<p><br />
+
+Last night and this morning, I made some more Tiny Lang updates- arguably some needed updates. The main purpose of this was to make it easier to fork Tiny Lang for new projects, but seriously the source tree needed to be less complicated.
+<br /><br />
+So yeah, that was the first change: I completely flattened out the source tree. Everything is in `/src` now. The structure reflects the original frontend structure for the most part, so not to worry- I didn't just dump everything in one folder. It's still organized.
+<br /><br />
+The other big thing was I removed and added a dependency. The LLIR implementation is broken, and on second thoughts I decided I just didn't want to deal with that backend anymore, so I removed it. You can still find the source on the "llir" branch; it will build, but it won't pass all the tests. The second thing I did was incorporate <a href="/minilex.html">minilex</a>. Minilex is based on the original Tiny Lang source, so I thought this would be a good way to show it in action. Furthermore, it will improve the hack-ability of the code even more.
+<br /><br />
+Which leads to another quick update: I made some more bug fixes to the minilex source. For some very odd reason, this one line which was made for error checking was causing the entire lexical analyzer to screw up in one location. Which leads to the next part of this post...
+<br /><br />
+<h3>We Need A Better Way To Program</h3>
+<br /><br />
+To programmers, stating this is probably anathema, but allow me to expound.
+<br /><br />
+One of my biggest pet peeves with programming is dealing with huge, bloated code. I don't mean my code- I usually move on before my code escapes into the drastically unmanageable realm. No, I'm talking about the majority of software projects that exist today. Because I work with compilers, this is personal. Compilers can get really, really big and if care is not taken, they can become a huge mess.
+<br /><br />
+A messy program is domino effect. The bigger a program gets, the harder it is maintain- even if just one person is working on it and knows all the ins and outs. But in most cases, many people are working on it, sometimes even across generations. And what happens? It gets bigger and bigger, and harder to maintain. New people come in, and struggle to figure out what a program does. In the process, it becomes very buggy, it becomes harder to fix problems, and then one of two things happen: 1) it's abandoned, and the whole process starts over; or 2) parts of it become untouchable, and new features are just added on top of it. Kind of like Windows...
+<br /><br />
+In a compiler, this is more of inconvenience. As long as the code is correct, complexity isn't a <i>huge</i> deal, and most of them are still within the realm of fixibility. But compilers are only a tool. What about programs used in critical infrastructure?
+<br /><br />
+The scary thing about this is that it isn't even a possibility. It's a real thing, and it's been happening more and more over the past ten years or so. I came across <a href="https://www.theatlantic.com/technology/archive/2017/09/saving-the-world-from-code/540393/">this article in the Atlantic</a> that talked about the problem. One example they gave was the entire 911 system in Washington state went down for a few hours because of a simple coding error (and it wasn't even an error per se). Another, more scary example was a computer glitch in a Toyota car caused the throttle to become stuck on the highway, killing a passenger and seriously injuring the driver. And more recently, we had the tragic Boeing 737 MAX crashes, both caused by computer issues.
+<br /><br />
+Software is great because it can theoretically simplify designs by eliminating the need for complicated mechanical components. By the benefit of mechanical components is that they are finite. You can't keep piling components on top of whatever controls a car throttle, or the switching circuit for a 911 system. Design considers aside, it will become physically too big. Moreover, a mechanical component can't have millions of cases where it can fail. Mechanical components can be tested exhaustively. All the ways it can fail are known before it goes into the car.
+<br /><br />
+Not so with software. The Toyota accident finally led to a large scale investigation of their code. NASA spent 10 months picking through the code, but couldn't find the issue. Then someone else picked up where they left off and spent another 18 months picking through the code. After <i>over 2</i> years, they found the issue. In the process, they determined there are over <i>10 million</i> ways that the code could fail. To put this in perspective: a car doesn't have just one computer. This was just the computer involved in the acceleration, and this one component had over 10 million ways it could fail.
+<br /><br />
+It may sound fantastic, but to anyone that's programmed for any length of time, it's not. These components that control a car are considered low-level components or embedded components (depending on whom you ask). These components are generally written in C. The computer science community has an almost cult worship of C (caveat: that's starting to change, but not nearly enough). C was a great solution to a problem when it was first invented over 40 years ago, but it is a horrible, horrible solution for many of the use cases it's used for today. C is not know for it's readability; the syntax is vague; there are almost no compile-time safety checks that you can do; and there is no error handling.
+<br /><br />
+C++ is marginally better, but it still suffers from many of the same problems (in strict terms, C++ is basically a superset of C). Once you get to a certain point when writing a C/C++ program, it becomes unmanageable. The original authors might have a good sense of what it does, but anyone new who comes is going to have a hard time picking it up. Going back to the Toyota accident: it took them over 2 years to find the bug. And these were experts. NASA programmers don't spend their time making web applications; they work on very low-level stuff, in principle similar to what you find in your car. And they couldn't figure it out. It's safe to say the reason this other firm was able to figure it out was because of NASA's 10 month dedication.
+<br /><br />
+You don't even have to be working on somebody else's code to experience this. Assuming you're a programmer, how many times have you worked on code and encountered a strange bug, only to spend the next few hours staring the code and having no idea what is wrong? Especially with C/C++? I spent last night and this morning doing just that. When I was adding minilex to Tiny Lang, the generated lexical analyzer was screwing up on this one token. In the end, it ended up being because I wasn't updating this one variable which I primarily used for error check dumps. Lexical analyzers can be represented with finite state machines, and fixing that error made me wonder what the machine looks like. I can only imagine the number of ways that thing could fail.
+<br /><br />
+We need a better way to program- in so many ways. Except for a few limited use cases, C has far outlived it's purpose, and C++ is still largely trying to solve a problem that existed 20 years ago that no longer exists. There are languages out there that can solve a huge number of the C/C++ problems, Ada being one of the best examples (Ada was specifically designed for use cases like the Toyota- embedded, mission-critical systems. It's used a lot in France, both in the TGV systems and in Airbus avionics). Windows is another example of a technology that's outlived it's purpose and needs to die. If you don't believe me, consider all the ransomware attacks of the past few years. A perfect example of this was the <a href="https://en.wikipedia.org/wiki/Colonial_Pipeline_ransomware_attack">Colonial Pipeline attack</a> that occurred just over a year ago. I lived in an affected region, and dealing with that was a PITA to put it simply.
+<br /><br />
+The second half of the Atlantic article went into this directly, and started talking about specification/model-based programming. I don't fully understand it yet, and the idea still has a while before it takes off, but my current understanding is it's a lot like hardware descriptor languages (HDL). HDLs are an example of software done right. Like I said above, hardware has a very finite number of states. You can exhaustively test hardware and know exactly how it can fail, and how you can deal with that. HDL are languages designed to implement that behavior. With an HDL, you model the hardware in a programming environment, and then you can exhaustively test how it will act. The HDL can then be uploaded to an FPGA or converted to real hardware, and it will act exactly as it did in the programming environment.
+<br /><br />
+What we need are software descriptor languages (SDL), which is my understanding of the Atlantic article. We need to really rethink our languages and tools to create something like that which can be tested exhaustively. With a model like this, we could define how the software is supposed to act, and then convert it to source code or even machine code. Basically, we just extend an HDL with the features that we can use in software. The good news is that something like this already exists: Spark, a subset of Ada. Spark is basically a programming language that can be mathematically proven to be correct. But like Ada, it's a layer that hasn't taken off yet.
+<br /><br />
+At the end of the day though, my whole point is we need a significantly better way to look at programming and software in general. We need to stop romanticizing old languages like C/C++ that have either served their time or are relegated to confined use cases. We need to stop creating tools for tools for tools to try to analyze and fix things that are fundamentally broken (again, C). We need to stop defining "progress" by how many new useless features we add to the software. Features = complexity, and complexity = something people can't fix. I would even go so far as to say we need to completely change software engineering as we know it. One of the points of the Atlantic article is the very true fact that most programmers don't give a f**k about understanding what they are implementing, and the engineers behind the car or whatever don't understand programming and shouldn't need to understand programming. We need to find a way to lessen the barrier between programming and other disciplines so we don't have a whole other sub-discipline that's basically glorified translation. We need to stop creating a science behind testing, since much of what we are testing is almost impossible to exhaustively test. And that's in a perfect world where programmers are willing to actually write the test case.
+<br /><br />
+This isn't a problem that's going to go away. In a purely theoretically scale, there are people starting to look at the issue, and some of it is creeping into <a href="https://en.wikipedia.org/wiki/TLA%2B#Industry_use">real world use</a>, including by some big names in the industry. But I say theoretical because it's just that. It's being implemented by big companies that have the money to put people aside to be like "I wonder what will happen if we use this...". It's by no means an industry standard, and it's certainly nothing taught in schools. The Russian-Ukraine war, and really the past ten years starting with Stuxnet has shown that shadowy cyberwars are indeed possible, for no other reason than that so much of our critical infrastructure runs on critically vulnerable software- the Colonial Pipeline being the perfect example. We can mitigate this problem by creating a cybercommand and creating more security software and so on and so forth, but that's nothing more than putting band-aid over a gaping wound. Sooner than later, you're going to have to do more. It's already happened- there was a high-profile instance of <a href="https://en.wikipedia.org/wiki/Ukraine_power_grid_hack">Russia taking down part of Ukraine's</a> power grid a few years back. Fortunately, their system was so old that they still had manual switches to get it back on. They got lucky. If they had not been able to do that, a lot of people would have died.
+<br /><br />
+We can sit back and call Ukraine some backwards, post-Soviet country, but the reality is the situation isn't any better here in the United States. Our power grid is old, and the systems are just as vulnerable. For the most part, the exact same systems are used all over the world. Power companies don't have an incentive to upgrade their systems- many of the Californian wildfires have been started by ancient PG&E equipment failing. You can argue that it was climate change, and yes maybe that played a role, but needlessly ancient equipment sparked the fire. The 2018 Camp Fire was sparked by a 100 year old PG&E tower. The will of the attacker to take down our power grid is going to be greater than the company's desire to fix it before it happens.
+<br /><br />
+The Atlantic article is aptly titled: The Coming Software Apocalypse. I'm positive because some people are waking up to the issue and trying to fix it. But I'm also worried because even though some people are seeing it, the industry as a whole hasn't. The Boeing crashes jarred the industry, but it's probably going to take something worse before anything changes. And something worse is possible. Geopolitical tensions are high right now, and there are no rules of war behind cyberattacks. Cyberattacks are like mercenaries: they are great for countries to send in and do their dirty work because they effective, but they can also be disowned. It's a great way for countries, especially nuclear-armed countries, to avoid expensive, all-out altercations that can't be won. There isn't much preventing some country that hates us to hack a key part of our infrastructure, physical or cyber, and wreck huge harm without leading to an all-out war. And that's already happened very recently with the <a href="https://en.wikipedia.org/wiki/2020_United_States_federal_government_data_breach">SolarWinds hack</a>.
+<br /><br />
+Hopefully the software industry wakes up to this before something really bad happens. If you're a programmer, I hope this gets you thinking. My goal here was not to be apocalyptic. I hate doing that because I think fear does little other than to generate fear. But at the same time, we need to have a more in-depth discussion about this in the software community. Innovation isn't good if it's not sustainable long-term, and we're approaching a turning point with the older generations of programmers who invented much of what we have today, and the younger generations picking where they left off. I say this because I'm one of those people. The older generations did amazing work, and it's up to their successors to keep the field going in a way in which we can continue to promote innovation.
+<br /><br />
+Honestly, I could go on and on, but I'll save additional thoughts for another time :). If you made it this far, my congratulations!
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Creating a Simple VM</h2>
+<p><br />
+
+Welcome back! Today we’re going to learn how to write a simple application-level virtual machine. The VM we're making will be simple; all it does is add, subtract, and print the results. But this is an important first-step. Once you’re able to do this, we can start extending it for more advanced instructions.
+<br /><br />
+The VM will be composed of two programs: the writer, and the reader. The writer generates our binary file, and the reader will execute it.
+<br /><br />
+Let’s dive in!
+<br /><br />
+<h2>What is a VM?</h2>
+<br /><br />
+You probably know what a virtual machine is from applications such as VMWare and VirtualBox. They run an entire operating system within another operating system by emulating a computer.
+<br /><br />
+An application-level virtual machine is similar in concept to a conventional VM- it provides a virtual environment to run a program. It differs, however, in that it doesn’t emulate a full computer. Application-level virtual machines are generally used as a component of interpreted languages. Running interpreted languages from the source level is slow, but running a binary file is much faster. Furthermore, it is cross-platform. Your binary file for your VM can be run on any platform the VM is compatible with.
+<br /><br />
+The best example of this is the Java Virtual Machine. As you likely know, Java doesn’t run on bare hardware. It uses the Java VM to run .class files. As long as your computer has the Java VM installed, it can run Java. Python and other languages operate on a similar concept.
+<br /><br />
+Our VM is based on this concept. We have a custom binary file format, a program that generates it, and another program that runs it.
+<br /><br />
+<h2>Our Binary File</h2>
+<br /><br />
+The first step to designing a VM is to design the file format (please note: I will be using “VM” to refer to application-level virtual machines such as ours for the rest of this post). Because this is our first VM, the design is going to be extremely simple:
+<br /><br />
+Signature (String = “SimpleVM”)
+Version (a 1-byte value)
+Code (a 1-byte value followed by an optional 4-byte argument).
+<br /><br />
+The signature and version is used to verify that the file can be run by the VM. While not strictly necessary, it is a very good section to have, especially if you plan on expanding your machine.
+<br /><br />
+Next, we need to determine our opcodes. There is no rule for how to determine this; whatever numbering system works for you is sufficient. Generally, I use letters to determine the class of instructions.
+<br /><br />
+<code>
+<br />enum&nbsp;Opcode<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;I_LOAD&nbsp;=&nbsp;0xA1,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_ADD&nbsp;=&nbsp;0xA2,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_SUB&nbsp;=&nbsp;0xA3,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_PRINT&nbsp;=&nbsp;0xA7,<br />&nbsp;&nbsp;&nbsp;&nbsp;EXIT&nbsp;=&nbsp;0x73<br />};<br /></code>
+<br /><br />
+<h2>Generating the File</h2>
+<br /><br />
+Okay, now we can generate the file. In the real world, you would probably want this to be an assembler or some sort of library, depending on what you are implementing. For right now however, the code is extremely simple. I’m not going to go into great detail here; I assume that you understand C and the library calls:
+<br /><br />
+<code>
+<br />#include&nbsp;&lt;stdio.h&gt;<br />#include&nbsp;&lt;stdint.h&gt;<br /><br />enum&nbsp;Opcode<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;I_LOAD&nbsp;=&nbsp;0xA1,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_ADD&nbsp;=&nbsp;0xA2,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_SUB&nbsp;=&nbsp;0xA3,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_PRINT&nbsp;=&nbsp;0xA7,<br />&nbsp;&nbsp;&nbsp;&nbsp;EXIT&nbsp;=&nbsp;0x73<br />};<br /><br />void&nbsp;WriteOpcode1(uint8_t&nbsp;opcode,&nbsp;int&nbsp;arg,&nbsp;FILE&nbsp;*file)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;fputc(opcode,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;fwrite(&arg,&nbsp;sizeof(int),&nbsp;1,&nbsp;file);<br />}<br /><br />void&nbsp;WriteOpcode(uint8_t&nbsp;opcode,&nbsp;FILE&nbsp;*file)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;fputc(opcode,&nbsp;file);<br />}<br /><br />int&nbsp;main()<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Create&nbsp;the&nbsp;file<br />&nbsp;&nbsp;&nbsp;&nbsp;FILE&nbsp;*file&nbsp;=&nbsp;fopen("./program.bin",&nbsp;"wb");<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Write&nbsp;the&nbsp;signature&nbsp;and&nbsp;version<br />&nbsp;&nbsp;&nbsp;&nbsp;fputs("SimpleVM",&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;fputc(0x01,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iload&nbsp;5<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iload&nbsp;6<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode1(I_LOAD,&nbsp;5,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode1(I_LOAD,&nbsp;6,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iadd<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode(I_ADD,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iprint<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode(I_PRINT,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iload&nbsp;1<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;isub<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode1(I_LOAD,&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode(I_SUB,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;iprint<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode(I_PRINT,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;exit<br />&nbsp;&nbsp;&nbsp;&nbsp;WriteOpcode(EXIT,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Close&nbsp;the&nbsp;file<br />&nbsp;&nbsp;&nbsp;&nbsp;fclose(file);<br />}<br /></code>
+<br /><br />
+Build and run the program, and if all goes well, you won’t see any output. A way to verify that the file was generated correctly is to use hexdump. Notice the signature at the beginning of the file.
+<br /><br />
+<img class="img-fluid" src="assets/images/hexdump.png"></img>
+<br /><br />
+<h2>Running the File</h2>
+<br /><br />
+Okay, now that we have generated the file, let’s run it! Once again, the code is pretty straightforward, so I won’t go into great detail. I will just touch on the important points.
+<br /><br />
+First, we have to verify the file. We read the string, which is 8 characters long (with the ninth being the NULL byte- the terminating character), and then we read the version. Currently, we don’t care about the version, but we still have to read the character so the file position is moved forward:
+<br /><br />
+<code>
+<br />//&nbsp;Verify&nbsp;that&nbsp;our&nbsp;program&nbsp;is&nbsp;valid<br />char&nbsp;signature[9];<br />fread(&signature,&nbsp;sizeof(char),&nbsp;8,&nbsp;file);<br />signature[8]&nbsp;=&nbsp;'\0';<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />if&nbsp;(std::string(signature)&nbsp;==&nbsp;"SimpleVM")&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;"File&nbsp;is&nbsp;valid."&nbsp;&lt;&lt;&nbsp;std::endl;<br />}&nbsp;else&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;"Invalid&nbsp;input&nbsp;file."&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;signature&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;1;<br />}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />//&nbsp;Check&nbsp;the&nbsp;version<br />uint8_t&nbsp;version&nbsp;=&nbsp;0;<br />fread(&version,&nbsp;sizeof(uint8_t),&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />std::cout&nbsp;&lt;&lt;&nbsp;"Version:&nbsp;"&nbsp;&lt;&lt;&nbsp;(int)version&nbsp;&lt;&lt;&nbsp;std::endl;<br />std::cout&nbsp;&lt;&lt;&nbsp;std::endl;<br /></code>
+<br /><br />
+Now that everything is verified, we can start executing code. This is done in the “run” function.
+<br /><br />
+We will notice the “stack” object at the top of the function. This exists because our VM is a stack-based machine. This is another key difference between real machines and virtual machines (especially application VMs). Real-machines are generally register-based. Values to be operated on are stored in small memory segments called registers. Virtual machines use stacks. There are two reasons for this. First, on real machines, memory is finite, whereas on virtual machines, memory is infinite. While this isn’t technically true, you have vastly more memory in a VM then in a real machine. The second reason is because compiling for a stack machine is simpler than for a register-based machine.
+<br /><br />
+Stack operations are simple since you don’t have to worry about location. All operations either push, pop, or peek from the stack.
+<br /><br />
+The “iload” instruction reads an integer value and pushes it to the stack:
+<br /><br />
+<code>
+<br />case&nbsp;I_LOAD:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;arg&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;fread(&arg,&nbsp;sizeof(int),&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;stack.push(arg);<br />}&nbsp;break;<br /></code>
+<br /><br />
+The “iadd” and “isub” instructions pop the top two values from the stack. Note that stacks operate in reverse order, so the second argument is the first one off the stack (this is important for subtraction and division operations).
+<br /><br />
+<code>
+<br />int&nbsp;arg2&nbsp;=&nbsp;stack.top();<br />stack.pop();<br /><br />int&nbsp;arg1&nbsp;=&nbsp;stack.top();<br />stack.pop();<br /><br />if&nbsp;(opcode&nbsp;==&nbsp;I_ADD)<br />&nbsp;&nbsp;&nbsp;&nbsp;stack.push(arg1&nbsp;+&nbsp;arg2);<br />else&nbsp;if&nbsp;(opcode&nbsp;==&nbsp;I_SUB)<br />&nbsp;&nbsp;&nbsp;&nbsp;stack.push(arg1&nbsp;-&nbsp;arg2)<br /><br />Finally,&nbsp;the&nbsp;“iprint”&nbsp;instruction&nbsp;simply&nbsp;peeks&nbsp;at&nbsp;the&nbsp;value&nbsp;at&nbsp;the&nbsp;top&nbsp;of&nbsp;the&nbsp;stack,&nbsp;and&nbsp;prints&nbsp;it.<br /><br />case&nbsp;I_PRINT:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;stack.top()&nbsp;&lt;&lt;&nbsp;std::endl;<br />}&nbsp;break;<br /></code>
+<br /><br />
+For the full code output, see the end of the file.
+<br /><br />
+<h2>Conclusion</h2>
+<br /><br />
+Hopefully this piqued your interest some. A good next step would be to add the multiplication and division instructions. It is extremely simple- simply add the proper opcodes, to both files, and the corresponding switch statements to the VM. A second task, especially if you plan to expand this, is to move the opcode definitions to to a header file.
+<br /><br />
+I’m hoping to include some future posts on extending this machine. A good next step is to add support for labels and jumps- once these are in, you will have a full computer. After that, strings and other constants are handy features to have.
+<br /><br />
+Hopefully you found this interesting and informative. Thanks for reading!
+<br /><br />
+<h2>The Code</h2>
+<br /><br />
+Below you can find the complete code for the VM. All the code listed here is in the public domain.
+<br /><br />
+<code>
+<br />#include&nbsp;&lt;cstdio&gt;<br />#include&nbsp;&lt;cstdint&gt;<br />#include&nbsp;&lt;stack&gt;<br />#include&nbsp;&lt;iostream&gt;<br /><br />enum&nbsp;Opcode<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;I_LOAD&nbsp;=&nbsp;0xA1,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_ADD&nbsp;=&nbsp;0xA2,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_SUB&nbsp;=&nbsp;0xA3,<br />&nbsp;&nbsp;&nbsp;&nbsp;I_PRINT&nbsp;=&nbsp;0xA7,<br />&nbsp;&nbsp;&nbsp;&nbsp;EXIT&nbsp;=&nbsp;0x73<br />};<br /><br />void&nbsp;run(FILE&nbsp;*file)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;std::stack&lt;int&gt;&nbsp;stack;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(!feof(file))<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uint8_t&nbsp;opcode;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fread(&opcode,&nbsp;sizeof(uint8_t),&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;isDone&nbsp;=&nbsp;false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch&nbsp;(opcode)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;I_LOAD:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;arg&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fread(&arg,&nbsp;sizeof(int),&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack.push(arg);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;break;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;I_ADD:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;I_SUB:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;arg2&nbsp;=&nbsp;stack.top();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack.pop();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;arg1&nbsp;=&nbsp;stack.top();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack.pop();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(opcode&nbsp;==&nbsp;I_ADD)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack.push(arg1&nbsp;+&nbsp;arg2);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;if&nbsp;(opcode&nbsp;==&nbsp;I_SUB)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack.push(arg1&nbsp;-&nbsp;arg2);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;break;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;I_PRINT:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;stack.top()&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;break;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;EXIT:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isDone&nbsp;=&nbsp;true;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;break;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::cerr&nbsp;&lt;&lt;&nbsp;"Error:&nbsp;Unknown&nbsp;opcode."&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isDone&nbsp;=&nbsp;true;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;break;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(isDone)&nbsp;break;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />}<br /><br />int&nbsp;main()<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Open&nbsp;the&nbsp;file<br />&nbsp;&nbsp;&nbsp;&nbsp;FILE&nbsp;*file&nbsp;=&nbsp;fopen("./program.bin",&nbsp;"rb");<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Verify&nbsp;that&nbsp;our&nbsp;program&nbsp;is&nbsp;valid<br />&nbsp;&nbsp;&nbsp;&nbsp;char&nbsp;signature[9];<br />&nbsp;&nbsp;&nbsp;&nbsp;fread(&signature,&nbsp;sizeof(char),&nbsp;8,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;signature[8]&nbsp;=&nbsp;'\0';<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(std::string(signature)&nbsp;==&nbsp;"SimpleVM")&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;"File&nbsp;is&nbsp;valid."&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;"Invalid&nbsp;input&nbsp;file."&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;signature&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;1;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Check&nbsp;the&nbsp;version<br />&nbsp;&nbsp;&nbsp;&nbsp;uint8_t&nbsp;version&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;fread(&version,&nbsp;sizeof(uint8_t),&nbsp;1,&nbsp;file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;"Version:&nbsp;"&nbsp;&lt;&lt;&nbsp;(int)version&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;std::endl;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Run&nbsp;the&nbsp;program<br />&nbsp;&nbsp;&nbsp;&nbsp;run(file);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Close&nbsp;the&nbsp;file<br />&nbsp;&nbsp;&nbsp;&nbsp;fclose(file);&nbsp;&nbsp;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />}<br /></code>
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

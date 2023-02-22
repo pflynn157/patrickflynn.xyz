@@ -1,0 +1,735 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="list-group container pt-5">
+
+<a href="/new_site_new_things.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+New Website, New Code, and New Things  </h5>
+  <small>
+2023-01-21  </small>
+</div>
+<p class="mb-1">
+
+
+Hello everyone! It's been a little bit since I've written here- definitely the first time th...</p>
+<small></small>
+</a>
+
+
+<a href="/how-to-openmp-with-llvm-runtime.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+How To: OpenMP with LLVM Runtime  </h5>
+  <small>
+2022-11-27  </small>
+</div>
+<p class="mb-1">
+
+
+It was very tempting to start this post with an opinion on OpenMP, but I decided to shut up ...</p>
+<small></small>
+</a>
+
+
+<a href="/otaos-updates-and-real-hardware.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+OtaOS: Updates and Real Hardware  </h5>
+  <small>
+2022-11-16  </small>
+</div>
+<p class="mb-1">
+
+
+I made some recent updates to OtaOS. As a quick background, my dad got a new computer, so I ...</p>
+<small></small>
+</a>
+
+
+<a href="/risc-v-new-project-and-new-stuff.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+RISC-V: New Project and New Stuff  </h5>
+  <small>
+2022-11-14  </small>
+</div>
+<p class="mb-1">
+
+
+Hello all! This is my first time writing here in a while (but not the first, since I posted ...</p>
+<small></small>
+</a>
+
+
+<a href="/lunar-eclipse.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+2022 Lunar Eclipse  </h5>
+  <small>
+2022-11-12  </small>
+</div>
+<p class="mb-1">
+
+
+It's been a while since I've posted here, but more on that later! For a start, I wish to sha...</p>
+<small></small>
+</a>
+
+
+<a href="/tiny-lang-updates-why-we-need-a-better-way-to-program.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Tiny Lang Updates & Why We Need A Better Way To Program  </h5>
+  <small>
+2022-06-19  </small>
+</div>
+<p class="mb-1">
+
+
+Last night and this morning, I made some more Tiny Lang updates- arguably some needed update...</p>
+<small></small>
+</a>
+
+
+<a href="/machine-learning-101.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Machine Learning 101  </h5>
+  <small>
+2022-06-14  </small>
+</div>
+<p class="mb-1">
+
+
+My current summer internship has required me to learn a little bit about AI/Machine Learning...</p>
+<small></small>
+</a>
+
+
+<a href="/creating-a-simple-vm-adding-variables.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Creating a Simple VM: Adding Variables  </h5>
+  <small>
+2022-06-12  </small>
+</div>
+<p class="mb-1">
+
+
+Welcome back! You probably remember a few weeks ago that we created a simple application-lev...</p>
+<small></small>
+</a>
+
+
+<a href="/and-tiny-lang-works.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+And Tiny Lang Works!  </h5>
+  <small>
+2022-06-11  </small>
+</div>
+<p class="mb-1">
+
+
+Some people may remember me mentioning a new compiler/programming language p...</p>
+<small></small>
+</a>
+
+
+<a href="/creating-a-simple-vm.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Creating a Simple VM  </h5>
+  <small>
+2022-06-05  </small>
+</div>
+<p class="mb-1">
+
+
+Welcome back! Today we’re going to learn how to write a simple application-level virtual mac...</p>
+<small></small>
+</a>
+
+
+<a href="/qt-102-creating-a-simple-editor.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Qt 102: Creating a Simple Editor  </h5>
+  <small>
+2022-05-30  </small>
+</div>
+<p class="mb-1">
+
+
+Welcome back everyone! Around a month ago, we created a simple application in Qt to demonstr...</p>
+<small></small>
+</a>
+
+
+<a href="/new-project-minilex.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+New Project: MiniLex  </h5>
+  <small>
+2022-05-25  </small>
+</div>
+<p class="mb-1">
+
+
+I recently published a new project: MiniLex.
+
+MiniLex is a simple, minimalist le...</p>
+<small></small>
+</a>
+
+
+<a href="/qt-101-creating-a-simple-gui-application.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Qt 101: Creating a Simple GUI Application  </h5>
+  <small>
+2022-05-23  </small>
+</div>
+<p class="mb-1">
+
+
+Hello everyone! Today, we're going to take a break from compilers and programming languages,...</p>
+<small></small>
+</a>
+
+
+<a href="/new-project-llir.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+New Project: LLIR  </h5>
+  <small>
+2022-05-18  </small>
+</div>
+<p class="mb-1">
+
+
+Hello everyone! Today, I’m announcing a new project: LLIR.
+
+This project has act...</p>
+<small></small>
+</a>
+
+
+<a href="/new-projects-updates.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+New Projects & Updates  </h5>
+  <small>
+2022-05-16  </small>
+</div>
+<p class="mb-1">
+
+
+Hello everyone! It's been a while since I've written. Observant users may have noticed that ...</p>
+<small></small>
+</a>
+
+
+<a href="/a-week-of-os-dev.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+A Week of OS Dev  </h5>
+  <small>
+2022-03-26  </small>
+</div>
+<p class="mb-1">
+
+
+OS development is sort of a bucket list item among developers. And not without reason- creat...</p>
+<small></small>
+</a>
+
+
+<a href="/graphene-os-one-month-of-custom-android-roms.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Graphene OS & One Month of Custom Android ROMs  </h5>
+  <small>
+2022-03-13  </small>
+</div>
+<p class="mb-1">
+
+
+While I don’t remember exactly when I started experimenting with custom Android ROMs, I do k...</p>
+<small></small>
+</a>
+
+
+<a href="/reinstalling-grub-on-linux-mint.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Reinstalling Grub on Linux Mint  </h5>
+  <small>
+2022-03-09  </small>
+</div>
+<p class="mb-1">
+
+
+The title of this post is the nice way of saying "How to fix your computer after committing ...</p>
+<small></small>
+</a>
+
+
+<a href="/a-week-with-lineage-os.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+A Week With Lineage OS  </h5>
+  <small>
+2022-02-14  </small>
+</div>
+<p class="mb-1">
+
+
+Shortly before Christmas last year, I acquired a 2013 LG Nexus 5. Over break, I experimented...</p>
+<small></small>
+</a>
+
+
+<a href="/updates-myself-gdpr-compliance-de-googling-and-more.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Updates: Myself, GDPR Compliance, De-Googling, and More  </h5>
+  <small>
+2022-02-12  </small>
+</div>
+<p class="mb-1">
+
+
+Hello everyone! Its been a quiet start to 2022... school caught up with me, and then some pe...</p>
+<small></small>
+</a>
+
+
+<a href="/intro-to-vhdl.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Intro to VHDL  </h5>
+  <small>
+2022-01-09  </small>
+</div>
+<p class="mb-1">
+
+
+Welcome everyone! Today we’re going to dive into VHDL, or hardware development. VHDL is actu...</p>
+<small></small>
+</a>
+
+
+<a href="/new-project-tiny-lang.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+New Project: Tiny Lang  </h5>
+  <small>
+2021-12-22  </small>
+</div>
+<p class="mb-1">
+
+
+Yes, its another compiler project. Actually, unlike my other projects, this one has a start,...</p>
+<small></small>
+</a>
+
+
+<a href="/variables-and-math-in-llvm.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Variables and Math in LLVM  </h5>
+  <small>
+2021-12-19  </small>
+</div>
+<p class="mb-1">
+
+
+Hello everyone! Earlier, I wrote a post on generating a Hello World program using the LLVM f...</p>
+<small></small>
+</a>
+
+
+<a href="/new-project-risc-v-cpu.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+New Project: RISC-V CPU  </h5>
+  <small>
+2021-12-15  </small>
+</div>
+<p class="mb-1">
+
+
+Yet another CPU project...
+
+This project is similar to my last project, my LegV8...</p>
+<small></small>
+</a>
+
+
+<a href="/fixing-slow-linux-boots-from-uefi-issues.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Fixing Slow Linux Boots from UEFI Issues  </h5>
+  <small>
+2021-12-10  </small>
+</div>
+<p class="mb-1">
+
+
+The joys of dealing with UEFI...
+
+Okay, I actually don't know enough about eithe...</p>
+<small></small>
+</a>
+
+
+<a href="/new-project-legv8-cpu.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+New Project: LegV8 CPU  </h5>
+  <small>
+2021-12-04  </small>
+</div>
+<p class="mb-1">
+
+
+This project h...</p>
+<small></small>
+</a>
+
+
+<a href="/memory-and-counting-in-hardware.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Memory and Counting in Hardware  </h5>
+  <small>
+2021-11-14  </small>
+</div>
+<p class="mb-1">
+
+
+Electronics have been a secondary hobby of mine for a little while now... though I admit, I'...</p>
+<small></small>
+</a>
+
+
+<a href="/adventures-with-vhdl.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Adventures with VHDL  </h5>
+  <small>
+2021-11-07  </small>
+</div>
+<p class="mb-1">
+
+
+As part of one of my classes I took for my minor, I learned some basic VHDL. Actually, I thi...</p>
+<small></small>
+</a>
+
+
+<a href="/corelib-vs-nolib.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Corelib vs Nolib  </h5>
+  <small>
+2021-10-31  </small>
+</div>
+<p class="mb-1">
+
+
+After the fall semester ended last year, I began working more on a programming language/comp...</p>
+<small></small>
+</a>
+
+
+<a href="/hello-world-in-llvm.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Hello World in LLVM  </h5>
+  <small>
+2021-10-24  </small>
+</div>
+<p class="mb-1">
+
+
+Welcome everyone! In my last post, I introduced you to LLVM- the framework and the concept b...</p>
+<small></small>
+</a>
+
+
+<a href="/an-intro-to-llvm.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+An Intro to LLVM  </h5>
+  <small>
+2021-10-17  </small>
+</div>
+<p class="mb-1">
+
+
+Welcome! Depending on how long you have been reading my blog, you may have noticed that I sp...</p>
+<small></small>
+</a>
+
+
+<a href="/building-a-lexer.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Building a Lexer  </h5>
+  <small>
+2021-10-03  </small>
+</div>
+<p class="mb-1">
+
+
+Welcome back!
+
+As promised in the last post, this post will contain an actual ha...</p>
+<small></small>
+</a>
+
+
+<a href="/lex-the-entry-to-a-compiler.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Lex: The Entry to a Compiler  </h5>
+  <small>
+2021-09-26  </small>
+</div>
+<p class="mb-1">
+
+
+Welcome! Today we're going to dive into our first hands-on project in developing a compiler ...</p>
+<small></small>
+</a>
+
+
+<a href="/easy-backup.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Easy Backup  </h5>
+  <small>
+2021-09-05  </small>
+</div>
+<p class="mb-1">
+
+
+While storage media has vastly improved in reliability, that doesn't mean your data is safe....</p>
+<small></small>
+</a>
+
+
+<a href="/distraction-free-android.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Distraction-Free Android  </h5>
+  <small>
+2021-08-29  </small>
+</div>
+<p class="mb-1">
+
+
+Being that I'm such a loyal Linux user, it may not surprise you that I'm also a loyal Androi...</p>
+<small></small>
+</a>
+
+
+<a href="/new-project-espresso.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+New Project: Espresso  </h5>
+  <small>
+2021-08-11  </small>
+</div>
+<p class="mb-1">
+
+
+I released yet another one of my new geeky proje...</p>
+<small></small>
+</a>
+
+
+<a href="/new-project-orka.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+New Project: Orka  </h5>
+  <small>
+2021-07-30  </small>
+</div>
+<p class="mb-1">
+
+
+This actually isn't so "new" at this point; I realized I forgot to publish a post on it. A w...</p>
+<small></small>
+</a>
+
+
+<a href="/linux-system-calls-the-base-of-a-standard-library.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Linux System Calls: The Base of a Standard Library  </h5>
+  <small>
+2021-07-25  </small>
+</div>
+<p class="mb-1">
+
+
+Have you ever wondered how the C library works? Or any language's standard library for that ...</p>
+<small></small>
+</a>
+
+
+<a href="/the-compilation-process-beginning-to-end.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+The Compilation Process: Beginning to End  </h5>
+  <small>
+2021-07-18  </small>
+</div>
+<p class="mb-1">
+
+
+In my last post, I briefly mentioned the difference between a compiler and an interpreter. I...</p>
+<small></small>
+</a>
+
+
+<a href="/disassembling-a-dell-inspiron-laptop.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Disassembling a Dell Inspiron Laptop  </h5>
+  <small>
+2021-07-11  </small>
+</div>
+<p class="mb-1">
+
+
+I am long-time Dell computer user. My first computer was a large Dell desktop originally run...</p>
+<small></small>
+</a>
+
+
+<a href="/running-macos-on-linux.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Running MacOS on Linux  </h5>
+  <small>
+2021-06-27  </small>
+</div>
+<p class="mb-1">
+
+
+A few weeks ago, I stumbled across an article on installing and running MacOS in a Docker co...</p>
+<small></small>
+</a>
+
+
+<a href="/posting-schedule.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Posting Schedule  </h5>
+  <small>
+2021-06-20  </small>
+</div>
+<p class="mb-1">
+
+
+Surprisingly I've already had some views on this site. For any newcomers or returning reader...</p>
+<small></small>
+</a>
+
+
+<a href="/why-compilers.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+Why Compilers?  </h5>
+  <small>
+2021-06-20  </small>
+</div>
+<p class="mb-1">
+
+
+You may be wondering, of all the areas of computer science, how did I end up going into comp...</p>
+<small></small>
+</a>
+
+
+<a href="/new-site.html" class="list-group-item list-group-item-action flex-column align-items-start">
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+New Site  </h5>
+  <small>
+2021-06-16  </small>
+</div>
+<p class="mb-1">
+
+
+Welcome back!
+
+Depending on if you've seen my old site, you may have been expect...</p>
+<small></small>
+</a>
+
+</div>
+<div class="container pt-5">
+    <br /><br /><br />
+</div>
+    </body>
+</html>
+

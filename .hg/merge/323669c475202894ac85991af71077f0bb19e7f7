@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Lex: The Entry to a Compiler</h2>
+<p><br />
+
+Welcome! Today we're going to dive into our first hands-on project in developing a compiler component. We're going to write a very simple lexer, which forms the first part of a language parser. The good news about this project is in addition to being the first part of a compiler, its also one of the easiest parts to write.
+<br /><br />
+This will be divided into two posts. In this post, I will talk about what the lexer does and the overall concept of implementing it. Next week, we will write an actual working lexer in C++.
+<br /><br />
+Let's dive in!
+<br /><br />
+<h3>What is a Lexer?</h3>
+<br /><br />
+A lexer, or scanner, is a program that performs lexical analysis on a file or a string. Lexical analysis is the process of breaking down that file or string into a stream of tokens. These tokens are then used by a parser to determine the meaning or intent of the input file.
+<br /><br />
+Lexical analysis is the first part of the compilation process. A lexer takes the source file and reads it, subdividing it into tokens. These tokens are passed to the parser, which uses them to construct an abstract syntax tree representing the source file. The rest of the compiler analyzes this syntax tree and eventually generates assembly code.
+<br /><br />
+Lexical analysis is the easiest part of the compilation process (provided you know how to parse strings). Lexical tokens are also make up the easiest IR in the compiler. A lexical analyzer does very little, if any error reporting beyond possible file IO errors. All it does is return tokens. It is the job of the parser and later analyzers to check for correctness and report syntax errors. Because you are freed from this overhead, writing the lexical analyzer is a pretty straightforward process.
+<br /><br />
+<h3>A Hands-On Example</h3>
+<br /><br />
+As mentioned at the beginning of the post, actual code will follow later. Let's consider a pseudo-code example. As our input, consider this line of code:
+<br /><br />
+<code>
+<br />int&nbsp;x&nbsp;=&nbsp;20;<br /></code>
+<br /><br />
+Let's break this down. The first token is "int". It is a keyword, so we simply return a numerical value representing the integer keyword (in most languages, this is done with enumerated structures). Now let's look at the next token. "X" is a variable name- an identifier. Provided that the name is valid in the language (and it is), this token will represent something to the user but not necessarily the programming language (hence the name identifier). In this case, the lexer returns the Identifier token, and a string with the variable name.
+<br /><br />
+The next token is the assignment operator. While it depends on the lexer, either the character itself or an enumerated value is returned. The next token is "20"- a numerical literal. Because this is in the file, it is text, so we don't know right off that its a number. Therefore, we perform a check, and if the string is a number, we convert it to an integer value, and return a token with both. Finally, we have the terminator- the semicolon. This is returned much like the assignment operator.
+<br /><br />
+<h3>Types of Tokens</h3>
+<br /><br />
+The types of tokens you have will depend on the language you are parsing and how you structure the lexer itself. If you read the Wikipedia article on lexical analysis, you will notice there are six categories: identifier, keyword, operator, separator, literal, and comment.
+<br /><br />
+Tokens should not be returned for comments. If you encounter a comment, you simply read text until you reach the end of a comment (a newline character in the case of single line comments, or some other terminator for multi-line comments).
+<br /><br />
+In practice, operators and separators can be grouped into the same categories, depending on meaning. If you do have separators that the parser should never honor- ie, spaces between keywords, whitespace, etc, it is the lexer's job to ignore them before it gets to the parser.
+<br /><br />
+Finally, there's keywords and literals. In many cases, it will be hard to tell the difference right off. When you reach a point where you have to determine what is what, the best way is to check for keywords first; literals second; and identifiers third. In many cases, identifiers can best be thought of as anything that is not a keyword or a literal.
+<br /><br />
+<h3>An Overview of the Lexer</h3>
+<br /><br />
+Below is a pseudo-code overview of what a lexer could look like:
+<br /><br />
+<code>
+<br />string&nbsp;buffer;<br />stack&nbsp;tokenStack;<br />while&nbsp;charsToRead()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;tokenStack.isEmpty()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;tokenStack.pop();<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;char&nbsp;c&nbsp;=&nbsp;getChar();<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;isSeparator(c)&nbsp;or&nbsp;isOperator(c)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;isOperator(c)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Token&nbsp;token&nbsp;=&nbsp;getOperator(c);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tokenStack.push(token);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Token&nbsp;token;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;isKeyword(buffer)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;token&nbsp;=&nbsp;getKeyword(buffer);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;if&nbsp;isInt(buffer)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;token&nbsp;=&nbsp;INT;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;token.intVal&nbsp;=&nbsp;convInt(buffer);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;token&nbsp;=&nbsp;ID;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;token.idVal&nbsp;=&nbsp;buffer;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buffer&nbsp;=&nbsp;"";<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;token;<br />&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buffer&nbsp;+=&nbsp;c;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />}<br /></code>
+<br /><br />
+Now, please understand that this is greatly simplified- probably over-simplified. While this analyzes many common tokens, there are many that it doesn't take into account such as string, character, hex, or float literals. But you should be able to see the overall flow here. The key to getting the lexer correct is the buffer variable. The buffer holds the current text, and is reset only after we find a keyword, literal, or identifier.
+<br /><br />
+The token stack can be a little tricky to understand at first. But consider our line of code above. What happens when we hit this: `x=` (note lack of space).
+<br /><br />
+The '=' is an operator- the assignment operator. But this is stuff on the buffer- "x"- the variable name. Both the variable name and the operator are valid tokens, but we can't return both at once. Moreover, they need to be processed one at a time, in the order that they were found.
+<br /><br />
+This is where the stack comes in. Since the identifier came first, this is returned immediately. The operator token, meanwhile, is pushed to the stack. When the lexer is called again, because there is now a token on the stack, the lexer will skip reading more of the file altogether and return what's in the stack.
+<br /><br />
+<h3>Conclusion</h3>
+<br /><br />
+I understand that for many people, trying to digest theory without code can be a little challenging. However, it is important to understand the big picture first, so hopefully this made sense and gave you the general idea. In the next post, we will start writing a simple lexer that will put these concepts in practice.
+<br /><br />
+See you then!
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

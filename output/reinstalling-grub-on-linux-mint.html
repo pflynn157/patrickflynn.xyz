@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Reinstalling Grub on Linux Mint</h2>
+<p><br />
+
+The title of this post is the nice way of saying "How to fix your computer after committing an act of stupidness."
+<br /><br />
+So my day started out with me trying to boot up my Dell Inspirion laptop, only for it to go into the hardware diagnostics (and please note: it literally worked perfectly 8 hours earlier). After the laptop said all the hardware was good and giving the foghorn-like beep to prove it, I poked around the EFI menu (F12 on Dell computers), and found that the entire entry just disappeared. After consultation with the internet, I got it fixed.
+<br /><br />
+I'm actually really happy about this because 9/10 times, if the computer breaks (and its rare for Linux to break), I just reinstall. But since this had important stuff on it, I really didn't want to get into that.
+<br /><br />
+<h2>Prerequisites</h2>
+<br /><br />
+You will need a LiveCD/USB, ideally with either Linux Mint or Ubuntu. I used Mint just in case I had to reinstall everything, but most Linux distros should work. I also only did this on a screwed-up Linux Mint system. Most Linux distros should work the same way, but test at your own risk. Ubuntu and Debian systems definitely should work with this method.
+<br /><br />
+Disclaimer: Do this at your own risk. But chances are if you are here, you can't screw it up much more :)
+<br /><br />
+Boot up the LiveCD, and make sure you are in EFI mode:
+<br /><br />
+<code>
+<br />ls&nbsp;/sys/firmware/efi<br /></code>
+<br /><br />
+If there are files in that folder, you are good to continue.
+<br /><br />
+<h2>Step 1: Mount</h2>
+<br /><br />
+In this tutorial, I'm assuming you have 3 partitions:
+<br /><br />
+<code>
+<br />-&nbsp;/dev/sda1&nbsp;-&gt;&nbsp;the&nbsp;EFI&nbsp;partition<br />-&nbsp;/dev/sda2&nbsp;-&gt;&nbsp;the&nbsp;boot&nbsp;partition<br />-&nbsp;/dev/sda3&nbsp;-&gt;&nbsp;The&nbsp;LUKS-encrypted&nbsp;system&nbsp;partition<br /></code>
+<br /><br />
+If you don't have disk encryption enabled and don't have other operating systems on your device, your table may look like this:
+<br /><br />
+<code>
+<br />-&nbsp;/dev/sda1&nbsp;-&gt;&nbsp;the&nbsp;EFI&nbsp;partition<br />-&nbsp;/dev/sda2&nbsp;-&gt;&nbsp;the&nbsp;system&nbsp;partition<br /></code>
+<br /><br />
+Please note that I'm assuming you have the encrypted partition layout. If you don't, adjust the commands accordingly. ALSO: run all commands as root, either with "sudo" or by entering root mode with "su root".
+<br /><br />
+If you have the encrypted main partition, run these commands first. **Important:** the "lvdisplay" command will display which device your main partition is. Replace the "mount" command with the appropriate output from lvdisplay.
+<br /><br />
+<code>
+<br />cryptsetup&nbsp;luksOpen&nbsp;/dev/sda3&nbsp;crypt<br />lvdisplay<br />mount&nbsp;/dev/mintvg/root&nbsp;/mnt<br /></code>
+<br /><br />
+Now mount the boot partitions:
+<br /><br />
+<code>
+<br />mount&nbsp;/dev/sda2&nbsp;/mnt/boot<br />mount&nbsp;/dev/sda1&nbsp;/mnt/boot/efi<br /></code>
+<br /><br />
+And now mount any other virtual filesystems. Copy-and-paste this if you are able, but if not, **copy it exactly**.
+<br /><br />
+<code>
+<br />for&nbsp;i&nbsp;in&nbsp;/dev&nbsp;/dev/pts&nbsp;/proc&nbsp;/sys&nbsp;/sys/firmware/efi/efivars&nbsp;/run;&nbsp;do&nbsp;sudo&nbsp;mount&nbsp;-B&nbsp;$i&nbsp;/mnt$i;&nbsp;done<br /></code>
+<br /><br />
+Now, "chroot" into your system.
+<br /><br />
+<code>
+<br />chroot&nbsp;/mnt<br /></code>
+<br /><br />
+At this point, the shell should look a little different. On my system, the user became "root@mint". Note that you are in a root shell now, so it is not necessary to preface the last two commands with "sudo". These commands will reinstall grub. For the first command, note that you are not providing a partition number- just the disk name.
+<br /><br />
+<code>
+<br />grub-install&nbsp;/dev/sda<br />update-grub<br /></code>
+<br /><br />
+Note that the "update-grub" command may give you a warning; this is because it noticed your LiveCD, didn't know what to do with it, and just skipped. This is normal. The first command should not give you any errors.
+<br /><br />
+<h2>If this fails...</h2>
+<br /><br />
+If your system is still broken after following these steps, you're probably just better off reinstalling. You can still use these steps to copy your files off the encrypted partition if needed. I would imagine that most GUI file managers in the LiveCDs can open an encrypted partition (provided you have the password of course), but if not the commands above will work.
+<br /><br />
+<h2>Conclusion & Sources</h2>
+<br /><br />
+While I mainly wrote this for my future reference, hopefully someone out there finds this helpful. For the curious, I have no idea what triggered this. The last thing I did was run some updates, which included a kernel update, so that may have triggered it. I was doing something with grub yesterday, but I don't remember actually triggering anything... oh well, it seems to be fixed.
+<br /><br />
+Remember to keep things backed up!
+<br /><br />
+Many thanks to these sources:
+<br /><br />
+<ul>
+<li> <a href="https://wiki.debian.org/GrubEFIReinstall">https://wiki.debian.org/GrubEFIReinstall</a></li>
+<li> <a href="https://ixnfo.com/en/solving-the-error-mount-unknown-filesystem-type-lvm2_member.html">https://ixnfo.com/en/solving-the-error-mount-unknown-filesystem-type-lvm2\_member.html</a></li>
+</ul>
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h1>Tiny Lang Specification</h1>
+<p><br />
+
+Welcome! This page describes the specification of a Tiny Lang implementation.
+<br /><br />
+Please keep in mind that this specification is meant to be a starting point for other languages. If you are forking Tiny, you are free to keep or discard whatever you like. However, if you are intending to create an implementation of the Tiny Programming Language, you must follow the specifications here, and be able to pass all the tests and the examples in the reference implementation.
+<br /><br />
+The implementation source code can be found <a href="https://github.com/pflynn157/tiny-lang">here</a>.
+<br /><br />
+<h2>Semantics</h2>
+<br /><br />
+The grammar is largely a "what you see is what it does". For example, if I assign an integer value to an integer variable, that's what happens. Some incorrect semantics should go without saying: assigning a string to an integer variable obviously doesn't make sense. However, there are a few semantics that need consideration.
+<br /><br />
+<h3>Arrays, Structures, and Pointers</h3>
+<br /><br />
+Arrays, structures, and pointer inputs (ie, as function parameters) are all treated as heap-allocated objects. Many languages such as C give you the option (or automatically just do it) to allocate arrays and structures on the stack, and then pass by copy or pass by reference. In Tiny, all arrays and structures are heap allocated, and when they are passed or returned from functions, they are passed and returned as pointers.
+<br /><br />
+Of course, if the implementation is as an interpreted language, the interpreter is free to decide the semantics under the hood. However, from the perspective of the language, the syntax and behavior should remain the same.
+<br /><br />
+<h3>Strings</h3>
+<br /><br />
+Strings are treated as null-terminated arrays of "char" values. A "char" is a wrapper around the "i8" (byte) type. A string literal can only be assigned to a string type, but in practice byte arrays and strings can be operated on in the same way.
+<br /><br />
+The language contains the following operators on strings:
+<br /><br />
+<ul>
+<li> &lt;string&gt; = &lt;string&gt; / &lt;string&gt; != &lt;string&gt; -&gt; String comparison. This works the same way under the hood as the C "strcmp" function.</li>
+<li> &lt;string&gt; + &lt;string&gt; -&gt; String to string concatenation.</li>
+<li> &lt;string&gt; + &lt;char&gt; -&gt; String to character concatenation.</li>
+</ul>
+<br /><br />
+These functions are not something a computer can inherently do. As such, runtime functions are required to implement this.
+<br /><br />
+<h3>Casting</h3>
+<br /><br />
+All casting is implicit, and requires the end-user programmer to know what they are doing. Casting checks are optional. In some cases, it is probably wise to check for signed casting, but otherwise variables can be assigned interchangebly.
+<br /><br />
+As long as no special syntax is added for casting, an implementation is free to interpret this however the programmer wishes. If you want casting checks, all the better, but if you're just experimenting, its fine to leave them out.
+<br /><br />
+<h3>The "extern" keyword</h3>
+<br /><br />
+This is an optional construct, and as such is not included in the grammar. The reference implementation has this so linking can be easily accomplished.
+<br /><br />
+If you are creating a Tiny Lang implementation, at the very least support should be added to ignore this construct much as you would a comment. If you are forking the language, then of course it is up to you.
+<br /><br />
+<h3>Command Line Arguments</h3>
+<br /><br />
+Command line arguments follow the syntax of &lt;argument list&gt; &lt;argument count&gt;:
+<br /><br />
+<code>
+<br />func&nbsp;main(args:string[],&nbsp;argc:i32)&nbsp;-&gt;&nbsp;i32&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;i&nbsp;:&nbsp;i32&nbsp;:=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;i&nbsp;&lt;&nbsp;argc&nbsp;do<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;println(args[i]);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;:=&nbsp;i&nbsp;+&nbsp;1;<br />&nbsp;&nbsp;&nbsp;&nbsp;end<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />end<br /></code>
+<br /><br />
+<h3>Built-In Functions / Standard Library</h3>
+<br /><br />
+In order to make the language portable, there are a limited subset of core library functions that must be provided by the implementation. A standard library specification is below after the grammar.
+<br /><br />
+<h2>Grammar</h2>
+<br /><br />
+Below is the grammar for Tiny:
+<br /><br />
+<code>
+<br />data_type:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i8&nbsp;|&nbsp;u8<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;i16&nbsp;|&nbsp;u16<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;i32&nbsp;|&nbsp;u32<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;i64&nbsp;|&nbsp;u64<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;char<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;bool<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;string<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />expression_list:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expression_list&nbsp;','&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />const_expr:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INTEGER<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;HEX_L<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;TRUE&nbsp;|&nbsp;FALSE<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;STRING_L<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;CHAR_L<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />primary_expr:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;const_expr<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />conditional_expr:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expression&nbsp;'='&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expression&nbsp;'&gt;'&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expression&nbsp;'&lt;'&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expression&nbsp;'!='&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expression&nbsp;'&gt;='&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expression&nbsp;'&lt;='&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />logical_expr:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expression&nbsp;AND&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expression&nbsp;OR&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />assign_expr:&nbsp;expression&nbsp;':='&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />binary_expr:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assign_expr<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expression&nbsp;'+'&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expression&nbsp;'-'&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expression&nbsp;'*'&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expression&nbsp;'/'&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expression&nbsp;'%'&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expression&nbsp;'&'&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expression&nbsp;'|'&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expression&nbsp;'^'&nbsp;expression<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />function_expr:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'('&nbsp;')'<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;ID&nbsp;'('&nbsp;expression_list&nbsp;')'<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />array_expr:&nbsp;ID&nbsp;'['&nbsp;expression&nbsp;']'<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />struct_expr:&nbsp;ID&nbsp;'.'&nbsp;ID<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />expression:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;primary_expr<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;conditional_expr<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;logical_expr<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;binary_expr<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;function_expr<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;array_expr<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;struct_expr<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />id_list:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;id_list&nbsp;','&nbsp;ID<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />var_declaration:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VAR&nbsp;id_list&nbsp;':'&nbsp;data_type&nbsp;ASSIGN&nbsp;expression&nbsp;';'<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;VAR&nbsp;id_list&nbsp;':'&nbsp;data_type&nbsp;'['&nbsp;expression&nbsp;']'&nbsp;';'<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />struct_declaration:&nbsp;STRUCT&nbsp;ID&nbsp;:&nbsp;ID&nbsp;';'<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />constant_declaration:&nbsp;CONST&nbsp;ID&nbsp;':'&nbsp;data_type&nbsp;ASSIGN&nbsp;const_expr&nbsp;';'<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />function_call:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'('&nbsp;')'&nbsp;';'<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;ID&nbsp;'('&nbsp;expression_list&nbsp;')'&nbsp;';'<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />conditional:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;conditional_expr&nbsp;THEN&nbsp;block&nbsp;END<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;IF&nbsp;conditional_expr&nbsp;THEN&nbsp;block&nbsp;elif_block<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />elif_block:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ELIF&nbsp;conditional_expr&nbsp;THEN&nbsp;block&nbsp;END<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;ELIF&nbsp;conditional_expr&nbsp;THEN&nbsp;block&nbsp;elif_block<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;ELSE&nbsp;block&nbsp;END<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />loop:&nbsp;WHILE&nbsp;conditional_expr&nbsp;DO&nbsp;block&nbsp;END<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br /><br />import_list:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;import_list&nbsp;'.'&nbsp;ID<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />import:&nbsp;IMPORT&nbsp;import_list&nbsp;';'<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />expr_statement:&nbsp;assign_expr&nbsp;';'<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />return:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RETURN&nbsp;';'<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;RETURN&nbsp;expression&nbsp;';'<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />statement:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var_declaration<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;struct_declaration<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;constant_declaration<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;function_call<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;conditional<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;loop<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;import<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;expr_statement<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;return<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />statement_list:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;statement<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;statement_list&nbsp;statement<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />block:&nbsp;statement_list;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />arg:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;':'&nbsp;data_type<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;ID&nbsp;':'&nbsp;data_type&nbsp;'['&nbsp;']'<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />arg_list:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;arg<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;arg_list&nbsp;','&nbsp;arg<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br /><br />function:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FUNC&nbsp;ID&nbsp;IS&nbsp;block&nbsp;END<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;FUNC&nbsp;ID&nbsp;'('&nbsp;')'&nbsp;IS&nbsp;block&nbsp;END<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;FUNC&nbsp;ID&nbsp;ARROW&nbsp;data_type&nbsp;IS&nbsp;block&nbsp;END<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;FUNC&nbsp;ID&nbsp;'('&nbsp;')'&nbsp;ARROW&nbsp;data_type&nbsp;IS&nbsp;block&nbsp;END<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;FUNC&nbsp;ID&nbsp;'('&nbsp;arg_list&nbsp;')'&nbsp;IS&nbsp;block&nbsp;END<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;FUNC&nbsp;ID&nbsp;'('&nbsp;arg_list&nbsp;')'&nbsp;ARROW&nbsp;data_type&nbsp;IS&nbsp;BLOCK&nbsp;END<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />struct_item:&nbsp;ID&nbsp;':'&nbsp;data_type&nbsp;ASSIGN&nbsp;const_expr&nbsp;';'<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />struct_block:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct_item<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;struct_block&nbsp;struct_item<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />struct:&nbsp;STRUCT&nbsp;ID&nbsp;IS&nbsp;struct_block&nbsp;END<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br /><br />global_statement:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;constant<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;struct<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;function<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br /><br />global_statement_list:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;global_statement<br />&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;global_statement_list&nbsp;global_statement<br />&nbsp;&nbsp;&nbsp;&nbsp;;<br /><br />translation_unit&nbsp;:&nbsp;global_statement_list;<br /></code>
+<br /><br />
+<h2>Standard Library</h2>
+<br /><br />
+Because Tiny is portable across implementations, it requires a runtime to be truly useful. A few core functions are required for the language to work at all. If you are implementing Tiny, these functions are absolutely required. If you are creating your own fork, then of course it is up to you, though I hope you will consider the logic behind having some of these functions.
+<br /><br />
+The method of implementation is up to you. It is perfectly possible to implement all these library functions in C without the C library using only Linux system calls. (If you add a "syscall" construct to Tiny, you could probably implement them in Tiny itself). The reference implementation standard library is written in C++ with C linkages.
+<br /><br />
+In the list below, functions essential to the language itself are starred (*). This is considered part of the corelib, which should be statically linked. The other functions can be dynamically linked. Note for simplicity, the reference implementation dynamically links everything.
+<br /><br />
+Note for the print/println function, the following format specifiers must be supported: %d, %s, %c, %x (decimal, string, character, hex respectively).
+<br /><br />
+core (NOTE: These functions are unneccessary if the implementation is interpreted)
+<ul>
+<li> malloc(i32)</li>
+<li> free(ptr)</li>
+</ul>
+<br /><br />
+std.io
+<ul>
+<li> print(string, ...)</li>
+<li> println(string, ...)</li>
+<li> readline() -&gt; string</li>
+<li> readint() -&gt; i32</li>
+</ul>
+<br /><br />
+std.fs
+<ul>
+<li> fs_open(string, i32) -&gt; i32</li>
+<li> fs_eof(i32) -&gt; bool</li>
+<li> fs_get(i32) -&gt; i32</li>
+<li> fs_writeln(i32, string)</li>
+<li> fs_write(i32, u8<a href=" i32, i32"></a></li>
+<li> fs_close(i32)</li>
+</ul>
+<br /><br />
+std.string
+<ul>
+<li> stringcmp(string, string) -&gt; i32</li>
+<li> strcat_str(string, string) -&gt; string</li>
+<li> strcat_char(string, char) -&gt; string</li>
+</ul>
+<br /><br />
+std.num
+<ul>
+<li> rand_init()</li>
+<li> rand_int(i32, i32) -&gt; i32</li>
+</ul>
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

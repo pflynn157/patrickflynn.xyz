@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>New Project: RISC-V CPU</h2>
+<p><br />
+
+Yet another CPU project...
+<br /><br />
+This project is similar to my last project, my LegV8 CPU. Like the LegV8 CPU, this is a CPU core written in VHDL. Unlike the other project, however, this implements the RISC-V 32-bit architecture, and is not a school project. This implements almost the entire RISC-V 32I base instruction set. I still have a few arithmetic instructions that need some help, but all the main arithmetic, load, store, and branching instructions are working.
+<br /><br />
+A full, detailed description of the project can be found <a href="/risc-v-cpu.html">here</a>.
+<br /><br />
+The code can be found <a href="https://git.sr.ht/~pflynn157/riscv32-cpu">here</a>.
+<br /><br />
+Here's a picture of it running this C program:
+<br /><br />
+<code>
+<br />int&nbsp;n&nbsp;=&nbsp;0;<br />for&nbsp;(int&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&lt;10;&nbsp;i++)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;+=&nbsp;i;<br />}<br /><br />//&nbsp;n&nbsp;=&nbsp;45<br /></code>
+<br /><br />
+<img class="img-fluid" src="assets/images/forloop-1024x611.png"></img>
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

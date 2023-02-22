@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>New Project: MiniLex</h2>
+<p><br />
+
+I recently published a new project: MiniLex.
+<br /><br />
+MiniLex is a simple, minimalist lexical analyzer generator. It began life once again due to my laziness. Regardless of what language you are parsing, lexical analyzers are very similar. The only difference is what elements are considered keywords, symbols, literals, and so forth. Because of these similarities, lexical analyzers can be generated rather easily.
+<br /><br />
+Because of the similarities of lexical analyzers, I found myself recycling a very stable one I wrote a while back for the <a href="/orka.html">Orka project</a>. While copying and changing the code for each new project isn’t that big of a deal, its tedious, error-prone, and a little time consuming. When I began some new projects over spring break, I got to thinking that I could probably write a generator rather easily. And thus the project was born.
+<br /><br />
+MiniLex generates a C++ lexical analyzer based on the original one from Orka. The analyzer itself is written in Python. This is one area where I think Python really outdoes itself. Python makes quick file parsing tasks surprisingly easy, and its sufficiently expressive to work with a variety of list types. While I’m not usually a Python fan, this is one area where I do like it.
+<br /><br />
+Feel free to check it out <a href="/minilex.html">here</a>!
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>The Compilation Process: Beginning to End</h2>
+<p><br />
+
+In my last post, I briefly mentioned the difference between a compiler and an interpreter. I also mentioned an assembler. Understanding the difference and purpose between those tools are crucial before we can go any further. Therefore, we will look at that today.
+<br /><br />
+<h3>What Exactly is a Compiler?</h3>
+<br /><br />
+To a computer scientist, a compiler is a program that takes source code and translates it to assembly.
+<br /><br />
+And that's all.
+<br /><br />
+Consider this C program:
+<br /><br />
+<code>
+<br />int&nbsp;main()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;puts("Hello,&nbsp;world!");<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;x&nbsp;=&nbsp;10;<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;x&nbsp;+&nbsp;8;<br />}<br /></code>
+<br /><br />
+I'm not about explain what that does. However, if you go run it through a C compiler such as GCC, you will end up with this:
+<br /><br />
+<code>
+<br />.LC0:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.string&nbsp;"Hello,&nbsp;world!"<br />main:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;push&nbsp;&nbsp;&nbsp;&nbsp;rbp<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rbp,&nbsp;rsp<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sub&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rsp,&nbsp;16<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;edi,&nbsp;OFFSET&nbsp;FLAT:.LC0<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;call&nbsp;&nbsp;&nbsp;&nbsp;puts<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DWORD&nbsp;PTR&nbsp;[rbp-4],&nbsp;10<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eax,&nbsp;DWORD&nbsp;PTR&nbsp;[rbp-4]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eax,&nbsp;8<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;leave<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret<br /></code>
+<br /><br />
+That gibberish you ended up with is called assembly code (or assembly language). Assembly language is a human-readable representation of the underlying machine instructions- it tells the computer specifically what to do. A computer can't understand C, C++, or any other language you throw at it. It can only understand its own specific assembly language (we'll save this for another post, but every CPU has its own assembly language. Don't worry about this for right now).
+<br /><br />
+This is what a compiler does. It reads your C source file, builds a representation of it that it can understand, analyzes it, and finally spits out assembly.
+<br /><br />
+However, the CPU still can't understand your generated assembly file. The assembly has to be translated into the underlying numerical instructions that electronic hardware can understand. As a result, we need an assembler.
+<br /><br />
+<h3>The Assembler</h3>
+<br /><br />
+An assembler can be thought of as a compiler for assembly language. However, an assembler is not considered the same thing as a compiler in computer science. Compilers do a lot of fancy things to the source code- besides the fact that parsing source code and making sense of it is much more difficult than parsing assembly. Assemblers read the file, and make a direct 1:1 translation to the binary file.
+<br /><br />
+Its also important to understand that while compilers often can generate assembly for multiple architectures (GCC can compile C code for your desktop, your phone, your Raspberry Pi, your Arduino, and many other things), assemblers can only assemble one specific assembly language. That's why this step is kept separate from the compiler. Its both easier and makes more sense for a compiler to generate code, and call an assembler, rather than trying to do everything itself.
+<br /><br />
+<h3>Linking</h3>
+<br /><br />
+Assembly is actually not the final step of the compilation process (unless you're making an operating system, but that's another subject for another day). Before you can run your assembled program, you have to link it.
+<br /><br />
+In addition to being in a format that the CPU can understand, the final compiled program also has to be in a format the operating system can understand. To run your program, the OS will load it, load any libraries needed by it, and point the CPU to the section of memory your program was loaded to. While assemblers can generate the OS-specific format, they can't resolve any libraries your program needs. Which is where the linker comes in.
+<br /><br />
+I assume you know what a library is. If not, in a nutshell its a collection of compiled, executable code that many programs can use. However, the operating system has to know which library to load when it loads your program. The linker modifies the file generated by the assembler to contain this information. Once the process is done, you have a finished executable you can run.
+<br /><br />
+<h3>Interpreters</h3>
+<br /><br />
+Not every language is compiled, however. Languages like HTML, Javascript, and Python are immediately run when you want them. And Java, as we know, is run by the JVM (Java Virtual Machine). What happens in this case?
+<br /><br />
+This is where interpreters come in. Interpreters are basically programs that can run another program. Interpreters themselves are almost always compiled. After all, an interpreter running an interpreter would be painfully slow.
+<br /><br />
+Other than perhaps HTML, most interpreted languages aren't run directly from source. Doing so, especially if its a program run many times, is time consuming and slow. As a result, many interpreters cache programs into bytecode. Bytecode is a virtual architecture, if you will. It sill requires another interpreter to run it, but parsing a file of numbers is much faster than parsing a string. If you've ever seen Python run, for example, you may have noticed the "<i></i>pycache<i></i>" folder. This folder contains Python bytecode.
+<br /><br />
+Java and the JVM is a particularly good example for this. The difference, however, is that the bytecode is not internal. You build Java specifically for the JVM, and then take your bytecode with you. Java is considered a separate compiler and virtual machine, but the overall concept is the same to most other interpreters.
+<br /><br />
+Interpreters, even if you go the bytecode path, are generally easier to write then compilers. Because everything runs in userspace- within the operating system's environment- you don't have to worry about the underlying architecture and more difficult concepts such as assembling and linking. Of course, there is a tradeoff. Interpreters, even with bytecode, are always going to be slower than compiled languages.
+<br /><br />
+<h3>The Big Picture</h3>
+<br /><br />
+Okay, let's tie all this together.
+<br /><br />
+A compiler reads your source file, analyzes it, and generates an assembly file for your specific computer architecture. An assembler will then translate the assembly file into a binary form that the physical CPU can understand. Finally, a linker will come and make adjustments so your operating system can load and run your program.
+<br /><br />
+If you want to side-step this process, you can write an interpreter, which will load an run your source code right then and there (though perhaps with an intermediate step of translating to bytecode code). This process is slower, but is also easier to make.
+<br /><br />
+Hopefully this makes the concepts surrounding compilers understandable. While I've done work in all the stages of compiling, I tend to stay mainly in the compiler area. For the most part, that's what I'll be focusing on.
+<br /><br />
+Thanks for reading!
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

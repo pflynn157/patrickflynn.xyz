@@ -1,0 +1,134 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h1>Desktop Applications</h1>
+<p><br />
+
+Desktop applications were one of the first areas I delved into when I got into computer science. Even now, I still really enjoy working on them, though admittedly, I don't work on them to the extent I used to. Below are screenshots of my favorite desktop applications, with some of the features and links to the source.
+<br /><br />
+If you browse my <a href="https://git.sr.ht/~pflynn157">SourceHut profile</a>, there are many other desktop applications in addition to these, but these are my favorites and best.
+<br /><br />
+<h3>CppEditor</h3>
+<br /><br />
+Source: <a href="https://git.sr.ht/~pflynn157/CppEditor">https://git.sr.ht/~pflynn157/CppEditor</a>
+<br /><br />
+This program is probably the oldest that I still maintain. As you can tell, its a text/code editor. It has a lot of features, including:
+<br /><br />
+<ul>
+<li> Syntax highlighting for most languages (via KDE Syntax Highlighting)</li>
+<li> Auto-indent</li>
+<li> Intelligent auto-indent (mainly bracket matching for certain languages)</li>
+<li> Multi-document interface</li>
+<li> Project view</li>
+<li> Support for most platforms</li>
+</ul>
+<br /><br />
+<img class="img-fluid" src="assets//images/cppeditor_base.png"></img>
+<br /><br />
+<h3>CppSheets</h3>
+<br /><br />
+Source: <a href="https://git.sr.ht/~pflynn157/CppSheets">https://git.sr.ht/~pflynn157/CppSheets</a>
+<br /><br />
+Even now, a few years later, this is one of my favorite applications of all time. It's a spreadsheet application written completely from scratch (using the Qt5 libraries). Some of the features include:
+<br /><br />
+<ul>
+<li> Multi-document interface, with multi-sheet support within a document</li>
+<li> Cell formatting</li>
+<li> MS Excel compatible formulas</li>
+<li> Custom file format</li>
+<li> Basic, yet workable support for MS Excel files</li>
+<li> CSV loading support</li>
+</ul>
+<br /><br />
+<img class="img-fluid" src="assets//images/CppSheets_linux.png"></img>
+<br /><br />
+<h3>CppMediaPlayer</h3>
+<br /><br />
+Source: <a href="https://git.sr.ht/~pflynn157/CppMediaPlayer">https://git.sr.ht/~pflynn157/CppMediaPlayer</a>
+<br /><br />
+This application is another favorite of mine. As its highly original name suggests, its a media application. It uses the Qt5 Multimedia library, which allows it to play most media formats on any platform. It has many of the features you'd expect of a multimedia application. Its also cross-platform- I've had little issue building it on Linux, Windows, or MacOS.
+<br /><br />
+<img class="img-fluid" src="assets//images/media-player.png"></img>
+<br /><br />
+<h3>Odyssey</h3>
+<br /><br />
+Source: <a href="https://git.sr.ht/~pflynn157/Odyssey">https://git.sr.ht/~pflynn157/Odyssey</a>
+<br /><br />
+This application is yet another favorite with an interesting story behind it. As its name suggests, its a file explorer, but only for Linux, unlike my other applications. I wrote this a few years ago over a two day period- virtually the entire thing. At the time, I had caught a cold, so I staved off my boredom by writing this. After all, why rest when you have the time off... Anyway. Below are some of the features:
+<br /><br />
+<ul>
+<li> Tabs (If you are a Linux or Mac user, you will know how great these are)</li>
+<li> Theme icon support (pulls from the current theme)</li>
+<li> Icon by mimetype (pulls from theme)</li>
+<li> Button and text address bars</li>
+<li> History support (used with the back button)</li>
+<li> Full cut/copy/paste support, across tabs and with multiple files</li>
+<li> Trash support (move to trash and restore from trash)</li>
+<li> Application chooser for files (based on mimetype)</li>
+<li> Keyboard shortcuts</li>
+<li> Places sidebar</li>
+<li> Drive list (harddrive, usb drive, cd, etc)</li>
+<li> Background refresh</li>
+</ul>
+<br /><br />
+<img class="img-fluid" src="assets/images/cppexplorer_base.png"></img>
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

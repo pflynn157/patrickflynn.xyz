@@ -1,0 +1,43 @@
+---
+title: "New Project: LegV8 CPU"
+date: "2021-12-04"
+categories: 
+  - "hardware"
+  - "project-updates"
+---
+
+This project has been [up on Github](https://github.com/pflynn157/legv8-cpu) for a few weeks now, but now that it is more or less done, I'm going to write about it. As its name implies, it is a VHDL design for a CPU.
+
+I've written about VHDL and hardware as a whole a few times in the past, and being a compiler author, it may not surprise people that I also really like hardware. I got started with VHDL a little more than a year ago from one of my computer engineering classes where we had to do some simple projects in VHDL. I had hardware descriptor languages on my mind for a while at that point (mainly Verilog), but that class gave me an excuse to learn, and to be honest I like VHDL better than what I've seen of Verilog. Since that class, I did a few more smaller projects in the language before moving on.
+
+One of my last projects was an attempt at making a simple CPU. I really didn't know what I was doing, and I had other stuff going on at the time, so I got it somewhat working before abandoning it and moving on. However, that spring I took a computer architecture course for my major, and while quite a bit of it was a review more or less, I did make CPU design click. This past semester, I've been taking a similar course for my minor, and the final project for it was to make a LegV8 CPU in VHDL. Since I never did finish that CPU, I decided to dive into this project.
+
+LegV8, from what I understand, is a subset of Arm. It seems closer to Arm 32, but it has AArch64 components in it. I think it's mainly a teaching component. Regardless, the assignment was basically to create an Arm CPU from scratch in VHDL.
+
+## Pipeling
+
+For me, the showpoint of this project (besides the fact that it's fully working) is that it's pipelined. This was the bonus part of the assignment, but since I was able to get the non-pipelined version up and running fairly quickly, I decided to focus on getting the pipelining to work.
+
+Pipelining is a form of instruction-level parallelism. CPUs generally require several clock cycles to execute each instruction, especially those that require things like memory access. At each clock cycle, something specific is done- generally instruction fetch (IF), instruction decode (ID), execute (EX), memory read/write (MEM), and register write-back (WB). Even if the clock is fast, waiting for each instruction to execute one at a time is not overly efficient. Moreover, these five stages are used on each instruction only once- after all, it wouldn't make sense to decode an instruction multiple times. As a result, as an instruction moves through each stage, the previous stages are left with nothing to do.
+
+This is where CPU pipelining comes in. Pipelining doesn't make an instruction take less time- an ADD instruction, for example, will take five clock cycles regardless. However, pipelining keeps the CPU busy by keeping each stage active. Consider an ADD and a SUB instruction. The CPU will first fetch the ADD instruction from memory. Then, it will move on to decoding it. While it is decoding ADD, it will fetch SUB from memory. Next, it will execute ADD, decode SUB, and fetch another instruction from memory. And so on. While this doesn't make an instruction take less time, as we've said, it gives the illusion that an instruction is being started, executed, and finished on each clock cycle. But going beyond just an illusion, it generates real world results in the amount of time it saves to execute a program.
+
+## Pipeling in VHDL
+
+Pipeling was both very easy and very difficult in this project. In VHDL, a pipeline can be built using a simple for-loop. Although a VHDL for-loop looks like any other loop, it doesn't execute one stage sequentially at a time the way a regular program would; instead, it means that each stage within the the loop will execute at once on a clock cycle. I figured this out with a quick Google search, so getting the pipelined base working was pretty easy.
+
+The hard part was actually achieving the pipelining. While pipelining is easy in theory, in implementation it's complex because the state of the previous stage in the pipeline has to be saved and passed on to the next stage so it can continue working. For example, when an instruction is decoded, the decoded information has to be passed on to the execute stage so the next instruction can be decoded on the next clock cycle. In VHDL, this is accomplished with duplicate signals- often times, more than just two copies of one signal. Getting this to fully work without conflict was challenging.
+
+Another challenging part was dealing with stalls and dependencies. When accessing memory, you have have to stall the pipeline to give the CPU time to send the address and receive the data. With dependencies, the most common is the RAW (read-after-write) dependency, where the destination register of one instruction is a source operand of the one following. If the data is not written back in time, incorrect results will be computed. This was the single hardest part of the project, and it's still not fully working unfortunately. The best way to deal with this is to either re-arrange instructions, or insert NOP (no operation) instructions.
+
+## Future Work
+
+Although I enjoyed the project, I really didn't enjoy working with Arm on that level. True, it was probably better than trying to implement an X86 CPU, but Arm has several annoyances (the biggest one being the variable-length opcode fields), and it is proprietary. My spring computer architecture class focused on RISC-V, which I found very interesting both in its simplicity and openess. My next project will probably be to make a RISC-V CPU. My goal though isn't just to make another CPU; it's also to have a CPU that I can use to experiment with hardware components, and maybe something for an FPGA later on.
+
+But I'm getting ahead of myself.
+
+## Conclusion
+
+If you want to check out the project, you can find it on Github (along with everything else...). If you're interested in CPUs, hopefully its a good starting point. If I get the RISC-V one working, I'll write about it here as well.
+
+Thanks for reading!

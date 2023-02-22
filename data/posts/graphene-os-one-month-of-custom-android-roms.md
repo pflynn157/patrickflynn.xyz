@@ -1,0 +1,59 @@
+---
+title: "Graphene OS & One Month of Custom Android ROMs"
+date: "2022-03-13"
+categories: 
+  - "android"
+  - "privacy"
+---
+
+While I don’t remember exactly when I started experimenting with custom Android ROMs, I do know its been about a month so far. When I last wrote about this, I talked about my experiment with the Nexus running Lineage OS. A week after that, I switched my main phone, the Google Pixel, to another custom ROM called Graphene OS, and I’ve been using it ever since.
+
+Since I’ve had some questions from friends about how it all works and what the experience is like, today I’m going to write about Graphene OS and my wider experience with using the ROMs.
+
+Let’s dive in!
+
+## What is Graphene OS?
+
+For the whole technical answer see their [website](https://grapheneos.org/)… But I’ll talk about it from a high level.
+
+Originally, I tested Lineage OS, which is the most popular and most widely supported Android ROM. Lineage OS is a very solid OS, and supports a large number of devices out there. You really can’t go wrong with it.
+
+In the hacking community, however, Google-made phones such as the Nexus and the Pixel have always received more attention. And its understandable: the hardware is really good for the money, and since it's from Google who makes Android, it's better designed and easier to work with. As a result, custom Android forks almost always go to Google-made phones first before entering the mainstream.
+
+Some Android ROMs choose not to branch out to other phones and stay specifically with the Google phones. In most cases, these particular systems are not only very privacy conscious and secure, they also have very good performance. This is a combination of the ease of working with a Google phone, and the fact that its easier to support a good product when you’re targeting only a limited subset of devices (think iOS). Graphene OS is one of these Pixel-specific operating systems.
+
+There are a few others, the other big one called Calyx OS, but after doing research, Graphene OS looked the most stable, secure, and the easiest to work with. Graphene OS is very privacy and security conscious. It has no Google services, a privacy hardened kernel, encryption, signed booting, and a lot more. Its also very minimalistic: it literally only comes with the core apps you need. Other ones you want can be installed via F-Droid or the Aurora store.
+
+## Using Graphene OS
+
+Using Graphene has been a very pleasant experience. Installing was super easy. Apparently, Chrome-based browsers have a tool called WebUSB which allows you to flash the operating system right from your browser. I suspect this was a fork of Google’s official tool since they have literally the same thing for flashing the stock Pixel OS back to the device. But either way, flashing was very easy. Lineage OS wasn’t hard, but it was more involved since you had to install custom recovery firmware first. Flashing Graphene was literally just clicking buttons.
+
+The biggest thing that has stood out to me is the performance. Graphene is fast. The default Pixel OS was certainly fast, but Graphene just feels so much snappier. One example: my truck has a Bluetooth-equipped radio. For some reason, the default Pixel OS usually took a few minutes to find it. Graphene picks it up and connects almost instantly.
+
+As far as apps go, the developers bundled all the core apps: phone, messenger, camera, gallery, file explorer, calculator, contacts, and a privacy-conscious fork of Chrome called Vanadium. The Pixel came with this, but it was all the Google equivalents. I didn’t really expect it would come with everything, so that was a pleasant surprise.
+
+My only gripe: the aesthetics are bad. All the icons are black-and-white, as well as the rest of the OS. The Pixel OS gave you the option to change it, so why they took that out is a little beyond me.. but whatever. I’m used to it now, and according to a friend you can change it via F-Droid.
+
+I should also note: all the mobile features worked perfectly out of the box: SMS, MSM, telephone, and mobile network. And unlike Lineage, it doesn’t drop to 3G :)
+
+## Apps and 3rd Party ROMs
+
+In my opinion, getting the OS installed is the easy part. Yes, I do have above-average technical experience, but also keep in mind that my answer to computer problems 99% of the time is to just reinstall everything. In other words: I can program, but I suck at IT. That being said: I think most people with basic technical knowledge can get a 3rd party ROM working.
+
+The issue though isn’t in getting the OS working. If you want to do this, you need to be prepared for the app tradeoff. Which you can install Google apps, this kind of defeats the purpose and to be honest, I’m not sure how well they work. If you are a heavy Google apps user, you are probably better off using what you have now (unless its outdated or very buggy).
+
+If you’re not a heavy Google user, my advice before trying a 3rd party ROM is to download F-Droid and switch to as many apps there as you can. In most cases, I have found suitable alternatives that work just as well as what you would get in the Play store. In many cases, they are better because they don’t have ads and other crap.
+
+If there are certain Google apps you absolutely need, the good news is there is a 3rd party wrapper around Google Play called the Aurora Store. You can download apps from Play anonymously and use them like any other app. I use this a lot because there are a few apps I need: Mega, Discord, Duo (the authentication client- I need it for school), and a few other things.
+
+In most cases, these apps will work out of the box without any issues. Be aware though that notifications may not work. For example, Discord notifications don’t work at all, nor do the Duo push notifications. This is because they rely on Google Play services to send the notifications, which obviously you don’t have on your phone. But you can still open the app and manually check. For me this isn’t a huge deal, but I know for some people this can be an issue.
+
+While I haven’t tested it, Graphene does come with a way to run Google Play with the services in a sandbox that won’t compromise your privacy, so this could be an option for Pixel users. My goal is to ultimately de-Google, so I probably won’t be using that.
+
+As far as mobile networks go, I can’t imagine you would have any issues with this. In both cases I tested, my network worked perfectly (I use T-Mobile). In both cases, I only tested unlocked phones, so I can’t speak to carrier-locked versions. If you can, I would recommend unlocking the phone, but I have also read that SIM locks are totally separate from the rest of the OS, so using a locked phone should still work. As far as call and text quality, I haven’t noticed any difference.
+
+## Conclusion
+
+The main purpose of the second section was to warn interested users what they would face switching phones. It would be the loss of some convenience, but no loss of functionality. At the end of the day, it ultimately comes down to convenience vs security and privacy. In my case, better security, privacy, and honestly performance far outweigh the convenience that I lose.
+
+Hopefully you found this interesting. As always, thanks for reading!

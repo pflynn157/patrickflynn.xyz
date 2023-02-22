@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h1>Raspberry Pi Router</h1>
+<p><br />
+
+Raspberry Pi's have a reputation for being one of the most versatile computers in existence. And for a good reason: They are cheap, they are tiny, and they run Linux. And many other things.
+<br /><br />
+Yet another thing you can use a Raspberry Pi for is a router. While I've heard you can use them in place of your ISP router, I haven't tried this. Instead, you can create a small network within your home network, where you can provide filtering, create an extra layer of security, or whatever. In this tutorial, I'm going to walk you through how to set this up.
+<br /><br />
+<h4>Reassurances</h4>
+<br /><br />
+First, I promise this won't mess up your home network or any devices connected to it. Your router really won't even know its there. I mean, it will, but not in the sense that its talking to another router.
+<br /><br />
+As far as speed goes, I don't do tons of network-intensive stuff so I can't speak to too much here. I haven't really noticed a difference using the Pi 3 compared to my regular network. Downloads are a little slower, but not much. I haven't done any uploads other than git pushes, but even here I haven't noticed a difference. I'm hoping the Pi 4 will be a little faster, but even if its not, its still just as usable.
+<br /><br />
+<h4>Getting Started</h4>
+<br /><br />
+In order to do this, you will need a Raspberry Pi 3 or later. I have a 3B and a 4. I originally did this with the Pi 3, but I'm probably going to sell it, so I'm moving everything to the Pi 4 as I write this article. Either way, the process is the same. You will need access to your router so you can plug the Pi in; I don't think you can do this wireless only.
+<br /><br />
+First, download Raspberry Pi OS and write it to an SD card. I'm not going to walk you through this step because it varies by computer. You don't need the full desktop version; the Lite version is sufficient.
+<br /><br />
+After you write the image, open the boot partition, and create an empty file called `ssh`. This will allow you to setup everything remotely. If you can plug in a monitor and keyboard, that will work too, but this is just as easy.
+<br /><br />
+<img class="img-fluid" src="assets//images/ssh_rpi-1024x576.png"></img>
+<br /><br />
+I would also resize the partition on the root file system. I'm not sure if this is completely necessary... I didn't do it the first time and everything seemed okay. But if you can, I would just do so.
+<br /><br />
+<img class="img-fluid" src="assets//images/rpi_resize-1024x576.png"></img>
+<br /><br />
+<h4>Setting Up</h4>
+<br /><br />
+After you plug the Pi in and boot it up, you can log in. To log in over ssh, use `ssh pi@raspberrypi.local`. It may take a few minutes (and a few tries) if its still booting. If it doesn't work after a long time, you may need to figure out the IP address. The default password is `raspberry`.
+<br /><br />
+If you want to change the default password, run this command: `sudo passwd pi`.
+<br /><br />
+First, make sure Pi OS is update to date. These commands will do the trick:
+<br /><br />
+<code>
+<br />sudo&nbsp;apt&nbsp;update<br />sudo&nbsp;apt&nbsp;upgrade<br /></code>
+<br /><br />
+Reboot when you're done (the command is `sudo reboot`...).
+<br /><br />
+After applying any updates, we can install our needed software. We need three packages. First, `hostapd` provides the wireless access point. `dnsmasq` provides DNS management services, and `netfilter` provides firewall utilities. You can install with these commands:
+<br /><br />
+<code>
+<br />sudo&nbsp;apt&nbsp;install&nbsp;hostapd<br />sudo&nbsp;apt&nbsp;install&nbsp;dnsmasq<br />sudo&nbsp;DEBIAN_FRONTEND=noninteractive&nbsp;apt&nbsp;install&nbsp;-y&nbsp;netfilter-persistent&nbsp;iptables-persistent<br /></code>
+<br /><br />
+After installation, make sure the services are enabled on boot:
+<br /><br />
+<code>
+<br />sudo&nbsp;systemctl&nbsp;unmask&nbsp;hostapd<br />sudo&nbsp;systemctl&nbsp;enable&nbsp;hostapd<br /></code>
+<br /><br />
+<h4>Router Configuration (Router == Pi)</h4>
+<br /><br />
+Okay, now we can configure it to act as a router. We will be assigning the Pi the `192.168.4.1` IP address. All devices connected to the Pi will be within the `192.168.4` range.
+<br /><br />
+Open the configuration file: `sudo nano /etc/dhcpcd.conf`.
+<br /><br />
+You will see a lot of stuff. Scroll to the very end and add this:
+<br /><br />
+<code>
+<br />interface&nbsp;wlan0<br />static&nbsp;ip_address=192.168.4.1/24<br />nohook&nbsp;wpa_supplicant<br /></code>
+<br /><br />
+Type `Crtl-S` to save and `Ctrl-X` to exit.
+<br /><br />
+Now we have to configure the Pi to allow computers connected to it to access the outside internet. Basically, what happens is that all requests go through the Pi, and are then sent to the home router, and then the internet as a whole. When the requests are returned, the Pi returns them to the computer that requested them.
+<br /><br />
+First, open `/etc/sysctl.d/routed-ap.conf`. Add this one line: `net.ipv4.ip_forward=1`.
+<br /><br />
+Now configure the firewall: `sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE`. Run this command to save: `sudo netfilter-persistent save`.
+<br /><br />
+<h4>DHCP Configuration</h4>
+<br /><br />
+In order for Pi to assign IP addresses and eventually provide filtering, we have to configure DHCP and DNS.
+<br /><br />
+First, backup the original configuration: `sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.old`.
+<br /><br />
+Now, create and open a new configuration file: `sudo nano /etc/dnsmasq.conf`.
+<br /><br />
+And add these lines:
+<br /><br />
+<code>
+<br />#&nbsp;Interface&nbsp;to&nbsp;listen&nbsp;on<br />interface=wlan0<br />#&nbsp;Available&nbsp;IP&nbsp;addresses<br />dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h<br />domain=wlan<br />#&nbsp;Alias&nbsp;for&nbsp;the&nbsp;router<br />address=/gw.wlan/192.168.4.1<br /></code>
+<br /><br />
+<h4>Configure Wireless</h4>
+<br /><br />
+By default, the wireless radio (WiFi) is turned off until a country code is specified. You can turn it on with this command: `sudo rfkill unblock wlan`.
+<br /><br />
+Now, we can configure the hostapd software. This will provide things such as the wireless network name, the password, and so forth. Pay attention to the `country_code` and `channel`. If you don't know your country code, research "ISO 3166-1" country codes. Wikipedia has a list of these, along with what the relevant channel is. Since I'm in the US, my code is... Yeah, US. If you're also in the US, you can leave the channel as is.
+<br /><br />
+The Raspberry Pi 3B+ and onward can use either 5 GHz or a 2.4 GHz frequency band. I tried the 5 GHz but I couldn't get it to work. I think it has something to do with my home router running on the 2.4 GHz, but I don't actually know. I pretty much just left everything as is, except the country code, ssid (the network name), and the wpa_passphrase (the network password).
+<br /><br />
+If you are interested in the frequency band, these are the possible values:
+<br /><br />
+<ul>
+<li> a -&gt; 802.11a (5GHz)</li>
+<li> b -&gt; 802.11b (2.4GHz)</li>
+<li> g -&gt; 802.11g (2.4GHz)</li>
+</ul>
+<br /><br />
+Again, if you change the frequency, you will likely need to change the channel.
+<br /><br />
+Open `/etc/hostapd/hostapd.conf` and add these lines:
+<br /><br />
+<code>
+<br />country_code=US<br />interface=wlan0<br />ssid=my_network<br />hw_mode=g<br />channel=7<br />macaddr_acl=0<br />auth_algs=1<br />ignore_broadcast_ssid=0<br />wpa=2<br />wpa_passphrase=my_password<br />wpa_key_mgmt=WPA-PSK<br />wpa_pairwise=TKIP<br />rsn_pairwise=CCMP<br /></code>
+<br /><br />
+At this point, all the initial router configure is done. Reboot the Pi, and try connecting to your new network. If all goes well, you should be able to connect to websites.
+<br /><br />
+<h4>Conclusion</h4>
+<br /><br />
+This concludes the first part of my Raspberry Pi router tutorial. In the second half, we will install Pi-hole, which can be used to block ads and distracting websites. You can find it <a href="/installing-pi-hole.html">here</a>.
+<br /><br />
+I tried to make sure this was working before I published. After I wrote it, I ran through it again to make sure I could still get the same results, and I did, so I assume everything is working. The same goes with the Pi-hole tutorial. If you do encounter any issues, feel free to drop me an email.
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

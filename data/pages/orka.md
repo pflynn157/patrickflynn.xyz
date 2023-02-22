@@ -1,0 +1,68 @@
+---
+title: "Orka"
+date: "2021-07-21"
+template: page
+output: orka
+menu: false
+---
+
+Orka is yet another programming language/compiler project. It follows in the footsteps of my last big project, the Ida language/compiler. You can find the source here: [https://github.com/pflynn157/orka](https://github.com/pflynn157/orka)
+
+Although the project started basically as a clone of Ida, I eventually changed the syntax quite a bit, so it's really its own language now. Orka is not based on anything- the two closest languages I can think of to it is Pascal and Julia (and I think there will be disagreement over that). Orka is an imperative, compiled systems language. It has a core library that is statically linked, and a standard library that is dynamically linked.
+
+The compiler is the main reason for this project, which is why it started out as a clone of Ida. My internship at Los Alamos required that I learn LLVM, and while I made an honest attempt to learn it before I started, school and other obligations kept that from happening. Fortunately, as a testament to LLVM and how well it's designed, picking it up was really easy when I started the job. To help me learn faster, however, I began this project.
+
+Please note that this is not ready for any kind of production use. It is meant to be looked at and admired, not to write your next big program in.
+
+### The Language
+
+You can find documentation on the language [here](/orka-language.html).
+
+### The Compiler
+
+As you likely inferred from the last paragraph, the compiler uses LLVM. I thought about using a parser-generator for the frontend, but I didn't want to dive into that mess, so I just wrote my own- a pretty easy task when A) you know you don't have to worry about writing a backend, and B) when you've written several before. Although I'm proud of the LLVM component, I'm most proud of the frontend.
+
+The frontend generates a fully recursive binary tree. Operator precedence is built-in. There is clear distinction between global objects, statements, and expressions. When all this is put together, the AST is really easy to translate either to LLVM or your own custom backend.
+
+Because of some annoying issues with my system, the backend only generates x86 assembly code at the moment. If you need it for a different architecture, just modify the compiler/Builder.cpp file and insert the correct assembly printers at the beginning. Orka should build and work against any version of LLVM- I don't think I'm using any version-specific features.
+
+### Standard Libraries
+
+Orka has two standard libraries: the core library, and the standard library. Currently, both are written in C.
+
+The core library is a statically-linked library. It does not depend on anything; rather, it uses Linux system calls to perform essential tasks such as memory management and IO. An Orka program will not run without the core library.
+
+The standard library is a dynamically-linked library that provides less essential, but still really-nice-to-have functions, such as printf. The standard library is analogous to what you would find in other languages. It is not essential, but it is ideal that you have it. Currently, there is only one function in the standard library: printf.
+
+### Building and Using
+
+Building is easy. All you need is a C++ compiler, CMake, and the LLVM development files. Other than LLVM, the compiler does not use any extra libraries; only the standard library is used.
+
+You can build like this:
+
+```
+mkdir build
+cd build
+
+cmake ..
+make -j8
+```
+
+Only one binary is produced: "occ", the compiler. Please note that before trying to run it, you need to build and install the standard and core libraries. There is a build script in the source root directory for doing this. You only need to run the install script; it will call the build script for you.
+
+The standard way to run a program would be like this:
+
+```
+occ first.ok -o first
+```
+
+The following command line options are provided:
+
+- \-o -> Specify output name
+- \--ast -> Print the AST to the console
+- \--llvm -> Output LLVM IR to the console
+- \--emit-llvm -> Save LLVM to a file (this can be specified with "-o")
+
+Finally, there is a test script for testing the compiler. Simply cd to the source root, and run "./test.sh". If all goes well, all the test files should pass. The test files are also a really good way to understand the language, as they focus on one construct each (I like to use a more unit-testing based approach).
+
+

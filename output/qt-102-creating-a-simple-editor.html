@@ -1,0 +1,224 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Qt 102: Creating a Simple Editor</h2>
+<p><br />
+
+Welcome back everyone! Around a month ago, we created a simple application in Qt to demonstrate the basics. However, our application wasn't very useful- only a label with a button. Today, we're going to create something a little more practical: a simple text editor.
+<br /><br />
+My first non-trivial GUI application was a text editor (at the time, written in Java Swing). Since then, I've written several, including the main text/code editor I use for my everyday work. I continue to write simple editors, often as test programs for new languages and GUI frameworks I want to try out. Text editors are great programs for doing this (and learning GUI as a whole) because they don't require any unusual widgets or libraries. At the same time, they also demonstrate key core functionality. If you can write a text editor, you can easily write more advanced applications.
+<br /><br />
+The text editor we're writing today will be simple, to say the least. It will have a single text widget with a menubar for the new/open/save/save-as functionalities. In other words, it will be very similar to Windows Notepad. This provides a good skeleton, however. You can easily extend it from there to add things like a toolbar, tabs, and more.
+<br /><br />
+Because we covered project setup and window creation in the Qt101 post rather extensively, I'm not going to go over that again. I included the starting code below, which is from that post, except with the label and button removed. I will include the complete code at the end of this post.
+<br /><br />
+<a href="/assets/starting-code.zip">Download: starting-code</a>
+<br /><br />
+<h2>Adding the Text Edit</h2>
+<br /><br />
+The first thing we're going to do is add the text edit widget. Qt has two widgets for this purpose: QTextEdit, and QPlainTextEdit. The former is an advanced widget which can do things like displaying images, rich text, and other advanced content. The QPlainTextEdit is only for plain text, although it can be used to highlight source code. For most practical purposes however, there isn't a huge difference. We're going to use QTextEdit simply because I have more experience with it :)
+<br /><br />
+To add it, declare a widget in the header:
+<br /><br />
+<code>
+<br />#pragma&nbsp;once<br /><br />#include&nbsp;&lt;QMainWindow&gt;<br />#include&nbsp;&lt;QFrame&gt;<br />#include&nbsp;&lt;QVBoxLayout&gt;<br />#include&nbsp;&lt;QLabel&gt;<br />#include&nbsp;&lt;QPushButton&gt;<br />#include&nbsp;&lt;QTextEdit&gt;<br /><br />//&nbsp;The&nbsp;class&nbsp;defining&nbsp;our&nbsp;main&nbsp;window<br />//<br />//&nbsp;We&nbsp;could&nbsp;use&nbsp;QWidget,&nbsp;but&nbsp;QMainWindow&nbsp;provides&nbsp;a&nbsp;lot<br />//&nbsp;more&nbsp;nice&nbsp;functions&nbsp;which&nbsp;make&nbsp;things&nbsp;easier,&nbsp;so&nbsp;unless&nbsp;you&nbsp;have<br />//&nbsp;a&nbsp;good&nbsp;reason&nbsp;it&nbsp;is&nbsp;better&nbsp;to&nbsp;use&nbsp;QMainWindow<br />//<br />class&nbsp;Window&nbsp;:&nbsp;public&nbsp;QMainWindow&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;Q_OBJECT<br />public:<br />&nbsp;&nbsp;&nbsp;&nbsp;Window();<br />&nbsp;&nbsp;&nbsp;&nbsp;~Window();<br />private:<br />&nbsp;&nbsp;&nbsp;&nbsp;QTextEdit&nbsp;*editor;<br />};<br /></code>
+<br /><br />
+And then initialize it in the constructor. While we're at it, let's add it to the window.
+<br /><br />
+<code>
+<br />//&nbsp;Init&nbsp;the&nbsp;editor<br />editor&nbsp;=&nbsp;new&nbsp;QTextEdit;<br />this-&gt;setCentralWidget(editor);<br /></code>
+<br /><br />
+If you build and run, you should see something like this. Feel free to start typing in it:
+<br /><br />
+<img class="img-fluid" src="assets/images/editor1.png"></img>
+<br /><br />
+<h2>Adding the Menubar</h2>
+<br /><br />
+Excellent! Now we can start adding the menubar. In the menubar, we're going to have three menus: a File menu, an Edit menu, and a Help menu. In this section, we're only going to add the menubar with the menus to the window. We will connect everything in subsequent steps.
+<br /><br />
+First, let's add the menubar to the menu with all the top level menus. We're not going to add the individual menu items just yet. Your window header will look like this:
+<br /><br />
+<code>
+<br />#pragma&nbsp;once<br /><br />#include&nbsp;&lt;QMainWindow&gt;<br />#include&nbsp;&lt;QFrame&gt;<br />#include&nbsp;&lt;QVBoxLayout&gt;<br />#include&nbsp;&lt;QLabel&gt;<br />#include&nbsp;&lt;QPushButton&gt;<br />#include&nbsp;&lt;QTextEdit&gt;<br />#include&nbsp;&lt;QMenuBar&gt;<br />#include&nbsp;&lt;QMenu&gt;<br /><br />//&nbsp;The&nbsp;class&nbsp;defining&nbsp;our&nbsp;main&nbsp;window<br />//<br />//&nbsp;We&nbsp;could&nbsp;use&nbsp;QWidget,&nbsp;but&nbsp;QMainWindow&nbsp;provides&nbsp;a&nbsp;lot<br />//&nbsp;more&nbsp;nice&nbsp;functions&nbsp;which&nbsp;make&nbsp;things&nbsp;easier,&nbsp;so&nbsp;unless&nbsp;you&nbsp;have<br />//&nbsp;a&nbsp;good&nbsp;reason&nbsp;it&nbsp;is&nbsp;better&nbsp;to&nbsp;use&nbsp;QMainWindow<br />//<br />class&nbsp;Window&nbsp;:&nbsp;public&nbsp;QMainWindow&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;Q_OBJECT<br />public:<br />&nbsp;&nbsp;&nbsp;&nbsp;Window();<br />&nbsp;&nbsp;&nbsp;&nbsp;~Window();<br />private:<br />&nbsp;&nbsp;&nbsp;&nbsp;QTextEdit&nbsp;*editor;<br />&nbsp;&nbsp;&nbsp;&nbsp;QMenuBar&nbsp;*menubar;<br />&nbsp;&nbsp;&nbsp;&nbsp;QMenu&nbsp;*fileMenu,&nbsp;*editMenu,&nbsp;*helpMenu;<br />};<br /></code>
+<br /><br />
+Notice the new classes near the bottom of the "private" section. Okay, now head over to the window source. Here, we will initialize everything in the constructor:
+<br /><br />
+<code>
+<br />//&nbsp;Init&nbsp;the&nbsp;menubar<br />menubar&nbsp;=&nbsp;new&nbsp;QMenuBar;<br />this-&gt;setMenuBar(menubar);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />fileMenu&nbsp;=&nbsp;new&nbsp;QMenu("File");<br />editMenu&nbsp;=&nbsp;new&nbsp;QMenu("Edit");<br />helpMenu&nbsp;=&nbsp;new&nbsp;QMenu("Help");<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />menubar-&gt;addMenu(fileMenu);<br />menubar-&gt;addMenu(editMenu);<br />menubar-&gt;addMenu(helpMenu);<br /></code>
+<br /><br />
+Alright, now build and run. If you did everything correctly, you should see something like this:
+<br /><br />
+<img class="img-fluid" src="assets/images/step2.png"></img>
+<br /><br />
+Excellent! Our program is starting to look like something. Now, let's add actions (or sub-menus) to all the menubar items. Modify your header to look like this:
+<br /><br />
+<code>
+<br />#pragma&nbsp;once<br /><br />#include&nbsp;&lt;QMainWindow&gt;<br />#include&nbsp;&lt;QFrame&gt;<br />#include&nbsp;&lt;QVBoxLayout&gt;<br />#include&nbsp;&lt;QLabel&gt;<br />#include&nbsp;&lt;QPushButton&gt;<br />#include&nbsp;&lt;QTextEdit&gt;<br />#include&nbsp;&lt;QMenuBar&gt;<br />#include&nbsp;&lt;QMenu&gt;<br /><br />//&nbsp;The&nbsp;class&nbsp;defining&nbsp;our&nbsp;main&nbsp;window<br />//<br />//&nbsp;We&nbsp;could&nbsp;use&nbsp;QWidget,&nbsp;but&nbsp;QMainWindow&nbsp;provides&nbsp;a&nbsp;lot<br />//&nbsp;more&nbsp;nice&nbsp;functions&nbsp;which&nbsp;make&nbsp;things&nbsp;easier,&nbsp;so&nbsp;unless&nbsp;you&nbsp;have<br />//&nbsp;a&nbsp;good&nbsp;reason&nbsp;it&nbsp;is&nbsp;better&nbsp;to&nbsp;use&nbsp;QMainWindow<br />//<br />class&nbsp;Window&nbsp;:&nbsp;public&nbsp;QMainWindow&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;Q_OBJECT<br />public:<br />&nbsp;&nbsp;&nbsp;&nbsp;Window();<br />&nbsp;&nbsp;&nbsp;&nbsp;~Window();<br />private:<br />&nbsp;&nbsp;&nbsp;&nbsp;QTextEdit&nbsp;*editor;<br />&nbsp;&nbsp;&nbsp;&nbsp;QMenuBar&nbsp;*menubar;<br />&nbsp;&nbsp;&nbsp;&nbsp;QMenu&nbsp;*fileMenu,&nbsp;*editMenu,&nbsp;*helpMenu;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;File&nbsp;menu<br />&nbsp;&nbsp;&nbsp;&nbsp;QAction&nbsp;*newFile,&nbsp;*openFile,&nbsp;*saveFile,&nbsp;*saveFileAs,&nbsp;*quitApp;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Edit&nbsp;menu<br />&nbsp;&nbsp;&nbsp;&nbsp;QAction&nbsp;*cut,&nbsp;*copy,&nbsp;*paste,&nbsp;*selectAll;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Help&nbsp;Menu<br />&nbsp;&nbsp;&nbsp;&nbsp;QAction&nbsp;*about,&nbsp;*aboutQt;<br />};<br /></code>
+<br /><br />
+And in your constructor, add the following code under the last code we added:
+<br /><br />
+<code>
+<br />//&nbsp;Init&nbsp;the&nbsp;file&nbsp;menu<br />newFile&nbsp;=&nbsp;new&nbsp;QAction("New");<br />openFile&nbsp;=&nbsp;new&nbsp;QAction("Open");<br />saveFile&nbsp;=&nbsp;new&nbsp;QAction("Save&nbsp;File");<br />saveFileAs&nbsp;=&nbsp;new&nbsp;QAction("Save&nbsp;File&nbsp;As");<br />quitApp&nbsp;=&nbsp;new&nbsp;QAction("Quit");<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />fileMenu-&gt;addAction(newFile);<br />fileMenu-&gt;addAction(openFile);<br />fileMenu-&gt;addAction(saveFile);<br />fileMenu-&gt;addAction(saveFileAs);<br />fileMenu-&gt;addAction(quitApp);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />//&nbsp;Init&nbsp;the&nbsp;edit&nbsp;menu<br />cut&nbsp;=&nbsp;new&nbsp;QAction("Cut");<br />copy&nbsp;=&nbsp;new&nbsp;QAction("Copy");<br />paste&nbsp;=&nbsp;new&nbsp;QAction("Paste");<br />selectAll&nbsp;=&nbsp;new&nbsp;QAction("Select&nbsp;All");<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />editMenu-&gt;addAction(cut);<br />editMenu-&gt;addAction(copy);<br />editMenu-&gt;addAction(paste);<br />editMenu-&gt;addAction(selectAll);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />//&nbsp;Init&nbsp;the&nbsp;help&nbsp;menu<br />about&nbsp;=&nbsp;new&nbsp;QAction("About");<br />aboutQt&nbsp;=&nbsp;new&nbsp;QAction("About&nbsp;Qt");<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />helpMenu-&gt;addAction(about);<br /><br />helpMenu-&gt;addAction(aboutQt);<br /></code>
+<br /><br />
+If all goes well, you should see something like this. The other menus should display their respective items.
+<br /><br />
+<img class="img-fluid" src="assets/images/step3.png"></img>
+<br /><br />
+<h2>Connecting "Edit" and "Help"</h2>
+<br /><br />
+Okay, now we can start making the menus do something. We're going to start by connecting the edit and help menus because these are the easiest. Connecting the files will require us to also implement the text editor functions. This step isn't hard, but I don't want to introduce too much at once. Let's get started.
+<br /><br />
+First, in the header, add a section called "private slots", with the following function declarations:
+<br /><br />
+<code>
+<br />private&nbsp;slots:<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Edit&nbsp;menu&nbsp;slots<br />&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;onCutClicked();<br />&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;onCopyClicked();<br />&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;onPasteClicked();<br />&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;onSelectAllClicked();<br /></code>
+<br /><br />
+Now, go to the source file, and add the following lines in the constructor between where we initialized the editor items, but before we add them to the menu:
+<br /><br />
+<code>
+<br />connect(cut,&nbsp;&QAction::triggered,&nbsp;this,&nbsp;&Window::onCutClicked);<br />connect(copy,&nbsp;&QAction::triggered,&nbsp;this,&nbsp;&Window::onCopyClicked);<br />connect(paste,&nbsp;&QAction::triggered,&nbsp;this,&nbsp;&Window::onPasteClicked);<br />connect(selectAll,&nbsp;&QAction::triggered,&nbsp;this,&nbsp;&Window::onSelectAllClicked);<br /></code>
+<br /><br />
+Now, scroll to the end of the source file, and add the following functions:
+<br /><br />
+<code>
+<br />//<br />//&nbsp;The&nbsp;slots&nbsp;for&nbsp;handling&nbsp;the&nbsp;edit&nbsp;menu&nbsp;functions<br />//<br />void&nbsp;Window::onCutClicked()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;editor-&gt;cut();<br />}<br /><br />void&nbsp;Window::onCopyClicked()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;editor-&gt;copy();<br />}<br /><br />void&nbsp;Window::onPasteClicked()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;editor-&gt;paste();<br />}<br /><br />void&nbsp;Window::onSelectAllClicked()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;editor-&gt;selectAll();<br />}<br /></code>
+<br /><br />
+Perfect! Now we can add the help menu. The two help menu items will display dialogs. The first dialog ("About Qt") is part of the Qt framework, so using that is really easy. The second dialog ("About") is one we will construct ourselves, but it is still easy.
+<br /><br />
+I want to go on a quick tangent to explain something here. You may be wondering why in the world we are adding an "About Qt" dialog. For a simple example application like this, it actually doesn't matter. But if you are doing any sort of real-world application released to the public using Qt, you are required under the open source licensing terms to state that you are using Qt, and where the sources and/or additional information can be found. Now to be honest, Qt won't go after you if you release a program without this information. You would have to be a big company or organization (like KDE) for them to care. However, it is both good practice and ethical to provide this information, and Qt makes it so easy there is almost no good reason not to.
+<br /><br />
+Anyway. Like with the header file, add this line under "private slots":
+<br /><br />
+<code>
+<br />//&nbsp;Help&nbsp;menu&nbsp;slots<br />void&nbsp;onHelpClicked();<br /></code>
+<br /><br />
+Once again in the constructor, connect the menu items to their respective slots. Notice what we did for the "About Qt" item:
+<br /><br />
+<code>
+<br />connect(about,&nbsp;&QAction::triggered,&nbsp;this,&nbsp;&Window::onHelpClicked);<br />connect(aboutQt,&nbsp;&QAction::triggered,&nbsp;qApp,&nbsp;&QApplication::aboutQt);<br /></code>
+<br /><br />
+And finally, add the code for the "About" dialog. There are shorter ways you could do this, but I feel like this explains the concept more clearly:
+<br /><br />
+<code>
+<br />//<br />//&nbsp;The&nbsp;slots&nbsp;for&nbsp;the&nbsp;help&nbsp;menu<br />//<br />void&nbsp;Window::onHelpClicked()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;QMessageBox&nbsp;msg;<br />&nbsp;&nbsp;&nbsp;&nbsp;msg.setWindowTitle("About&nbsp;Simple&nbsp;Editor");<br />&nbsp;&nbsp;&nbsp;&nbsp;msg.setText("Simple&nbsp;Editor\n"<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"A&nbsp;simple,&nbsp;cross-platform&nbsp;text&nbsp;editor&nbsp;written&nbsp;in&nbsp;C++&nbsp;using&nbsp;the&nbsp;Qt&nbsp;libraries.\n");<br />&nbsp;&nbsp;&nbsp;&nbsp;msg.setDetailedText("License:&nbsp;Public&nbsp;Domain\n");<br />&nbsp;&nbsp;&nbsp;&nbsp;msg.setStandardButtons(QMessageBox::Ok);<br />&nbsp;&nbsp;&nbsp;&nbsp;msg.exec();<br />}<br /></code>
+<br /><br />
+If all goes well, you should see this when you click "About":
+<br /><br />
+<img class="img-fluid" src="assets/images/step4a.png"></img>
+<br /><br />
+And this when you click "About Qt":
+<br /><br />
+<img class="img-fluid" src="assets/images/step4b.png"></img>
+<br /><br />
+Excellent! We have made big progress. Next, we're going to add the file functions. In case you're lost at this point, here is our current code so far.
+<br /><br />
+<a href="/assets/step4_code.zip">Download: step4_code</a>
+<br /><br />
+<h2>Adding the File Menu</h2>
+<br /><br />
+Let's start adding the file menu. Besides connecting these slots, this will allow us to implement our editor functions. Let's start off by adding the skeleton code for connecting the file menu slots.
+<br /><br />
+First, add these lines under "private slots" in the header. Notice the "save" function. This goes right before the "private slots" in the "private" section. This function will do the actually saving- it will write to the file. Because the same code is needed for "Save" and "Save As", it is better to put it in its own function. Also notice the "path" variable. This is needed for all the functions to indicate the current file we are editing (if the string is empty, it is assumed to be untitled).
+<br /><br />
+<code>
+<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Indicates&nbsp;the&nbsp;current&nbsp;file<br />&nbsp;&nbsp;&nbsp;&nbsp;QString&nbsp;path&nbsp;=&nbsp;"";&nbsp;&nbsp;&nbsp;&nbsp;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Needed&nbsp;for&nbsp;the&nbsp;save&nbsp;slots<br />&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;save();<br />private&nbsp;slots:<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;File&nbsp;menu&nbsp;slots<br />&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;onNewFileClicked();<br />&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;onOpenFileClicked();<br />&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;onSaveFileClicked();<br />&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;onSaveFileAsClicked();<br /></code>
+<br /><br />
+Once again, add the "connect" calls in the constructor. Notice the one for the "Quit" menu. The "quit" function is not something we have to implement for simple programs (and even for some more advanced ones). It is defined as part of the Qt library, so we can use it in a similar way to the "About Qt".
+<br /><br />
+<code>
+<br />connect(newFile,&nbsp;&QAction::triggered,&nbsp;this,&nbsp;&Window::onNewFileClicked);<br />connect(openFile,&nbsp;&QAction::triggered,&nbsp;this,&nbsp;&Window::onOpenFileClicked);<br />connect(saveFile,&nbsp;&QAction::triggered,&nbsp;this,&nbsp;&Window::onSaveFileClicked);<br />connect(saveFileAs,&nbsp;&QAction::triggered,&nbsp;this,&nbsp;&Window::onSaveFileAsClicked);<br />connect(quitApp,&nbsp;&QAction::triggered,&nbsp;qApp,&nbsp;&QApplication::exit);<br /></code>
+<br /><br />
+Finally, add the skeleton for the functions we want to implement:
+<br /><br />
+<code>
+<br />void&nbsp;Window::save(QString&nbsp;path)&nbsp;{<br /><br />}<br /><br />//<br />//&nbsp;The&nbsp;slots&nbsp;for&nbsp;handling&nbsp;the&nbsp;file&nbsp;menu<br />//<br />void&nbsp;Window::onNewFileClicked()&nbsp;{<br /><br />}<br /><br />void&nbsp;Window::onOpenFileClicked()&nbsp;{<br /><br />}<br /><br />void&nbsp;Window::onSaveFileClicked()&nbsp;{<br /><br />}<br /><br />void&nbsp;Window::onSaveFileAsClicked()&nbsp;{<br /><br />}<br /></code>
+<br /><br />
+Excellent! Now we can implement the individual functions. Let's start with the "New File" function. As you can see, this one is pretty straightforward:
+<br /><br />
+<code>
+<br />//&nbsp;Creates&nbsp;a&nbsp;new&nbsp;file&nbsp;in&nbsp;the&nbsp;editor<br />void&nbsp;Window::onNewFileClicked()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;=&nbsp;"";<br />&nbsp;&nbsp;&nbsp;&nbsp;editor-&gt;setText("");<br />}<br /></code>
+<br /><br />
+Now, let's implement the "Open" function. This one is also fairly straightforward. Here, we prompt the user for a file, and then load it. One of the (many) nice things about Qt is that it is a whole framework, not just a GUI framework. While the C++ standard library functions for file IO are supposed to work on any systems, using the Qt equivalents is both somewhat easier and guaranteed to work on all systems. Here's the code:
+<br /><br />
+<code>
+<br />//&nbsp;Opens&nbsp;a&nbsp;file&nbsp;and&nbsp;loads&nbsp;it&nbsp;to&nbsp;the&nbsp;editor<br />void&nbsp;Window::onOpenFileClicked()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;QFileDialog&nbsp;dialog;<br />&nbsp;&nbsp;&nbsp;&nbsp;dialog.setWindowTitle("Open");<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;If&nbsp;the&nbsp;dialog&nbsp;either&nbsp;doesn't&nbsp;run&nbsp;or&nbsp;doesn't&nbsp;have&nbsp;any&nbsp;selected<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;files,&nbsp;quietly&nbsp;return.<br />&nbsp;&nbsp;&nbsp;&nbsp;//<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;In&nbsp;the&nbsp;real&nbsp;world,&nbsp;you&nbsp;would&nbsp;want&nbsp;to&nbsp;give&nbsp;the&nbsp;user&nbsp;an&nbsp;error&nbsp;message<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!dialog.exec()&nbsp;||&nbsp;dialog.selectedFiles().size()&nbsp;==&nbsp;0)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;This&nbsp;is&nbsp;a&nbsp;single-file&nbsp;editor,&nbsp;so&nbsp;only&nbsp;get&nbsp;the&nbsp;first&nbsp;selected&nbsp;file<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;The&nbsp;file&nbsp;dialog&nbsp;lets&nbsp;you&nbsp;select&nbsp;multiple&nbsp;files<br />&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;=&nbsp;dialog.selectedFiles().at(0);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Now&nbsp;load&nbsp;the&nbsp;file<br />&nbsp;&nbsp;&nbsp;&nbsp;QFile&nbsp;file(path);<br />&nbsp;&nbsp;&nbsp;&nbsp;QString&nbsp;content&nbsp;=&nbsp;"";<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(file.open(QFile::ReadOnly))&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QTextStream&nbsp;reader(&file);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(!reader.atEnd())&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content&nbsp;+=&nbsp;reader.readLine()&nbsp;+&nbsp;"\n";<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;editor-&gt;setText(content);<br />}<br /></code>
+<br /><br />
+Now, let's look at the click handlers for the "Save" and "Save As" items. Both of these are also fairly straightforward. In the "Save" function, if the current file is untitled, we need to jump to "Save As". Otherwise, the "Save As" function works fairly similar to the "Open" function.
+<br /><br />
+<code>
+<br />//&nbsp;Saves&nbsp;the&nbsp;file<br />void&nbsp;Window::onSaveFileClicked()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;QFile&nbsp;file(path);<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!file.exists())&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onSaveFileAsClicked();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;save();<br />}<br /><br />//&nbsp;Saves&nbsp;the&nbsp;file&nbsp;and&nbsp;prompts&nbsp;the&nbsp;user&nbsp;for&nbsp;a&nbsp;destination<br />void&nbsp;Window::onSaveFileAsClicked()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;QFileDialog&nbsp;dialog;<br />&nbsp;&nbsp;&nbsp;&nbsp;dialog.setDirectory(QDir::homePath());&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Set&nbsp;default&nbsp;location&nbsp;to&nbsp;$HOME<br />&nbsp;&nbsp;&nbsp;&nbsp;dialog.setAcceptMode(QFileDialog::AcceptSave);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;This&nbsp;dialog&nbsp;is&nbsp;for&nbsp;saving<br />&nbsp;&nbsp;&nbsp;&nbsp;dialog.setWindowTitle("Save&nbsp;File&nbsp;As");<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;If&nbsp;nothing&nbsp;was&nbsp;selected&nbsp;or&nbsp;the&nbsp;dialog&nbsp;didn't&nbsp;work,&nbsp;quiety&nbsp;return<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(dialog.exec()&nbsp;!=&nbsp;QFileDialog::Accepted)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Set&nbsp;the&nbsp;path&nbsp;and&nbsp;save&nbsp;the&nbsp;file<br />&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;=&nbsp;dialog.selectedFiles().at(0);<br />&nbsp;&nbsp;&nbsp;&nbsp;save();<br />}<br /></code>
+<br /><br />
+Finally, we have the "save" function itself, which writes to the file:
+<br /><br />
+<code>
+<br />//&nbsp;Saves&nbsp;the&nbsp;file<br />void&nbsp;Window::onSaveFileClicked()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;QFile&nbsp;file(path);<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!file.exists())&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onSaveFileAsClicked();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;save();<br />}<br /></code>
+<br /><br />
+That's it! If all goes well, all the file menu options should work. At this point, you have a complete editor!
+<br /><br />
+<h2>Conclusion</h2>
+<br /><br />
+This was a long post, but hopefully you made it through and found it interesting and helpful. At this point, we now have a complete editor, though admittedly it is a little crippled and not the most functional thing in the world. In a future post, we will build onto the editor some more to make it both look better and add more function.
+<br /><br />
+Below is the final code for this project. All the code is in the public domain. Thanks for reading!
+<br /><br />
+<a href="/assets/qt102.zip">Download: qt102</a>
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

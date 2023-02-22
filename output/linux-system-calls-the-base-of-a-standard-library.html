@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Linux System Calls: The Base of a Standard Library</h2>
+<p><br />
+
+Have you ever wondered how the C library works? Or any language's standard library for that matter? Sure, its easy to understand how certain aspects are done- things like containers, strings, and mathematical functions are generally written in the language itself. But how does the library interact with the underlying operating system? The answer is with system calls. Indeed, many C standard library functions are little more than wrappers around a particular system call.
+<br /><br />
+In this post, we're going to take a look at system calls and how to implement them.
+<br /><br />
+<h3>What is a System Call?</h3>
+<br /><br />
+To quote Wikipedia (which actually has a very good definition), "a system call is the programmatic way in which a computer program requests a service from the kernel of the operating system".
+<br /><br />
+Let's back up. Consider common operations a computer program may do: printing to the screen, reading from the keyboard, creating a file, opening a file, creating a folder, and so forth. How does a program do this?
+<br /><br />
+The short answer is that it doesn't. Printing to the screen, or reading from the keyboard, or doing anything in the file system is a complicated operation. So complicated, that if every program had to implement these functions themselves, no work would ever get done. That's where the operating system comes in. The operating system (among other things) provides a clean interface to allow programs to easily access these resources. Because the operating system is a program itself, we can't access these resources via an ordinary library right off. We have to use a system calls, an interface that allows a program to call the running operating system. Most modern CPUs provide instructions to make this process easier.
+<br /><br />
+You as a programmer don't have to write these system calls because they are abstracted into libraries, such as the C library. This makes your programs portable and your life easier.
+<br /><br />
+<h3>So Why Should I Care About This?</h3>
+<br /><br />
+To answer this question, I will assume that we are asking this in context of a programming language designer.
+<br /><br />
+When you create a programming language, you will need a standard library of some sort to access the system resources we mentioned. One option is to just link to the C library. While this may be a good idea for the early stages of development, it is not a good idea as your language matures. If you link to the C library, you have to follow all the C rules, down to linking with the C startup files, which initialize the standard library. And unless your language interpolates with C exactly, you will probably have to have boiler code for more advanced constructs.
+<br /><br />
+Therefore, you should create your own standard library at some point, and to do so you will need to understand system calls. Let's go through and write a few simple ones to understand how this is done.
+<br /><br />
+<h3>Getting Started</h3>
+<br /><br />
+System calls are both architecture and OS specific. The OS part shouldn't surprise you. MacOS, Linux, and Windows all have different system calls and their own way of doing things. In this tutorial, we are going to focus on Linux. I imagine MacOS, being a Unix-like system, is similar, but don't quote me on it. I have no idea how Windows works, but I've heard stories.
+<br /><br />
+Regarding the architecture part, even within Linux, the system call numbers vary from platform to platform. x86-64, x86-32, AArch64, and Arm all have different system call numbers. Because most people are probably running on x86-64, we will focus on that. The calls can all be found in the kernel source, but for more common architectures, you can often find the same information online.
+<br /><br />
+For the four architectures I mentioned, Google has an excellent table: <a href="https://chromium.googlesource.com/chromiumos/docs/+/HEAD/constants/syscalls.md">https://chromium.googlesource.com/chromiumos/docs/+/HEAD/constants/syscalls.md</a>
+<br /><br />
+<h3>Syntax</h3>
+<br /><br />
+The system calls themselves have to be done in assembly. Before you panic, don't worry- you don't have to implement your standard library in assembly. A common method is to create a platform-specific system call function, and then call that from a higher-level language. However, for the sake of learning, we are going to stick to assembly.
+<br /><br />
+All Linux system calls have a number and up to five arguments. A system call can return a value, but you don't always need this. On x86-64, the system call register is RAX. The arguments will go in RDI, RSI, RDX, R10, R8, and R9.
+<br /><br />
+Before continuing, I should note: since we are not using a library or a high level language, the starting function is not "main"; it is "_start". Don't worry about this for now, just take my word for it. I will reserve discussion around that for another post.
+<br /><br />
+<h3>Hello World and Exit</h3>
+<br /><br />
+Time to get our hands dirty! To start things out, we will write a simple program that exits and returns a number. Consider this source:
+<br /><br />
+<code>
+<br />.intel_syntax&nbsp;noprefix<br />.global&nbsp;_start<br />_start:<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rax,&nbsp;60<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rdi,&nbsp;5<br />&nbsp;&nbsp;&nbsp;&nbsp;syscall<br /></code>
+<br /><br />
+I'm going to assume you know some assembly, so I'm not going to go through every line. This syntax is compatible with the GNU Assembler which should already be on your system (for the record, I HATE the AT&T syntax, so that's why I have the first line).
+<br /><br />
+If you look at the table, the system call for "exit" is 60. The first argument specifies the exit code. In this case, we have 5, but any number is fine. Finally, we tell the CPU to call the kernel and exit our program. If you compile and run, you should see the exit code (the "echo $?" means to show the exit code of the last program that was run):
+<br /><br />
+<img class="img-fluid" src="assets/images/exit.png"></img>
+<br /><br />
+Excellent! Now, let's expand our example, and make it print "Hello World!" to the console.
+<br /><br />
+<code>
+<br />.intel_syntax&nbsp;noprefix<br />.data<br />msg:&nbsp;.string&nbsp;"Hello,&nbsp;World!\n"<br />.text<br />.global&nbsp;_start<br />_start:<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rax,&nbsp;1<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rdi,&nbsp;1<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rsi,&nbsp;OFFSET&nbsp;FLAT:msg<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rdx,&nbsp;14<br />&nbsp;&nbsp;&nbsp;&nbsp;syscall<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rax,&nbsp;60<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rdi,&nbsp;5<br />&nbsp;&nbsp;&nbsp;&nbsp;syscall<br /></code>
+<br /><br />
+You'll notice we still kept the system call for exit. The C library does the same thing when the main function returns. This is because if you don't, the program will return a segmentation fault after printing. But to return to our print call. Again, looking at the table, you can see that 1 is the system call for write- we are writing to the console. The second argument is for the file descriptor. If you wanted to write to a file, you can use this same system call with the same syntax. However, since we are writing to a console, this argument becomes 1. 1 is still a file descriptor, but it represents STDOUT, a special file read by your terminal. The second argument is a pointer to your string, and the third argument is the length of the string.
+<br /><br />
+If you compile and run, you should see this:
+<br /><br />
+<img class="img-fluid" src="assets/images/output.png"></img>
+<br /><br />
+<h3>Writing to a File</h3>
+<br /><br />
+Now let's do a more complicated example. We will further build onto our example above by creating a file, opening it, writing "Hello World", and then closing it. Examine this source code:
+<br /><br />
+<code>
+<br />.intel_syntax&nbsp;noprefix<br />.data<br />fileName:&nbsp;.string&nbsp;"./file.txt"<br />msg:&nbsp;.string&nbsp;"Hello,&nbsp;World!\n"<br />.text<br />.global&nbsp;_start<br />_start:<br />&nbsp;&nbsp;&nbsp;&nbsp;/*&nbsp;Create&nbsp;the&nbsp;file&nbsp;*/<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rax,&nbsp;85<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rdi,&nbsp;OFFSET&nbsp;FLAT:fileName<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rsi,&nbsp;420<br />&nbsp;&nbsp;&nbsp;&nbsp;syscall<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;/*&nbsp;Open&nbsp;the&nbsp;file&nbsp;*/<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rax,&nbsp;2<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rdi,&nbsp;OFFSET&nbsp;FLAT:fileName<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rsi,&nbsp;2<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rdx,&nbsp;420<br />&nbsp;&nbsp;&nbsp;&nbsp;syscall<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;/*&nbsp;Save&nbsp;the&nbsp;file&nbsp;descriptor&nbsp;*/<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rcx,&nbsp;rax<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;/*&nbsp;Write&nbsp;to&nbsp;the&nbsp;file&nbsp;*/<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rax,&nbsp;1<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rdi,&nbsp;rcx<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rsi,&nbsp;OFFSET&nbsp;FLAT:msg<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rdx,&nbsp;14<br />&nbsp;&nbsp;&nbsp;&nbsp;syscall<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;/*&nbsp;Close&nbsp;the&nbsp;file&nbsp;*/<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rax,&nbsp;3<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rdi,&nbsp;rcx<br />&nbsp;&nbsp;&nbsp;&nbsp;syscall<br />&nbsp;&nbsp;&nbsp;&nbsp;/*&nbsp;Exit&nbsp;*/<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rax,&nbsp;60<br />&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;rdi,&nbsp;5<br />&nbsp;&nbsp;&nbsp;&nbsp;syscall<br /></code>
+<br /><br />
+I won't go into a ton of detail at this point, but I will cover a few key things. First, the "420" under file creation and opening is the mode- the permissions. This number corresponds to the octal "644". This means the current user can read and write the file, and everyone else can read it. Next, under file opening, you will notice the "2" for the second argument. This tells the kernel to open the file for reading and writing.
+<br /><br />
+The final thing to note is after the file opening call, you will notice we have the instruction "mov rcx, rax". This is an example of a system call that returns something- in this case, it returns the file descriptor of the opened file. You will need the file descriptor to write and close it. Ordinarily, this would be saved to memory. However, that requires some complicated setup beyond the scope of this article, so we are going to save it to the RCX register. The choice of RCX is because it won't get clobbered (erased) by other system calls.
+<br /><br />
+When you compile and run, you should see something like this:
+<br /><br />
+<img class="img-fluid" src="assets/images/file.png"></img>
+<br /><br />
+Congratulations! You have created and written to a file only using system calls!
+<br /><br />
+<h3>Conclusion</h3>
+<br /><br />
+There's a lot more we can do with this- just scroll through the system call list. In my last big compiler project, the Ida language/compiler, the standard library eventually had capabilities to allocate and free memory; create, open, read, write, and close files; fork and run programs; and basic file system operations like creating directories. This particular case was a little easier because I had a native system call interface in the language. But still, its easy to expose a system call function to build your standard library.
+<br /><br />
+If you're interested in making a library or knowing how one works, hopefully this presents a good starting point.
+<br /><br />
+Thanks for reading!
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

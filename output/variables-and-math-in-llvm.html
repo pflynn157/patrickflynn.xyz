@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Variables and Math in LLVM</h2>
+<p><br />
+
+Hello everyone! Earlier, I wrote a post on generating a Hello World program using the LLVM framework. Today, I'm doing a follow-up post on that in which we'll be creating variables and doing some simple math. In the process, we're going to learn how to use the C "printf" function with LLVM.
+<br /><br />
+Creating variables and performing operations on them is easy in LLVM, as well as a crucial step. After all, a program without variables is basically useless. LLVM makes variable management easy, meaning that you don't have to deal with things like the stack size and register allocation as you would when you're creating your own backend. Math is also easy too. Math operations in LLVM are almost identical to a math operation and assignment in high-level programming languages. But once again, you get the benefit of not having to deal with memory and register allocations. A single math statement handles load, store, and the operation itself.
+<br /><br />
+In this post, we will be implementing a program that looks roughly like this in C:
+<br /><br />
+<code>
+<br />#include&nbsp;&lt;stdio.h&gt;<br /><br />int&nbsp;main()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;x&nbsp;=&nbsp;10;<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;y&nbsp;=&nbsp;14;<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;z&nbsp;=&nbsp;0;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;z&nbsp;=&nbsp;x&nbsp;+&nbsp;y&nbsp;-&nbsp;7;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;printf("Result:&nbsp;%d\n",&nbsp;z);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;3;<br />}<br /></code>
+<br /><br />
+True, this is not the most spectacular program, but once you can do this in LLVM, you can build a large number of more complex programs.
+<br /><br />
+Let's dive in!
+<br /><br />
+<h2>Getting Started</h2>
+<br /><br />
+I'm going to try to introduce the new parts in sections, so I would recommend trying to follow along by adding the parts yourself. However, I'm not writing this completely from scratch. We are going to build directly off our original example:
+<br /><br />
+<code>
+<br />#include&nbsp;&lt;iostream&gt;<br />#include&nbsp;&lt;vector&gt;<br /><br />#include&nbsp;"llvm/IR/IRBuilder.h"<br />#include&nbsp;"llvm/IR/LLVMContext.h"<br />#include&nbsp;"llvm/IR/Module.h"<br />#include&nbsp;"llvm/IR/BasicBlock.h"<br /><br />//&nbsp;Needed&nbsp;to&nbsp;generate&nbsp;assembly<br />#include&nbsp;"llvm/Support/FileSystem.h"<br />#include&nbsp;"llvm/Support/Host.h"<br />#include&nbsp;"llvm/Support/raw_ostream.h"<br />#include&nbsp;"llvm/Support/TargetRegistry.h"<br />#include&nbsp;"llvm/Support/TargetSelect.h"<br />#include&nbsp;"llvm/Target/TargetMachine.h"<br />#include&nbsp;"llvm/Target/TargetOptions.h"<br />#include&nbsp;"llvm/IR/LegacyPassManager.h"<br /><br />using&nbsp;namespace&nbsp;llvm;<br /><br />std::unique_ptr&lt;LLVMContext&gt;&nbsp;context;<br />std::unique_ptr&lt;Module&gt;&nbsp;mod;<br />std::unique_ptr&lt;IRBuilder&lt;&gt;&gt;&nbsp;builder;<br /><br />void&nbsp;assemble();<br /><br />int&nbsp;main(int&nbsp;argc,&nbsp;char&nbsp;*argv[])&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Setup&nbsp;everything<br />&nbsp;&nbsp;&nbsp;&nbsp;context&nbsp;=&nbsp;std::make_unique&lt;LLVMContext&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;mod&nbsp;=&nbsp;std::make_unique&lt;Module&gt;("unit1",&nbsp;*context);<br />&nbsp;&nbsp;&nbsp;&nbsp;builder&nbsp;=&nbsp;std::make_unique&lt;IRBuilder&lt;&gt;&gt;(*context);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Create&nbsp;an&nbsp;extern&nbsp;declaration&nbsp;to&nbsp;puts<br />&nbsp;&nbsp;&nbsp;&nbsp;Type&nbsp;*putsRetType&nbsp;=&nbsp;Type::getVoidTy(*context);<br />&nbsp;&nbsp;&nbsp;&nbsp;Type&nbsp;*putsArgType&nbsp;=&nbsp;Type::getInt8PtrTy(*context);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;FunctionType&nbsp;*putsFT&nbsp;=&nbsp;FunctionType::get(putsRetType,&nbsp;putsArgType,&nbsp;false);<br />&nbsp;&nbsp;&nbsp;&nbsp;Function&nbsp;*putsFunc&nbsp;=&nbsp;Function::Create(putsFT,&nbsp;Function::ExternalLinkage,&nbsp;"puts",&nbsp;mod.get());<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Create&nbsp;Function<br />&nbsp;&nbsp;&nbsp;&nbsp;Type&nbsp;*funcRetType&nbsp;=&nbsp;Type::getInt32Ty(*context);<br />&nbsp;&nbsp;&nbsp;&nbsp;FunctionType&nbsp;*FT&nbsp;=&nbsp;FunctionType::get(funcRetType,&nbsp;false);<br />&nbsp;&nbsp;&nbsp;&nbsp;Function&nbsp;*func&nbsp;=&nbsp;Function::Create(FT,&nbsp;Function::ExternalLinkage,&nbsp;"main",&nbsp;mod.get());<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Create&nbsp;the&nbsp;function&nbsp;body<br />&nbsp;&nbsp;&nbsp;&nbsp;BasicBlock&nbsp;*mainBlock&nbsp;=&nbsp;BasicBlock::Create(*context,&nbsp;"entry",&nbsp;func);<br />&nbsp;&nbsp;&nbsp;&nbsp;builder-&gt;SetInsertPoint(mainBlock);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Call&nbsp;puts,&nbsp;and&nbsp;print&nbsp;"Hello&nbsp;World!"<br />&nbsp;&nbsp;&nbsp;&nbsp;std::vector&lt;Value&nbsp;*&gt;&nbsp;args;<br />&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;*str&nbsp;=&nbsp;builder-&gt;CreateGlobalStringPtr("Hello&nbsp;World!");<br />&nbsp;&nbsp;&nbsp;&nbsp;args.push_back(str);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;Function&nbsp;*callee&nbsp;=&nbsp;mod-&gt;getFunction("puts");<br />&nbsp;&nbsp;&nbsp;&nbsp;builder-&gt;CreateCall(callee,&nbsp;args);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Return&nbsp;3<br />&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;*retValue&nbsp;=&nbsp;builder-&gt;getInt32(3);<br />&nbsp;&nbsp;&nbsp;&nbsp;builder-&gt;CreateRet(retValue);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//dump<br />&nbsp;&nbsp;&nbsp;&nbsp;mod-&gt;print(errs(),&nbsp;nullptr);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Assemble&nbsp;and&nbsp;build<br />&nbsp;&nbsp;&nbsp;&nbsp;assemble();<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Compile<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Using&nbsp;system()&nbsp;is&nbsp;bad;&nbsp;I&nbsp;am&nbsp;using&nbsp;it&nbsp;for&nbsp;the&nbsp;sake&nbsp;of&nbsp;readability<br />&nbsp;&nbsp;&nbsp;&nbsp;system("as&nbsp;first.s&nbsp;-o&nbsp;first.o");<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;std::string&nbsp;cmd&nbsp;=&nbsp;"ld&nbsp;";<br />&nbsp;&nbsp;&nbsp;&nbsp;cmd&nbsp;+=&nbsp;"/usr/lib/x86_64-linux-gnu/crt1.o&nbsp;/usr/lib/x86_64-linux-gnu/crti.o&nbsp;/usr/lib/x86_64-linux-gnu/crtn.o&nbsp;";<br />&nbsp;&nbsp;&nbsp;&nbsp;cmd&nbsp;+=&nbsp;"first.o&nbsp;-o&nbsp;first&nbsp;";<br />&nbsp;&nbsp;&nbsp;&nbsp;cmd&nbsp;+=&nbsp;"-dynamic-linker&nbsp;/lib64/ld-linux-x86-64.so.2&nbsp;-lc";<br />&nbsp;&nbsp;&nbsp;&nbsp;system(cmd.c_str());<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />}<br /><br />//&nbsp;Generate&nbsp;assemble&nbsp;and&nbsp;build<br />void&nbsp;assemble()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;We&nbsp;are&nbsp;going&nbsp;to&nbsp;generate&nbsp;for&nbsp;X86,&nbsp;so&nbsp;tell&nbsp;LLVM<br />&nbsp;&nbsp;&nbsp;&nbsp;LLVMInitializeX86TargetInfo();<br />&nbsp;&nbsp;&nbsp;&nbsp;LLVMInitializeX86Target();<br />&nbsp;&nbsp;&nbsp;&nbsp;LLVMInitializeX86TargetMC();<br />&nbsp;&nbsp;&nbsp;&nbsp;LLVMInitializeX86AsmParser();<br />&nbsp;&nbsp;&nbsp;&nbsp;LLVMInitializeX86AsmPrinter();<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Get&nbsp;the&nbsp;target&nbsp;triple&nbsp;so&nbsp;LLVM&nbsp;knows&nbsp;what&nbsp;to&nbsp;generate&nbsp;assembly&nbsp;for<br />&nbsp;&nbsp;&nbsp;&nbsp;std::string&nbsp;triple&nbsp;=&nbsp;sys::getDefaultTargetTriple();<br />&nbsp;&nbsp;&nbsp;&nbsp;mod-&gt;setTargetTriple(triple);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Look&nbsp;up&nbsp;the&nbsp;target<br />&nbsp;&nbsp;&nbsp;&nbsp;std::string&nbsp;error;<br />&nbsp;&nbsp;&nbsp;&nbsp;auto&nbsp;target&nbsp;=&nbsp;TargetRegistry::lookupTarget(triple,&nbsp;error);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Check&nbsp;for&nbsp;any&nbsp;errors&nbsp;with&nbsp;the&nbsp;target&nbsp;triple<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!target)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errs()&nbsp;&lt;&lt;&nbsp;error;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Setup&nbsp;the&nbsp;target&nbsp;writer<br />&nbsp;&nbsp;&nbsp;&nbsp;auto&nbsp;CPU&nbsp;=&nbsp;"generic";<br />&nbsp;&nbsp;&nbsp;&nbsp;auto&nbsp;features&nbsp;=&nbsp;"";<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;TargetOptions&nbsp;options;<br />&nbsp;&nbsp;&nbsp;&nbsp;auto&nbsp;RM&nbsp;=&nbsp;Optional&lt;Reloc::Model&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;auto&nbsp;machine&nbsp;=&nbsp;target-&gt;createTargetMachine(triple,&nbsp;CPU,&nbsp;features,&nbsp;options,&nbsp;RM);<br />&nbsp;&nbsp;&nbsp;&nbsp;mod-&gt;setDataLayout(machine-&gt;createDataLayout());<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Finally,&nbsp;generate&nbsp;assembly<br />&nbsp;&nbsp;&nbsp;&nbsp;std::string&nbsp;outputPath&nbsp;=&nbsp;"./first.s";<br />&nbsp;&nbsp;&nbsp;&nbsp;std::error_code&nbsp;errorCode;<br />&nbsp;&nbsp;&nbsp;&nbsp;raw_fd_ostream&nbsp;writer(outputPath,&nbsp;errorCode,&nbsp;sys::fs::OF_None);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(errorCode)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errs()&nbsp;&lt;&lt;&nbsp;"Unable&nbsp;to&nbsp;open&nbsp;file:&nbsp;"&nbsp;&lt;&lt;&nbsp;errorCode.message();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;legacy::PassManager&nbsp;pass;<br />&nbsp;&nbsp;&nbsp;&nbsp;auto&nbsp;outputType&nbsp;=&nbsp;CGFT_AssemblyFile;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(machine-&gt;addPassesToEmitFile(pass,&nbsp;writer,&nbsp;nullptr,&nbsp;outputType))&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errs()&nbsp;&lt;&lt;&nbsp;"Unable&nbsp;to&nbsp;write&nbsp;to&nbsp;file.";<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;pass.run(*mod);<br />&nbsp;&nbsp;&nbsp;&nbsp;writer.flush();<br />}<br /></code>
+<br /><br />
+There are two things to note here. First of all, when I ran it on my Linux Mint computer, I began running into weird issues with the linking step, so I had to change to a manual linking, which you can see near the bottom of the main function. Ordinarily, you should be able to pass the ".s" file directly into GCC, but for some reason that wasn't working. Learning how to link manually is a good thing to know if you are interested in compiler development, so I would recommend keeping this. However, if you are not on an Ubuntu-based system, you need to change the paths to the "crt" files (I think they are under "/usr/lib" on other systems).
+<br /><br />
+The second thing to note is that we will only be working in the main function, so you don't have to worry about the second function at all. Everything I post going forward (except the final code listing) will be in the main function.
+<br /><br />
+<h2>Creating and Assigning a Variable</h2>
+<br /><br />
+Okay, first let's create the variables for our program. We are creating three: "x, y, and z", all of int32 type:
+<br /><br />
+<code>
+<br />//&nbsp;Create&nbsp;variables&nbsp;x,&nbsp;y,&nbsp;and&nbsp;z,&nbsp;all&nbsp;of&nbsp;int32&nbsp;type<br />Type&nbsp;*i32Type&nbsp;=&nbsp;Type::getInt32Ty(*context);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />Value&nbsp;*varX&nbsp;=&nbsp;builder-&gt;CreateAlloca(i32Type);<br />Value&nbsp;*varY&nbsp;=&nbsp;builder-&gt;CreateAlloca(i32Type);<br />Value&nbsp;*varZ&nbsp;=&nbsp;builder-&gt;CreateAlloca(i32Type);<br /></code>
+<br /><br />
+Perfect! Now, let's initialize them:
+<br /><br />
+<code>
+<br />//&nbsp;x&nbsp;=&nbsp;10,&nbsp;y&nbsp;=&nbsp;14,&nbsp;z&nbsp;=&nbsp;0<br />Value&nbsp;*const10&nbsp;=&nbsp;builder-&gt;getInt32(10);<br />builder-&gt;CreateStore(const10,&nbsp;varX);<br /><br />Value&nbsp;*const14&nbsp;=&nbsp;builder-&gt;getInt32(14);<br />builder-&gt;CreateStore(const14,&nbsp;varY);<br /><br />Value&nbsp;*const0&nbsp;=&nbsp;builder-&gt;getInt32(0);<br />builder-&gt;CreateStore(const0,&nbsp;varZ);<br /></code>
+<br /><br />
+One thing I should note is to pay attention to "store". This is kind of confusing- to me at least- but the left value is what's being stored, and the right value is the destination (or memory location). I've found that many of the problems I've created for myself have been caused by me stupidly putting them in the wrong order.
+<br /><br />
+<h2>Doing Math</h2>
+<br /><br />
+Okay, now that our variables are created, we can do math. We wish to do this equation:
+<br /><br />
+<code>
+<br />z&nbsp;=&nbsp;x&nbsp;+&nbsp;y&nbsp;-&nbsp;7<br /></code>
+<br /><br />
+And this is the code we use:
+<br /><br />
+<code>
+<br />Value&nbsp;*valX&nbsp;=&nbsp;builder-&gt;CreateLoad(varX);<br />Value&nbsp;*valY&nbsp;=&nbsp;builder-&gt;CreateLoad(varY);<br />Value&nbsp;*const7&nbsp;=&nbsp;builder-&gt;getInt32(7);<br /><br />Value&nbsp;*sum&nbsp;=&nbsp;builder-&gt;CreateAdd(valX,&nbsp;valY);<br />sum&nbsp;=&nbsp;builder-&gt;CreateSub(sum,&nbsp;const7);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />builder-&gt;CreateStore(sum,&nbsp;varZ);<br /></code>
+<br /><br />
+As you can see, doing math in LLVM is very straightforward. The first two lines load the values held by the variables (equivalent from loading from a memory location in the final assembly). The third line creates a constant, which could be thought of as an immediate value. The next two lines do the addition and subtraction. One of the nice things about LLVM is you can reassign values as the results change. Finally, we store the result to variable Z.
+<br /><br />
+One thing I do want to note here is that these math instructions are only valid for integer types. You will notice that LLVM has float and double types. However, there are separate math and comparison instructions for those. I will go over floating point types in a different post, but for now just keep this in mind.
+<br /><br />
+<h2>Using Printf</h2>
+<br /><br />
+The original code used "puts", which is only suitable for printing strings. So first, we need to convert to printf. Fortunately, it's really easy. First, find the code where we define the "puts" function, and replace it with the printf definition (which is really similar):
+<br /><br />
+<code>
+<br />//&nbsp;Create&nbsp;an&nbsp;extern&nbsp;declaration&nbsp;to&nbsp;puts<br />Type&nbsp;*printfRetType&nbsp;=&nbsp;Type::getVoidTy(*context);<br />Type&nbsp;*printfArgType&nbsp;=&nbsp;Type::getInt8PtrTy(*context);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />//&nbsp;-&gt;&nbsp;Note&nbsp;that&nbsp;the&nbsp;last&nbsp;arg&nbsp;is&nbsp;"true"&nbsp;because&nbsp;variadic&nbsp;arguments&nbsp;are&nbsp;accepted&nbsp;now<br />FunctionType&nbsp;*printfFT&nbsp;=&nbsp;FunctionType::get(printfRetType,&nbsp;printfArgType,&nbsp;true);<br />Function&nbsp;*printfFunc&nbsp;=&nbsp;Function::Create(printfFT,&nbsp;Function::ExternalLinkage,&nbsp;"printf",&nbsp;mod.get());<br /></code>
+<br /><br />
+The key thing to note is the last parameter where we create the "FunctionType" object. This is now "true" because it accepts variadic arguments, something important for printf.
+<br /><br />
+Now, we need to change the function call and add the second parameter. This is not much different either from the original. The biggest difference is probably in the string- we have to change it to a "printf" style string for printing integers. Here is how it's done:
+<br /><br />
+<code>
+<br />std::vector&lt;Value&nbsp;*&gt;&nbsp;args;<br />Value&nbsp;*str&nbsp;=&nbsp;builder-&gt;CreateGlobalStringPtr("X:&nbsp;%d\n");<br />Value&nbsp;*xVal&nbsp;=&nbsp;builder-&gt;CreateLoad(varX);<br /><br />args.push_back(str);<br />args.push_back(xVal);<br /><br />Function&nbsp;*callee&nbsp;=&nbsp;mod-&gt;getFunction("printf");<br />builder-&gt;CreateCall(callee,&nbsp;args);<br /></code>
+<br /><br />
+<h2>Building and Running</h2>
+<br /><br />
+To build and run this program, this line should work:
+<br /><br />
+<code>
+<br />clang++&nbsp;-g&nbsp;-O3&nbsp;compiler.cpp&nbsp;`llvm-config&nbsp;--cxxflags&nbsp;--ldflags&nbsp;--system-libs&nbsp;--libs&nbsp;core`&nbsp;-o&nbsp;compiler<br /></code>
+<br /><br />
+Once it builds, run the "compiler" binary. If all goes well, it will generate your assembly file, build, and link it. I mentioned this in the first part of the post, but you will probably have to adjust the linking command some if you are not on an Ubuntu based system. If you want to give GCC a try, go for it, but I was having issues so I can't guarantee that it would work.
+<br /><br />
+<h2>Conclusion</h2>
+<br /><br />
+As you can see, creating and doing math on variables in LLVM is fairly easy, as is using the C library "printf" function. Between this post and previous posts, you now know many of the basics needed to construct more complex LLVM-based compilers. In future posts, we will do things like working with other functions, branches, loops, and floating-point variables.
+<br /><br />
+Stay tuned, and thanks for reading!
+<br /><br />
+<h2>The Source</h2>
+<br /><br />
+Here is the source code. Like the original listing, this too is in the public domain, so use and enjoy!
+<br /><br />
+<code>
+<br />#include&nbsp;&lt;iostream&gt;<br />#include&nbsp;&lt;vector&gt;<br /><br />#include&nbsp;"llvm/IR/IRBuilder.h"<br />#include&nbsp;"llvm/IR/LLVMContext.h"<br />#include&nbsp;"llvm/IR/Module.h"<br />#include&nbsp;"llvm/IR/BasicBlock.h"<br /><br />//&nbsp;Needed&nbsp;to&nbsp;generate&nbsp;assembly<br />#include&nbsp;"llvm/Support/FileSystem.h"<br />#include&nbsp;"llvm/Support/Host.h"<br />#include&nbsp;"llvm/Support/raw_ostream.h"<br />#include&nbsp;"llvm/Support/TargetRegistry.h"<br />#include&nbsp;"llvm/Support/TargetSelect.h"<br />#include&nbsp;"llvm/Target/TargetMachine.h"<br />#include&nbsp;"llvm/Target/TargetOptions.h"<br />#include&nbsp;"llvm/IR/LegacyPassManager.h"<br /><br />using&nbsp;namespace&nbsp;llvm;<br /><br />std::unique_ptr&lt;LLVMContext&gt;&nbsp;context;<br />std::unique_ptr&lt;Module&gt;&nbsp;mod;<br />std::unique_ptr&lt;IRBuilder&lt;&gt;&gt;&nbsp;builder;<br /><br />void&nbsp;assemble();<br /><br />int&nbsp;main(int&nbsp;argc,&nbsp;char&nbsp;*argv[])&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Setup&nbsp;everything<br />&nbsp;&nbsp;&nbsp;&nbsp;context&nbsp;=&nbsp;std::make_unique&lt;LLVMContext&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;mod&nbsp;=&nbsp;std::make_unique&lt;Module&gt;("unit1",&nbsp;*context);<br />&nbsp;&nbsp;&nbsp;&nbsp;builder&nbsp;=&nbsp;std::make_unique&lt;IRBuilder&lt;&gt;&gt;(*context);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Create&nbsp;an&nbsp;extern&nbsp;declaration&nbsp;to&nbsp;puts<br />&nbsp;&nbsp;&nbsp;&nbsp;Type&nbsp;*printfRetType&nbsp;=&nbsp;Type::getVoidTy(*context);<br />&nbsp;&nbsp;&nbsp;&nbsp;Type&nbsp;*printfArgType&nbsp;=&nbsp;Type::getInt8PtrTy(*context);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;-&gt;&nbsp;Note&nbsp;that&nbsp;the&nbsp;last&nbsp;arg&nbsp;is&nbsp;"true"&nbsp;because&nbsp;variadic&nbsp;arguments&nbsp;are&nbsp;accepted&nbsp;now<br />&nbsp;&nbsp;&nbsp;&nbsp;FunctionType&nbsp;*printfFT&nbsp;=&nbsp;FunctionType::get(printfRetType,&nbsp;printfArgType,&nbsp;true);<br />&nbsp;&nbsp;&nbsp;&nbsp;Function&nbsp;*printfFunc&nbsp;=&nbsp;Function::Create(printfFT,&nbsp;Function::ExternalLinkage,&nbsp;"printf",&nbsp;mod.get());<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Create&nbsp;Function<br />&nbsp;&nbsp;&nbsp;&nbsp;Type&nbsp;*funcRetType&nbsp;=&nbsp;Type::getInt32Ty(*context);<br />&nbsp;&nbsp;&nbsp;&nbsp;FunctionType&nbsp;*FT&nbsp;=&nbsp;FunctionType::get(funcRetType,&nbsp;false);<br />&nbsp;&nbsp;&nbsp;&nbsp;Function&nbsp;*func&nbsp;=&nbsp;Function::Create(FT,&nbsp;Function::ExternalLinkage,&nbsp;"main",&nbsp;mod.get());<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Create&nbsp;the&nbsp;function&nbsp;body<br />&nbsp;&nbsp;&nbsp;&nbsp;BasicBlock&nbsp;*mainBlock&nbsp;=&nbsp;BasicBlock::Create(*context,&nbsp;"entry",&nbsp;func);<br />&nbsp;&nbsp;&nbsp;&nbsp;builder-&gt;SetInsertPoint(mainBlock);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Create&nbsp;variables&nbsp;x,&nbsp;y,&nbsp;and&nbsp;z,&nbsp;all&nbsp;of&nbsp;int32&nbsp;type<br />&nbsp;&nbsp;&nbsp;&nbsp;Type&nbsp;*i32Type&nbsp;=&nbsp;Type::getInt32Ty(*context);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;*varX&nbsp;=&nbsp;builder-&gt;CreateAlloca(i32Type);<br />&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;*varY&nbsp;=&nbsp;builder-&gt;CreateAlloca(i32Type);<br />&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;*varZ&nbsp;=&nbsp;builder-&gt;CreateAlloca(i32Type);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;x&nbsp;=&nbsp;10,&nbsp;y&nbsp;=&nbsp;14,&nbsp;z&nbsp;=&nbsp;0<br />&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;*const10&nbsp;=&nbsp;builder-&gt;getInt32(10);<br />&nbsp;&nbsp;&nbsp;&nbsp;builder-&gt;CreateStore(const10,&nbsp;varX);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;*const14&nbsp;=&nbsp;builder-&gt;getInt32(14);<br />&nbsp;&nbsp;&nbsp;&nbsp;builder-&gt;CreateStore(const14,&nbsp;varY);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;*const0&nbsp;=&nbsp;builder-&gt;getInt32(0);<br />&nbsp;&nbsp;&nbsp;&nbsp;builder-&gt;CreateStore(const0,&nbsp;varZ);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;z&nbsp;=&nbsp;x&nbsp;+&nbsp;y&nbsp;-&nbsp;7<br />&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;*valX&nbsp;=&nbsp;builder-&gt;CreateLoad(varX);<br />&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;*valY&nbsp;=&nbsp;builder-&gt;CreateLoad(varY);<br />&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;*const7&nbsp;=&nbsp;builder-&gt;getInt32(7);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;*sum&nbsp;=&nbsp;builder-&gt;CreateAdd(valX,&nbsp;valY);<br />&nbsp;&nbsp;&nbsp;&nbsp;sum&nbsp;=&nbsp;builder-&gt;CreateSub(sum,&nbsp;const7);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;builder-&gt;CreateStore(sum,&nbsp;varZ);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Call&nbsp;printf,&nbsp;and&nbsp;print&nbsp;variable&nbsp;X<br />&nbsp;&nbsp;&nbsp;&nbsp;std::vector&lt;Value&nbsp;*&gt;&nbsp;args;<br />&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;*str&nbsp;=&nbsp;builder-&gt;CreateGlobalStringPtr("Result:&nbsp;%d\n");<br />&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;*valZ&nbsp;=&nbsp;builder-&gt;CreateLoad(varZ);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;args.push_back(str);<br />&nbsp;&nbsp;&nbsp;&nbsp;args.push_back(valZ);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;Function&nbsp;*callee&nbsp;=&nbsp;mod-&gt;getFunction("printf");<br />&nbsp;&nbsp;&nbsp;&nbsp;builder-&gt;CreateCall(callee,&nbsp;args);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Return&nbsp;3<br />&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;*retValue&nbsp;=&nbsp;builder-&gt;getInt32(3);<br />&nbsp;&nbsp;&nbsp;&nbsp;builder-&gt;CreateRet(retValue);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//dump<br />&nbsp;&nbsp;&nbsp;&nbsp;mod-&gt;print(errs(),&nbsp;nullptr);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Assemble&nbsp;and&nbsp;build<br />&nbsp;&nbsp;&nbsp;&nbsp;assemble();<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Compile<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Using&nbsp;system()&nbsp;is&nbsp;bad;&nbsp;I&nbsp;am&nbsp;using&nbsp;it&nbsp;for&nbsp;the&nbsp;sake&nbsp;of&nbsp;readability<br />&nbsp;&nbsp;&nbsp;&nbsp;system("as&nbsp;first.s&nbsp;-o&nbsp;first.o");<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;std::string&nbsp;cmd&nbsp;=&nbsp;"ld&nbsp;";<br />&nbsp;&nbsp;&nbsp;&nbsp;cmd&nbsp;+=&nbsp;"/usr/lib/x86_64-linux-gnu/crt1.o&nbsp;/usr/lib/x86_64-linux-gnu/crti.o&nbsp;/usr/lib/x86_64-linux-gnu/crtn.o&nbsp;";<br />&nbsp;&nbsp;&nbsp;&nbsp;cmd&nbsp;+=&nbsp;"first.o&nbsp;-o&nbsp;first&nbsp;";<br />&nbsp;&nbsp;&nbsp;&nbsp;cmd&nbsp;+=&nbsp;"-dynamic-linker&nbsp;/lib64/ld-linux-x86-64.so.2&nbsp;-lc";<br />&nbsp;&nbsp;&nbsp;&nbsp;system(cmd.c_str());<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />}<br /><br />//&nbsp;Generate&nbsp;assemble&nbsp;and&nbsp;build<br />void&nbsp;assemble()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;We&nbsp;are&nbsp;going&nbsp;to&nbsp;generate&nbsp;for&nbsp;X86,&nbsp;so&nbsp;tell&nbsp;LLVM<br />&nbsp;&nbsp;&nbsp;&nbsp;LLVMInitializeX86TargetInfo();<br />&nbsp;&nbsp;&nbsp;&nbsp;LLVMInitializeX86Target();<br />&nbsp;&nbsp;&nbsp;&nbsp;LLVMInitializeX86TargetMC();<br />&nbsp;&nbsp;&nbsp;&nbsp;LLVMInitializeX86AsmParser();<br />&nbsp;&nbsp;&nbsp;&nbsp;LLVMInitializeX86AsmPrinter();<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Get&nbsp;the&nbsp;target&nbsp;triple&nbsp;so&nbsp;LLVM&nbsp;knows&nbsp;what&nbsp;to&nbsp;generate&nbsp;assembly&nbsp;for<br />&nbsp;&nbsp;&nbsp;&nbsp;std::string&nbsp;triple&nbsp;=&nbsp;sys::getDefaultTargetTriple();<br />&nbsp;&nbsp;&nbsp;&nbsp;mod-&gt;setTargetTriple(triple);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Look&nbsp;up&nbsp;the&nbsp;target<br />&nbsp;&nbsp;&nbsp;&nbsp;std::string&nbsp;error;<br />&nbsp;&nbsp;&nbsp;&nbsp;auto&nbsp;target&nbsp;=&nbsp;TargetRegistry::lookupTarget(triple,&nbsp;error);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Check&nbsp;for&nbsp;any&nbsp;errors&nbsp;with&nbsp;the&nbsp;target&nbsp;triple<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!target)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errs()&nbsp;&lt;&lt;&nbsp;error;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Setup&nbsp;the&nbsp;target&nbsp;writer<br />&nbsp;&nbsp;&nbsp;&nbsp;auto&nbsp;CPU&nbsp;=&nbsp;"generic";<br />&nbsp;&nbsp;&nbsp;&nbsp;auto&nbsp;features&nbsp;=&nbsp;"";<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;TargetOptions&nbsp;options;<br />&nbsp;&nbsp;&nbsp;&nbsp;auto&nbsp;RM&nbsp;=&nbsp;Optional&lt;Reloc::Model&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;auto&nbsp;machine&nbsp;=&nbsp;target-&gt;createTargetMachine(triple,&nbsp;CPU,&nbsp;features,&nbsp;options,&nbsp;RM);<br />&nbsp;&nbsp;&nbsp;&nbsp;mod-&gt;setDataLayout(machine-&gt;createDataLayout());<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Finally,&nbsp;generate&nbsp;assembly<br />&nbsp;&nbsp;&nbsp;&nbsp;std::string&nbsp;outputPath&nbsp;=&nbsp;"./first.s";<br />&nbsp;&nbsp;&nbsp;&nbsp;std::error_code&nbsp;errorCode;<br />&nbsp;&nbsp;&nbsp;&nbsp;raw_fd_ostream&nbsp;writer(outputPath,&nbsp;errorCode,&nbsp;sys::fs::OF_None);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(errorCode)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errs()&nbsp;&lt;&lt;&nbsp;"Unable&nbsp;to&nbsp;open&nbsp;file:&nbsp;"&nbsp;&lt;&lt;&nbsp;errorCode.message();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;legacy::PassManager&nbsp;pass;<br />&nbsp;&nbsp;&nbsp;&nbsp;auto&nbsp;outputType&nbsp;=&nbsp;CGFT_AssemblyFile;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(machine-&gt;addPassesToEmitFile(pass,&nbsp;writer,&nbsp;nullptr,&nbsp;outputType))&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errs()&nbsp;&lt;&lt;&nbsp;"Unable&nbsp;to&nbsp;write&nbsp;to&nbsp;file.";<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;pass.run(*mod);<br />&nbsp;&nbsp;&nbsp;&nbsp;writer.flush();<br />}<br /></code>
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

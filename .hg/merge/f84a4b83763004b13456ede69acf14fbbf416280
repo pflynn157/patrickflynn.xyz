@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>New Project: Orka</h2>
+<p><br />
+
+This actually isn't so "new" at this point; I realized I forgot to publish a post on it. A week or so ago, I released a new programming project. It is yet another programming language/compiler project, but it is genuienly a new thing.
+<br /><br />
+The Orka project originally started out as a C++ clone of Ida; the difference (other than being C++) was rather than writing my own backend, I wanted to use LLVM, partly to make the process go faster, but mainly so I could learn LLVM for my job. The syntax was almost exactly the same at first, but I eventually began chaning it- mainly simplifying it. It still retains the Wirth language look that I like, but it is definitely less Wirth-like than Ida.
+<br /><br />
+While I'm proud of the language and the fact it uses LLVM so well, I am (perhaps strangely) most proud of the frontend- the parser. While I've written several parsers and have gotten better at doing so, one thing I've struggled with is getting the expressions right. Expressions in an abstract syntax tree are supposed to actually be a tree... Not a liner list as I've been doing (and trust me, problems arise when you try to do it this way). I finally got the parser to parse and build an AST correctly, and the end result is that the translation to LLVM is super easy.
+<br /><br />
+Currently, the language is somewhat of a finished product for me. I'll probably go back at some point and add to it, but I'm moving on to other projects at the moment, so you can consider it complete for now. My goal of learning LLVM has been accomplished. For those who are new to compilers and especially LLVM, hopefully this project can serve as a reference.
+<br /><br />
+You can find the project in the links below:
+<br /><br />
+<ul>
+<li> Source: <a href="https://git.sr.ht/~pflynn157/orka">https://git.sr.ht/~pflynn157/orka</a></li>
+<li> Documentation: <a href="/orka.html">patrickflynn.xyz/orka</a></li>
+</ul>
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

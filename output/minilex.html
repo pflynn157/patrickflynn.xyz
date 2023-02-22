@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h1>MiniLex</h1>
+<p><br />
+
+Welcome to MiniLex! This is one of my newer projects, and started out mainly as a project of necessity. Nevertheless, it still seems to be working well. As its name may apply, MiniLex is a lexical analyzer generator. In some ways, its inspired by the classic Lex/Flex Unix programs. You can find the source code <a href="https://github.com/pflynn157/minilex">here</a>.
+<br /><br />
+Despite the great variety of programming languages in existence, many principles are similar regardless of the language. One of them is the lexical analyzer component. Whether you are parsing C, C++, Python, HTML, or something else, the lexical analyzer will be fairly similar. The only difference lies in the keywords and symbols that define the language. As a result, once you have a fairly good lexical analyzer, you can adapt to other projects easily.
+<br /><br />
+That’s where MiniLex came from. The lexical analyzer it generates began life in the Tiny programming language. Since then, I’ve been copying it to new projects and changing things as needed. As I was starting a new project that required a lexical analyzer, I began thinking that I could write a generator without a lot of effort. And thus, MiniLex was born.
+<br /><br />
+MiniLex only generates a C++ lexical analyzer at the moment. MiniLex itself is written in Python.
+<br /><br />
+<h3>How To Use</h3>
+<br /><br />
+Using MiniLex is very easy. First, download and install it. Then, create a file something like this:
+<br /><br />
+<code>
+<br />##<br />##&nbsp;This&nbsp;is&nbsp;an&nbsp;example&nbsp;of&nbsp;a&nbsp;user-generated&nbsp;configuration&nbsp;file&nbsp;for<br />##&nbsp;minilex.<br />##<br /><br />output_path&nbsp;=&nbsp;"./src"<br /><br />#&nbsp;Define&nbsp;the&nbsp;keywords<br />keywords&nbsp;=&nbsp;[<br />&nbsp;&nbsp;&nbsp;&nbsp;("func",&nbsp;"Func"),&nbsp;("is",&nbsp;"Is"),&nbsp;("end",&nbsp;"End"),<br />&nbsp;&nbsp;&nbsp;&nbsp;("var",&nbsp;"Var"),&nbsp;("return",&nbsp;"Return")<br />]<br /><br />#&nbsp;Define&nbsp;the&nbsp;symbols<br />symbols&nbsp;=&nbsp;[<br />&nbsp;&nbsp;&nbsp;&nbsp;(";",&nbsp;"SemiColon"),&nbsp;("=",&nbsp;"Assign"),&nbsp;(":",&nbsp;"Colon"),&nbsp;(":=",&nbsp;"Assign2"),&nbsp;("!=",&nbsp;"NEQ")<br />]<br /><br />#&nbsp;Define&nbsp;single-line&nbsp;comments<br />single_comments&nbsp;=&nbsp;[&nbsp;"#",&nbsp;"//"&nbsp;]<br /><br />#&nbsp;Define&nbsp;multi-line&nbsp;comments<br />multi_comments&nbsp;=&nbsp;[&nbsp;("*/",&nbsp;"*/")&nbsp;]<br /></code>
+<br /><br />
+As you can probably see, this file is basically a Python file. Originally, minilex used a custom file format, but for consistency and ease of use, I decided to change it Python. This config file is imported as a Python module, and the variables are referenced directly in the generator. The output_path defaults to "./src" if not specified, but all others variables are required. The generator will fail if they are not specified. Minilex looks for "config.py" by default. However, you can specify your own path and module name.
+<br /><br />
+For keywords and symbols, each token is specified with a tuple of strings. The left value of the tuple is the keyword or symbol, and the right value is the generated token name. Single line comments are simply a list of tokens. Multi-line comments are a list of tuples, with the left value being the opening token, and the right value being the closing token.
+<br /><br />
+Three files are generated:
+<br /><br />
+<ul>
+<li> lex.cpp</li>
+<li> lex_debug.cpp</li>
+<li> lex.hpp</li>
+</ul>
+<br /><br />
+“lex.hpp” defines the Scanner class and the Token structures. You want to include this file in places where the scanner is needed. “lex_debug.cpp” contains simple debug code for printing the tokens. This is useful when writing parsers and debugging the lexical analyzer itself. Finally, “lex.cpp” contains the actual lexical analyzer.
+<br /><br />
+To run, use this command:
+<br /><br />
+<code>
+<br />#&nbsp;Defaults&nbsp;to&nbsp;./config.py<br />minilex<br /><br />#&nbsp;Optionally&nbsp;if&nbsp;you're&nbsp;using&nbsp;a&nbsp;custom&nbsp;path&nbsp;(DO&nbsp;NOT&nbsp;include&nbsp;.py)<br />#&nbsp;Assumes&nbsp;module&nbsp;is&nbsp;in&nbsp;./src/lex/lex.py<br />minilex&nbsp;src/lex/lex<br /></code>
+<br /><br />
+<h3>The Lexical Analyzer</h3>
+<br /><br />
+Token types are represented in this enumeration. These are the default tokens provided in every generated instance of the lexical analyzer.
+<br /><br />
+<code>
+<br />enum&nbsp;TokenType&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;EmptyToken,<br />&nbsp;&nbsp;&nbsp;&nbsp;Eof,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//##TOKEN&nbsp;LIST<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Literals<br />&nbsp;&nbsp;&nbsp;&nbsp;Id,<br />&nbsp;&nbsp;&nbsp;&nbsp;String,<br />&nbsp;&nbsp;&nbsp;&nbsp;CharL,<br />&nbsp;&nbsp;&nbsp;&nbsp;Int32<br />};<br /></code>
+<br /><br />
+And this is the corresponding structure representing a token. It contains the essential “type” field containing the token type, and several optional fields used to hold identifier and literal values as needed.
+<br /><br />
+<code>
+<br />struct&nbsp;Token&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;TokenType&nbsp;type;<br />&nbsp;&nbsp;&nbsp;&nbsp;std::string&nbsp;id_val;<br />&nbsp;&nbsp;&nbsp;&nbsp;char&nbsp;i8_val;<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;i32_val;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;Token();<br />&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;print();<br />};<br /></code>
+<br /><br />
+This is an example of how to use the scanner class. All it does is read every token from the file and print it out.
+<br /><br />
+<code>
+<br />#include&nbsp;&lt;iostream&gt;<br />#include&nbsp;&lt;string&gt;<br />&nbsp;<br />#include&nbsp;"lex.hpp"<br />&nbsp;<br />int&nbsp;main(int&nbsp;argc,&nbsp;char&nbsp;*argv[])&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(argc&nbsp;==&nbsp;1)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::cerr&nbsp;&lt;&lt;&nbsp;"Error:&nbsp;No&nbsp;input&nbsp;file"&nbsp;&lt;&lt;&nbsp;std::endl;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;1;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;std::string&nbsp;input&nbsp;=&nbsp;argv[1];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;Scanner&nbsp;*scanner&nbsp;=&nbsp;new&nbsp;Scanner(input);<br />&nbsp;&nbsp;&nbsp;&nbsp;Token&nbsp;token&nbsp;=&nbsp;scanner-&gt;getNext();<br />&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(token.type&nbsp;!=&nbsp;Eof)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;token.print();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;token&nbsp;=&nbsp;scanner-&gt;getNext();<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;token&nbsp;=&nbsp;scanner-&gt;getNext();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />}<br /></code>
+<br /><br />
+<h3>Future Work</h3>
+<br /><br />
+Currently, this works well enough for the needs of my projects, so I’m not going to add anymore at the moment. That doesn’t mean I won’t. As I use it more, I may add things I end up needing.
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

@@ -1,0 +1,563 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h1>Dakkar Conlang</h1>
+<p><br />
+
+This was a fun hobby project from about a month ago, and as the title says, it's a constructed language. For the curious, the name is really just a working name. I was reading Jules Verne's <i>Mysterious Island</i> when I started working on this project, so the name came from Captain Nemo's real name, Prince Dakkar. I know, its kind of cheesy. Usually I text friends when I need a decent name for something.
+<br /><br />
+But anyway, this was a theoretical exercise at constructing a language. It is inspired in some ways by <a href="http://www.ithkuil.net/">Ithkuil</a>, another hypothetical language I stumbled across a while back. Basically, my goal was to make a language that could express more ideas and thoughts in fewer words. But its not just about being concise; it was also about being deep, or precise.
+<br /><br />
+This project is not dead; I started working on a second version, which has much more extensive grammar and allows for more ideas. I actually have all the notes and everything formulated for it, I just have yet to finish organizing and refining it. Oh, and coming up with a new name as well.
+<br /><br />
+The lexicon is by no means complete. There's also not really any rules for how words are constructed. I'm not about to type it right now, so you can see the PDF here:
+<br /><br />
+<a href="/assets/Dakkar_lexicon.pdf">Dakkar_lexicon</a>
+<br /><br />
+<h2>Phonology</h2>
+<br /><br />
+If you're an English speaker, you'll have little issue trying to pronounce the language.
+<br /><br />
+Vowels:
+<br /><br />
+<ul>
+<li> 'a' -&gt; as in "at"</li>
+<li> 'ā' -&gt; as in "cake"</li>
+<li> 'e' -&gt; as in "step"</li>
+<li> 'ē' -&gt; as in "eat"</li>
+<li> 'o' -&gt; as in "ox"</li>
+<li> 'ō' -&gt; as in "open"</li>
+<li> 'i' -&gt; as in "it"</li>
+<li> 'î' -&gt; as in "ice"</li>
+<li> 'u' -&gt; as in "ought"</li>
+<li> 'ū' -&gt; as in "you"</li>
+<li> 'û' -&gt; as in "out' or "ow"</li>
+</ul>
+<br /><br />
+Consonants:
+<br /><br />
+<ul>
+<li> 'b' -&gt; as in "bun"</li>
+<li> 'c' -&gt; as in "cat"</li>
+<li> 'd' -&gt; as in "dog"</li>
+<li> 'f' -&gt; as in "fun"</li>
+<li> 'g' -&gt; as in "great"</li>
+<li> 'h' -&gt; as in "hat"</li>
+<li> 'j' -&gt; as in "jar"</li>
+<li> 'l' -&gt; as in "log"</li>
+<li> 'm' -&gt; as in "mug"</li>
+<li> 'n' -&gt; as in "nut"</li>
+<li> 'p' -&gt; as in "pack"</li>
+<li> 'q' -&gt; as in "queen" (with no u)</li>
+<li> 'r' -&gt; as in "rug"</li>
+<li> 's' -&gt; as in "snake"</li>
+<li> 't' -&gt; as in "top"</li>
+<li> 'v' -&gt; as in "van"</li>
+<li> 'w' -&gt; as in "water"</li>
+<li> 'x' -&gt; as in "box"</li>
+<li> 'z' -&gt; as in "zip"</li>
+<li> 'Ŧ' -&gt; as in "the"</li>
+<li> 'ŧ' -&gt; as in "then"</li>
+<li> 'ž' -&gt; approximately "zh"</li>
+<li> 'ĉ' -&gt; as in "change"</li>
+<li> 'ŝ' -&gt; as in "shake"</li>
+</ul>
+<br /><br />
+<h2>Sentence Structure</h2>
+<br /><br />
+In general, a sentence follows subject-object-verb (SOV) order. Adjectives go before the noun they modify. Adverbs go after the verb they modify. Sentences can start with a particle, either a single word or a prepositional phrase, which indicates mood or context.
+<br /><br />
+<h2>Pronouns</h2>
+<br /><br />
+Dakkar has the traditional 1st/2nd/3rd person pronouns; however, there are a few differences from languages such as English:
+<br /><br />
+<ul>
+<li> No distinction is made for gender (as in Finnish, for example). The gender is implied by context.</li>
+<li> There are two types of plural: 1) Dual-plural: Refers to two specific people, or a very specific, smaller group (ie, a family). 2) General-plural: A larger group either not interrelated, or only loosely so.</li>
+<li> There are honorifics in the language. In the second person, there is a formal and informal version, as in many Romance languages such as French. In the third person, there is a pronoun used to refer to someone of a higher rank- maybe a king, for example.</li>
+</ul>
+<br /><br />
+Please note that getting the exact translation for some of the pronouns was challenging, so bear with me. And yes, there are a lot, but when you get into the more specific grammar rules, it will begin to make sense. In the meantime, understanding the pronouns will give you a good starting point.
+<br /><br />
+<h4>Nominative Pronouns</h4>
+<br /><br />
+Singular
+<br /><br />
+<ul>
+<li> y -&gt; I</li>
+<li> ye -&gt; you (informal)</li>
+<li> yē -&gt; you (formal)</li>
+<li> ya -&gt; he/she/it</li>
+<li> yi -&gt; he/she/it (referring to a higher rank or being)</li>
+</ul>
+<br /><br />
+Dual-Plural
+<br /><br />
+<ul>
+<li> yx -&gt; we</li>
+<li> yex -&gt; you (informal)</li>
+<li> yēx -&gt; you (formal)</li>
+<li> yax -&gt; they</li>
+<li> yix -&gt; they (of higher rank)</li>
+</ul>
+<br /><br />
+General-Plural
+<br /><br />
+<ul>
+<li> yz -&gt; we</li>
+<li> yez -&gt; you (informal)</li>
+<li> yēz -&gt; you (formal)</li>
+<li> yaz -&gt; they</li>
+<li> yiz -&gt; they (of higher rank)</li>
+</ul>
+<br /><br />
+<h4>Accusative Pronouns</h4>
+<br /><br />
+Singular
+<br /><br />
+<ul>
+<li> yon -&gt; me</li>
+<li> yen -&gt; you (informal)</li>
+<li> yēn -&gt; you (formal)</li>
+<li> yan -&gt; him/her/it</li>
+<li> yin -&gt; him/her/it (referring to a higher rank or being)</li>
+</ul>
+<br /><br />
+Dual-Plural
+<br /><br />
+<ul>
+<li> yoxen -&gt; us</li>
+<li> yexen -&gt; you (informal)</li>
+<li> yēxen -&gt; you (formal)</li>
+<li> yaxen -&gt; them</li>
+<li> yixen -&gt; them (of higher rank)</li>
+</ul>
+<br /><br />
+General-Plural
+<br /><br />
+<ul>
+<li> yozen -&gt; us</li>
+<li> yezen -&gt; you (informal)</li>
+<li> yēzen -&gt; you (formal)</li>
+<li> yazen -&gt; them</li>
+<li> yizen -&gt; them (of higher rank)</li>
+</ul>
+<br /><br />
+<h4>Possessive Nominative Pronouns</h4>
+<br /><br />
+Singular
+<br /><br />
+<ul>
+<li> yi -&gt; my</li>
+<li> yemi -&gt; you (informal)</li>
+<li> yēmi -&gt; you (formal)</li>
+<li> yami -&gt; his/her/its</li>
+<li> yimi -&gt; his/her/its (referring to a higher rank or being)</li>
+</ul>
+<br /><br />
+Dual-Plural
+<br /><br />
+<ul>
+<li> yxî -&gt; our</li>
+<li> yexî -&gt; you (informal)</li>
+<li> yēxî -&gt; you (formal)</li>
+<li> yaxî -&gt; their</li>
+<li> yixî -&gt; their (of higher rank)</li>
+</ul>
+<br /><br />
+General-Plural
+<br /><br />
+<ul>
+<li> yzî -&gt; our</li>
+<li> yezî -&gt; you (informal)</li>
+<li> yēzî -&gt; you (formal)</li>
+<li> yazî -&gt; they</li>
+<li> yizî -&gt; they (of higher rank)</li>
+</ul>
+<br /><br />
+<h4>Possessive Accusative Pronouns</h4>
+<br /><br />
+Singular
+<br /><br />
+<ul>
+<li> yonî -&gt; mine</li>
+<li> yenî -&gt; yours (informal)</li>
+<li> yēnî -&gt; yours (formal)</li>
+<li> yanî -&gt; him/her/it</li>
+<li> yinî -&gt; him/her/it (referring to a higher rank or being)</li>
+</ul>
+<br /><br />
+Dual-Plural
+<br /><br />
+<ul>
+<li> yoxenî -&gt; ours</li>
+<li> yexenî -&gt; yours (informal)</li>
+<li> yēxenî -&gt; yours (formal)</li>
+<li> yaxenî -&gt; theirs</li>
+<li> yixenî -&gt; theirs (of higher rank)</li>
+</ul>
+<br /><br />
+General-Plural
+<br /><br />
+<ul>
+<li> yozenî -&gt; ours</li>
+<li> yezenî -&gt; yours (informal)</li>
+<li> yēzenî -&gt; yours (formal)</li>
+<li> yazenî -&gt; theirs</li>
+<li> yizenî -&gt; theirs (of higher rank)</li>
+</ul>
+<br /><br />
+<h2>Nouns</h2>
+<br /><br />
+All nouns are genderless. They can be singular or reflect one of the plural forms. Nouns require an ending based on case (except for nominative, which has no case).
+<br /><br />
+Structure: noun + number + case
+<br /><br />
+<h4>Number</h4>
+<br /><br />
+<ul>
+<li> -x -&gt; Dual plural</li>
+<li> -z -&gt; General plural</li>
+</ul>
+<br /><br />
+If a noun ends with a consonant, the ending becomes "-ex" or "-ez", respectively.
+<br /><br />
+<h4>Accusative Case</h4>
+<br /><br />
+The accusative case indicates the object of the sentence. The ending is "-n". If the noun is plural, or if it ends with a consonant, the ending becomes "-en".
+<br /><br />
+<h4>Particle Case</h4>
+<br /><br />
+This is used for the particle phrase; in English, this is the equivalent of the object of the preposition.
+<br /><br />
+Ending: "-p" or "-ep" (Same ending rules as above)
+<br /><br />
+<h2>Affirmations</h2>
+<br /><br />
+Affirmations are the "yes/no" in English. There are 7 moods of yes and 7 moods of no, for a total of 14.
+<br /><br />
+Below is a list. The order is "mood -&gt; yes/no"
+<br /><br />
+<ul>
+<li> Neutral -&gt; že / ne</li>
+<li> Tentative -&gt; žē / nē</li>
+<li> Definite -&gt; ži / ni</li>
+<li> Firm -&gt; žî / nî</li>
+<li> Excited -&gt; žō / nō</li>
+<li> Reluctant -&gt; žū / nū</li>
+<li> Formal -&gt; ža / na</li>
+</ul>
+<br /><br />
+Below is an explanation of each mood:
+<br /><br />
+<ul>
+<li> The neutral mood is for a simple yes/no response</li>
+<li> The tentative mood is when you're not entirely sure of the answer</li>
+<li> The definite mood is when you are certain of the answer</li>
+<li> The firm mood is like the definite mood, but implies you have a point</li>
+<li> The excited mood expresses excitement</li>
+<li> The reluctant mood means you are sure of the answer, but not happy about it</li>
+<li> The formal mood is to express a formal verbal agreement or disagreement about something</li>
+</ul>
+<br /><br />
+<h2>Extent Modifiers</h2>
+<br /><br />
+Verbs, adjectives, and other descriptive elements can use extent modifiers to indicate "how much?" or "to what extent?". They have no literal meaning; you infer them from context.
+<br /><br />
+<ul>
+<li> -ex -&gt; greater extent</li>
+<li> -ez -&gt; greatest extent</li>
+<li> -ix -&gt; a lesser extent</li>
+<li> -iz -&gt; the least extent</li>
+</ul>
+<br /><br />
+If the word you're modifying ends in a vowel, add an "-m" first.
+<br /><br />
+Examples:
+<br /><br />
+<ul>
+<li> Ya verā -&gt; He goes. It just means he/she/it is going somewhere.</li>
+<li> Ya verāmex -&gt; He goes quickly. Perhaps he is driving rapidly.</li>
+<li> Ya verāmez -&gt; He goes extremely quickly. Perhaps there is an emergency.</li>
+</ul>
+<br /><br />
+<h2>Demonstratives</h2>
+<br /><br />
+Demonstratives go before the noun they modify; if there are any adjectives, they go before those too. Demonstratives should agree in number and case to what they modify.
+<br /><br />
+<h4>Nominative</h4>
+<br /><br />
+Singular
+<br /><br />
+<ul>
+<li> da -&gt; this</li>
+<li> dā -&gt; that</li>
+</ul>
+<br /><br />
+Dual-Plural
+<br /><br />
+<ul>
+<li> dax -&gt; these</li>
+<li> dāx -&gt; those</li>
+</ul>
+<br /><br />
+General-Plural
+<br /><br />
+<ul>
+<li> daz -&gt; these</li>
+<li> dāz -&gt; those</li>
+</ul>
+<br /><br />
+<h4>Accusative</h4>
+<br /><br />
+These do not have an easy translation to English.
+<br /><br />
+Singular
+<br /><br />
+<ul>
+<li> dan -&gt; this</li>
+<li> dān -&gt; that</li>
+</ul>
+<br /><br />
+Dual-Plural
+<br /><br />
+<ul>
+<li> daxen -&gt; these</li>
+<li> dāxen -&gt; those</li>
+</ul>
+<br /><br />
+General-Plural
+<br /><br />
+<ul>
+<li> dazen -&gt; these</li>
+<li> dāzen -&gt; those</li>
+</ul>
+<br /><br />
+<h2>Possessives</h2>
+<br /><br />
+A possessive describes ownership. The general structure is "owner ownee"- similar to English. For example, "the man's child" becomes "melomi ceo".
+<br /><br />
+If adjectives are involved, the structure becomes "possessive adjective + possessive + adjective + ownee".
+<br /><br />
+<h4>Modifiers</h4>
+<br /><br />
+<ul>
+<li> -i -&gt; Singular possession</li>
+<li> -î -&gt; Dual possession</li>
+<li> -iz -&gt; General possession</li>
+</ul>
+<br /><br />
+If the noun (the owner) ends in a vowel, the endings become -mi/-mî/-miz.
+<br /><br />
+Examples:
+<br /><br />
+<ul>
+<li> melomi ceo -&gt; the man's child</li>
+<li> melomî ceo -&gt; the men's child (maybe of a family)</li>
+<li> melomiz ceo -&gt; the men's child (we're not sure of the relation)</li>
+<li> melomi ceox -&gt; the man's children</li>
+</ul>
+<br /><br />
+Possessives must agree in case with the noun; therefore, they should add "-n" or "-p" as needed.
+<br /><br />
+<h2>Adjectives</h2>
+<br /><br />
+Adjectives describe nouns, and therefore are very similar. In fact, for all practical purposes, they are the same. You can refer to the rules for nouns in constructing adjectives.
+<br /><br />
+Adjectives come before the noun they describe or before a possessive it describes. Adjectives must agree in number and case.
+<br /><br />
+<h2>Connectors</h2>
+<br /><br />
+Connectors are used to express relationships between ideas. Except for "de" and "se", all connectors are used with sentences (they join sentences in some way, rather than individual word groups in sentences). Each sentence linked by a connector should theoretically be able to stand on its own.
+<br /><br />
+<h4>In-Sentence Connectors</h4>
+<br /><br />
+<ul>
+<li> de -&gt; and</li>
+<li> se -&gt; or</li>
+</ul>
+<br /><br />
+<h4>General Connectors</h4>
+<br /><br />
+<ul>
+<li> dē -&gt; and</li>
+<li> sē -&gt; or</li>
+<li> si -&gt; but</li>
+<li> sō -&gt; so</li>
+<li> jō -&gt; then (used with the conditional verb tense)</li>
+<li> sa -&gt; so that (used with the subjunctive verb tense)</li>
+<li> ji -&gt; as</li>
+</ul>
+<br /><br />
+<h2>Verbs</h2>
+<br /><br />
+Verbs are the most complex part of the language because they supply a lot of information. A verb expresses much more than an English verb.
+<br /><br />
+The structure: verb + tense + case + extent
+<br /><br />
+<ul>
+<li> Verbs do not have to agree with or even specify number. This is irrelevant.</li>
+<li> The case and extent are optional. If no case is provided, a direct object is assumed. If no extent is provided, neutrality is assumed. Verbs use the same extent modifiers listed in the section above.</li>
+</ul>
+<br /><br />
+In the lexicon, all verbs end in -a, the infinitive tense.
+<br /><br />
+Tenses:
+<br /><br />
+<ul>
+<li> -a -&gt; infinitive</li>
+<li> -ā -&gt; present</li>
+<li> -e -&gt; past</li>
+<li> -ē -&gt; past passive</li>
+<li> -u -&gt; future</li>
+<li> -ū -&gt; future passive</li>
+<li> -o -&gt; subjunctive (expresses a wish)</li>
+<li> -ō -&gt; conditional (expresses that B- sentence 2- will have happen if A- sentence 1- happens)</li>
+<li> -û -&gt; participle (turns a verb into a noun)</li>
+<li> -i -&gt; impending (expresses "when")</li>
+<li> -î -&gt; continuing (expresses "until")</li>
+</ul>
+<br /><br />
+<h4>Tense Examples</h4>
+<br /><br />
+Subject: Yourself (Y)  
+Verb: lēra (to run)
+<br /><br />
+Infinitive  
+Y lēra memā -&gt; I want to run.
+<br /><br />
+Present  
+Y lērā -&gt; I run (or I am running).
+<br /><br />
+Past  
+Y lēre -&gt; I ran
+<br /><br />
+Past Passive  
+Y lērē -&gt; I have run
+<br /><br />
+Future  
+Y lēru -&gt; I will run
+<br /><br />
+Future Passive  
+Y lērū -&gt; I will have run
+<br /><br />
+Subjunctive
+<br /><br />
+Y lēro -&gt; I wish to run.
+<br /><br />
+Y lēro sa Y meminān ĉu -&gt; I wish to run so that I will be healthy.
+<br /><br />
+Conditional
+<br /><br />
+Y lērō jō Y meminān ĉu -&gt; If I run, then I will be healthy
+<br /><br />
+Y lērō jō Y meminān ĉu jō Y memināmixen ĉu -&gt; If I run, then I will be healthy, otherwise, I will be unhealthy (the second connector expresses an else condition).
+<br /><br />
+Participle
+<br /><br />
+Y lērû ĉā. -&gt; I am a runner.
+<br /><br />
+Y lērû bēkā. -&gt; I like to run.
+<br /><br />
+Impending  
+Y celon ĉi, jō Y lēre. -&gt; When I was a boy, I ran.
+<br /><br />
+Continuing  
+Y melon ĉî jō Y lēru -&gt; Until I am a man, I will run.
+<br /><br />
+<h4>Cases</h4>
+<br /><br />
+There are two cases: the ablative case, and the locative case. The ablative case expresses direction, while the locative case expresses proximity (or location).
+<br /><br />
+Ablative Case
+<br /><br />
+<ul>
+<li> -l -&gt; to</li>
+<li> -t -&gt; from</li>
+<li> -f -&gt; at</li>
+<li> -d -&gt; by</li>
+<li> -dē -&gt; by way of</li>
+<li> -b -&gt; in</li>
+<li> -bē -&gt; on</li>
+</ul>
+<br /><br />
+Example:
+<br /><br />
+Y Ŧālōmunen verāt. -&gt; I go to the mountain.
+<br /><br />
+Locative Case
+<br /><br />
+<ul>
+<li> -ga -&gt; in front of</li>
+<li> -gā -&gt; behind of</li>
+<li> -ge -&gt; left of</li>
+<li> -gē -&gt; right of</li>
+<li> -go -&gt; above of</li>
+<li> -gō -&gt; below of</li>
+</ul>
+<br /><br />
+Examples:
+<br /><br />
+Y Ŧālōmunen verāgo. -&gt; I go over the mountain.
+<br /><br />
+Celo melon ĉāge dē Cēlo melon ĉāgē. -&gt; The boy is to the left of the man, and the girl is to the right.
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>How To: OpenMP with LLVM Runtime</h2>
+<p><br />
+
+It was very tempting to start this post with an opinion on OpenMP, but I decided to shut up for once and right something relatively non-controversial (by controversial, both liking and disliking OpenMP will be controversial to someone). I do a lot of OpenMP-related work in my school job, and lately I've been doing a project that's somewhat OpenMP based. I'm not going into the details right now, but suffice it to say that I needed a parallel runtime system, and since I was already using LLVM, I decided to dive into the LLVM OpenMP runtime system.
+<br /><br />
+(Note: I'm going to refer to the LLVM OpenMP runtime system as KMPC in this tutorial so I don't have to type out "LLVM OpenMP runtime system." That takes time, and that time adds up.)
+<br /><br />
+While I really love LLVM, I really think the LLVM documentation is lacking. The Doxygen docs are okayish- by okayish, if you already know what you're doing, the docs are good enough to figure out how to use LLVM. But of course, I'm only talking about LLVM- not any of the myriad of tools within the project. The KMPC project is the perfect example. In this case, there is absolutely no documentation. There once was, about a year ago, but it was this Latex generated list of function calls that made some vague sense, but that was stretching it. But anyway, if you want to use KMPC, you're pretty much stuck reverse engineering LLVM IR output. For that, I would recommend <a href="https://godbolt.org">compiler explorer</a>.
+<br /><br />
+I couldn't find any good references out there, so I'm going to try and document how to use KMPC for anyone out there who may wish to use it. This is the first set of tutorials, and here I outline basic parallelism, parallel for, and parallel for with shared variables.
+<br /><br />
+Let's begin!
+<br /><br />
+<h2>Basic Parallel</h2>
+<br /><br />
+Consider this example:
+<br /><br />
+<code>
+<br />#include&nbsp;&lt;stdio.h&gt;<br /><br />int&nbsp;main()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;#pragma&nbsp;omp&nbsp;parallel<br />&nbsp;&nbsp;&nbsp;&nbsp;puts("Hello!");<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />}<br /></code>
+<br /><br />
+If you compile and run it, you should get something like this (it will depend on your CPU count):
+<br /><br />
+<img class="img-fluid" src="assets/images/example1.png"></img>
+<br /><br />
+Needless to say, this is pretty straightforward. If you indicate a section of code as "parallel" with OpenMP, it will simply take that section and parallelize it, running it on as many CPU threads as available. You can control it with an environment variable, but that's irrelevant- research it yourself, it's in the OpenMP spec.
+<br /><br />
+So how is this done in the code?
+<br /><br />
+The handwritten equivalent of the example above would be this:
+<br /><br />
+<code>
+<br />#include&nbsp;&lt;stdio.h&gt;<br />#include&nbsp;&lt;omp.h&gt;<br /><br />void&nbsp;outlined(int&nbsp;*global_id,&nbsp;int&nbsp;*bound_id)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;puts("Hello!");<br />}<br /><br />int&nbsp;main()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;__kmpc_fork_call(0,&nbsp;0,&nbsp;outlined);<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />}<br /></code>
+<br /><br />
+If all goes well, you should get the same output as above. Note that if the compiler complains about an implicit function call with any of the "kmpc" functions, you can ignore that:
+<br /><br />
+<img class="img-fluid" src="assets/images/example2-1024x421.png"></img>
+<br /><br />
+As you can see, the output and behavior is exactly the same. So how does this work?
+<br /><br />
+The entry to KMPC is the "__kmpc_fork_call" function. This will do all the appropriate thread scheduling. It takes three arguments: 1) an information structure, 2) the number of function arguments, and 3) an outlined function. You can set argument 1 to "0" or "NULL" for now. We'll come back to argument 2, but for now just set it to 0. Argument 3 is the name of your outlined function.
+<br /><br />
+The outlined function is what gets called and run in the runtime system. Every OpenMP (or at least KMPC) outlined function takes two pointers as arguments: global_id, and bound_id. What are they for? Not sure. I'm 99% sure global_id indicates the current thread, but I could be completely wrong. They aren't needed right now, so I don't know and I don't care :). Also, make sure the outlined function is "void". Any function with this signature can be passed to "__kmpc_fork_call.".
+<br /><br />
+How do I know it's working? Run the program with gdb:
+<br /><br />
+<img class="img-fluid" src="assets/images/example3-1024x735.png"></img>
+<br /><br />
+That was cool right? Okay, let's move on to something more useful.
+<br /><br />
+<h2>Parallel For</h2>
+<br /><br />
+The primary construct you need for parallel programming is a for loop. With a for loop, you can see the upper and lower bounds of the loop, see what work needs to be done, and schedule accordingly to the resources available.
+<br /><br />
+Let's consider a new example in OpenMP:
+<br /><br />
+<code>
+<br />#include&nbsp;&lt;stdio.h&gt;<br /><br />int&nbsp;main()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;#pragma&nbsp;omp&nbsp;parallel&nbsp;for<br />&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&lt;16;&nbsp;i++)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf("%d\n",&nbsp;i);<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />}<br /></code>
+<br /><br />
+If you build and run it, you should see all the numbers printed 0-15:
+<br /><br />
+<img class="img-fluid" src="assets/images/example4-1024x603.png"></img>
+<br /><br />
+Take a good look at the image though. Notice that the numbers are out of order, and appear differently in every time you run it. This is because each thread is tasked with printing one of those numbers. The fact that they are all out of order, and appear in a different order every time, shows us that our threading is working. By the way, notice the "for" in the omp pragma in the example above. This tells the runtime system to schedule the for loop across threads. If you left out the "for" and just did "omp parallel", it would run that entire for loop on each thread.
+<br /><br />
+Anyway, how would we convert this to a KMPC program? The answer: like this:
+<br /><br />
+<code>
+<br />#include&nbsp;&lt;stdio.h&gt;<br />#include&nbsp;&lt;omp.h&gt;<br /><br />void&nbsp;outlined(int&nbsp;*global_id,&nbsp;int&nbsp;*bound_id)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;lower&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;upper&nbsp;=&nbsp;16;<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;stride&nbsp;=&nbsp;1;<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;last&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;i&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;__kmpc_for_static_init_4(0,&nbsp;*global_id,&nbsp;34,&nbsp;&last,&nbsp;&lower,&nbsp;&upper,&nbsp;&stride,&nbsp;1,&nbsp;1);<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(upper&nbsp;&gt;&nbsp;16)&nbsp;upper&nbsp;=&nbsp;16;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(i&nbsp;=&nbsp;lower;&nbsp;i&nbsp;&lt;=&nbsp;upper;&nbsp;i&nbsp;+=&nbsp;1)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf("%d\n",&nbsp;i);<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;__kmpc_for_static_fini(0,&nbsp;*global_id);<br />}<br /><br />int&nbsp;main()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;__kmpc_fork_call(NULL,&nbsp;0,&nbsp;outlined);<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />}<br /></code>
+<br /><br />
+If all goes well, you should see a very similar output to the OpenMP example:
+<br /><br />
+<img class="img-fluid" src="assets/images/example5-1024x641.png"></img>
+<br /><br />
+The key thing to note is the body of the outlined function. Notice that we have a bunch of addition variables, and the two new "kmpc_for" calls. These calls are to the OpenMP scheduler. This determines how many iterations of the for loop each thread should run. This is why we have all these variables. You can name them whatever you want, but I tried to choose names appropriate to their use. I'm not sure what the "last" variable is for- I assume it's for something internal to KMPC, but whatever. The "lower" variable would be whatever you set your for loop to start at- in this case, and in most cases, it's 0. The "upper" variable is where you for loop stops at. In this case, our loop sets it to "16". Finally, the "stride" indicates how much the "i" variable is incremented on each condition.
+<br /><br />
+You're probably wondering how exactly this works. Modify the code, putting a printf statement just before the loop, like this:
+<br /><br />
+<code>
+<br />printf("LOWER:&nbsp;%d&nbsp;|&nbsp;UPPER:&nbsp;%d\n",&nbsp;lower,&nbsp;upper);<br />for&nbsp;(i&nbsp;=&nbsp;lower;&nbsp;i&nbsp;&lt;=&nbsp;upper;&nbsp;i&nbsp;+=&nbsp;1)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;printf("%d\n",&nbsp;i);<br />}<br /></code>
+<br /><br />
+And re-run. You should see something like this:
+<br /><br />
+<img class="img-fluid" src="assets/images/example6.png"></img>
+<br /><br />
+Okay, what's going on here? Here you can see the scheduling in action. The computer I'm running on has 12 threads, and the loop is only running 16 times, so it's more efficient to schedule each iteration on one thread. If you set the upper bound to, say 48, you would see something like this:
+<br /><br />
+<img class="img-fluid" src="assets/images/example7-1024x727.png"></img>
+<br /><br />
+Now the scheduler has scheduled each thread to handle around three iterations. Okay, that's all well and good, but how does these two calls achieve that weird parallel effect?
+<br /><br />
+I do want to make the caveat that I don't fully understand the OpenMP scheduler under the hood (and doing so is irrelevant unless you want to work on it), but OpenMP does work by using the Unix Fork-Exec model. Under the hood, this is how threading is achieved- by a subset of the Fork-Exec model. In actuality, OpenMP would use the PThread library, which in turn uses Fork-Exec. As you probably learned in your OS class, Fork-Exec works by creating a copy of the process in memory, and running from that point. So, the scheduler decides what the upper and lower bounds for each thread should be, clones the process, sets the "lower" and "upper" variables, and runs that loop. The "kmpc_for_static_fini" closes the thread out and rejoins everything to the parent process.
+<br /><br />
+By the way, this is why we created all those variables and passed them by reference to the scheduler rather than passing by value. When we pass by reference, we can set them within the KMPC function. As a result, when the process is cloned, each process has it's own specific upper and lower bounds.
+<br /><br />
+Cool huh? Now what if we need shared variables?
+<br /><br />
+<h2>Parallel For with Shared</h2>
+<br /><br />
+As you might suspect, most (if not all?) HPC applications do not print something in a loop however many times. Generally, parallelism is used to operate on a large dataset or perform a complicated operation (in turn, often on a large dataset). As a result, each thread will often read and write to a particular location in memory at once. This is where the beauty of parallelism comes in. Each CPU can only read from one location of memory at a time, but multiple CPUs can each read and write from different locations.
+<br /><br />
+Of course, the big problem with this is data race conditions. Multiple threads reading from a single location generally doesn't matter (unless that location depends on a previous write). However, writing can be a big issue. If multiple threads try to write to the same location at once, data will get lost or corrupted, and an incorrect result will be returned. This is solved with reductions, which is another topic for another day. Reading or writing to different locations is okay, and since this often means reading and writing to different portions of the same array, we need a method to deal with these shared variables.
+<br /><br />
+Okay, let's consider some code. Consider this OpenMP example:
+<br /><br />
+<code>
+<br />#include&nbsp;&lt;stdio.h&gt;<br />#include&nbsp;&lt;stdlib.h&gt;<br /><br />int&nbsp;main()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;*numbers&nbsp;=&nbsp;malloc(sizeof(int)*20);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;#pragma&nbsp;omp&nbsp;parallel&nbsp;for&nbsp;shared(numbers)<br />&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&lt;20;&nbsp;i++)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;numbers[i]&nbsp;=&nbsp;i;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&lt;20;&nbsp;i++)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf("%d\n",&nbsp;numbers[i]);<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;free(numbers);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />}<br /></code>
+<br /><br />
+The output is super boring. If it works, it should print "0-19" in order. What it does should be obvious- it sets an array of twenty element to contain the values "0-19" in that order. And this is perfectly thread-safe since each thread will get a value of "i" (as we saw in our previous example), and each thread is writing to that one specific location of "numbers[i]" in memory.
+<br /><br />
+Okay. So how does this translate into KMPC calls? Consider this code:
+<br /><br />
+<code>
+<br />#include&nbsp;&lt;stdio.h&gt;<br />#include&nbsp;&lt;omp.h&gt;<br /><br />void&nbsp;outlined(int&nbsp;*global_id,&nbsp;int&nbsp;*bound_id,&nbsp;int&nbsp;*numbers)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;lower&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;upper&nbsp;=&nbsp;20;<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;stride&nbsp;=&nbsp;1;<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;last&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;i&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;__kmpc_for_static_init_4(0,&nbsp;*global_id,&nbsp;34,&nbsp;&last,&nbsp;&lower,&nbsp;&upper,&nbsp;&stride,&nbsp;1,&nbsp;1);<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(upper&nbsp;&gt;&nbsp;2)&nbsp;upper&nbsp;=&nbsp;20;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(i&nbsp;=&nbsp;lower;&nbsp;i&nbsp;&lt;=&nbsp;upper;&nbsp;i&nbsp;+=&nbsp;1)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;numbers[i]&nbsp;=&nbsp;i;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;__kmpc_for_static_fini(0,&nbsp;*global_id);<br />}<br /><br />int&nbsp;main()&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;*numbers&nbsp;=&nbsp;malloc(sizeof(int)*20);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;1&nbsp;=&nbsp;number&nbsp;of&nbsp;arguments<br />&nbsp;&nbsp;&nbsp;&nbsp;__kmpc_fork_call(NULL,&nbsp;1,&nbsp;outlined,&nbsp;numbers);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&lt;20;&nbsp;i++)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf("%d\n",&nbsp;numbers[i]);<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;free(numbers);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />}<br /></code>
+<br /><br />
+As you can see, it's very similar to the previous example. The only difference is the additional argument in the outlined function. This is where shared variables go. They are passed in the "kmpc_fork_call" function by inserting whatever you need after the outlined function's name. Super easy right? Well.. sort of. Remember that second argument I was talking about in "kmpc_fork_call"? That argument specifies the number of arguments for the outlined function. As you can see in the example above, I changed it from "0" to "1". If I had more arguments, this would be "2", "5", or whatever.
+<br /><br />
+Okay, it is in actuality super easy, and kudos to the KMPC people for making it that easy. But this is why it's important to have documentation. In PThreads, you have to use a "void *" pointer and figure everything out yourself, while in C++ threads, you just put in your arguments and it figures everything out. In KMPC, you have to indicate the number of arguments- which makes perfect sense in hindsight. But when I was working on this, I didn't realize that's what the argument meant, so I ended up spending hours thinking I was passing the arguments incorrectly, only to figure out it was literally for that one reason.
+<br /><br />
+PS: If you're reverse engineering LLVM IR output from Clang, this is a super handy flag: "-fno-discard-value-names". It keeps all the variable names rather than converting them into numbers, which makes figuring out the data flow SO MUCH easier.
+<br /><br />
+<h2>Conclusion</h2>
+<br /><br />
+Okay, that's all for my initial KMPC introduction. Hopefully you found it interesting, and hopefully this will benefit someone out there. If nothing else, it's for my personal notes and use. I'll probably do a post before long on implementing reductions with KMPC. However, as I have a busy week ahead in school, that will indeed probably come later.
+<br /><br />
+Thanks for reading!
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

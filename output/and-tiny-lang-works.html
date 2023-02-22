@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>And Tiny Lang Works!</h2>
+<p><br />
+
+Some people may remember me mentioning a new compiler/programming language project, <a href="/tiny-lang.html">Tiny Lang</a>, which I first published <a href="/new-project-tiny-lang.html">back in December</a>. This morning, I released two follow-up projects to Tiny Lang (as well as a few minor updates to Tiny Lang itself).
+<br /><br />
+As I first wrote, the purpose of Tiny Lang was create a simple compiler/programming language that could be hacked on, extended, and experimented with. The language itself, besides being simple, was meant to be an easy specification to create new versions of the compiler with. This may seem like a strange requirement, but in recent years newer languages have been getting attention, including Rust. In my opinion, one of the best ways to test the expressiveness and usability of a new language is to create a simple compiler. You can test how the language handles file IO, enumerations, and structures. Structures is key here. Compilers are often written in C++ because of the classes, which are great for creating a clean AST. But other languages don't have the concept of derived classes/structures, so you have to learn to approach the problem differently.
+<br /><br />
+So yes: these are the two follow-up projects: Tiny Lang parsers in different languages. I wrote one in Rust and one in Ada. See their respective readmes for more detail, but both are limited frontends. They completely parse the defined language, but there is only limited syntax checking and no semantic and type checking at the moment. And now that I think about it, operator precedence is a bit of a mess at the moment. In other words: it doesn't exist :)
+<br /><br />
+Overall, both languages were a pleasant experience. The Rust version wasn't my first foray into compiler development with Rust. You may remember over a year ago, I wrote a compiler in Rust. However, that compiler was my first foray into Rust/compiler development, so it was a mess. This one is not perfect, but it's much cleaner and I'm very happy with it. Overall, I like Rust a lot. The language is very expressive, and while it doesn't contain the inheritance that C++ has, it does have a concept of public/private and some basic OOP features, making it more than suitable for compiler development. Oh, and the enums are awesome.
+<br /><br />
+The Ada version, on the other hand, was my first foray into compiler development with Ada. Ada isn't completely new- I have done some smaller things with it in the past, and I've done a fair amount of work in VHDL, which is quite similar. Ada is also really nice. The language is more than sufficiently expressive for compiler development, and the ability to create subprograms is really nice for organization. It also does a lot to hide gory details from you (like pointers), and it's very safe- most errors are caught at compile time. My personal drawback (and maybe it's only because I'm still learning the language) is the inability to hide variables and create helper functions for the structures. I've come to prefer doing this because it creates a cleaner design. But otherwise, it was a pleasant experience.
+<br /><br />
+The end result of these two projects (besides providing new compiler starters) is proof that Tiny Lang works :) My initial goal was to have a spec I could easily implement, and that certainly came true. It only took me a few days to implement the Rust one, and not more than a week to implement the Ada one (in both cases, they were free time projects- I work full time. So probably halve the times to get a better sense).
+<br /><br />
+As far as Tiny Lang goes, I made a few small updates. The biggest update was changing how blocks were handled. Rather than using an AST node to represent the "end" statement, I simply looked at it as a token and used that to stop the block parsing loop. The end result is the block/statement parsers are now fully recursive. I also introduced the concept of "expression statements" for variable, array, and structure assignments. As the name suggests, these are basically statements that hold expressions. The advantage of this is you can offload work to existing functions (in this case, the expression parser) and phase out extra, unneeded nodes. Finally, I made some much needed improvements to the AST debug function to make it more readable.
+<br /><br />
+Feel free to check out the projects!
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

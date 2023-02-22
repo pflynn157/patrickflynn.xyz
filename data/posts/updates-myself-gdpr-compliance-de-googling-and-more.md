@@ -1,0 +1,35 @@
+---
+title: "Updates: Myself, GDPR Compliance, De-Googling, and More"
+date: "2022-02-12"
+categories: 
+  - "privacy"
+  - "project-updates"
+---
+
+Hello everyone! Its been a quiet start to 2022... school caught up with me, and then some personal issues right after, so I've been offline in terms of my website and many of my projects. Fortunately, things are improving so I'm back. I've made some more website changes, though this time a little more in the background. I've also made some project changes, which I'll note below.
+
+### GDPR Compliance and Privacy
+
+Like many websites out there, when I set this up, I was using Google Analytics for tracking usage. I know, I know- the worst application for privacy on both sides of the site. But like many of Google's applications, its very well designed and easy to use, so that's why I ended up using it.
+
+Getting rid of it has been on the todo list for a while, and this past week I finally did so. I'm using a new plugin called "Simplestat Analytics", which logs traffic and stores it locally to this website. It doesn't track as much as Google does, and I maintain control of the data. For the curious, I have these plugins just because I want to know what kind of traffic I'm getting and where it goes.
+
+This site is also located in Lithuania, outside of any 5-, 9-, or 14-eyes countries. Originally it was in the Netherlands (which still has good privacy regulations), but my hosting provider has an option to transfer to other countries, and Lithuania is the best.
+
+### De-Googling
+
+I'll probably write a post on this later, but I've been back in my de-Googling mode. I know, sounds like a strange mode to be in... It happened unconsciously; I had been migrating to non-Google services incrementally for a while now, but last weekend I decided to experiment with 3rd party Android ROMs on an old phone. The experiment worked very well, to the point that I used the hacked phone as my daily driver for a week, and in the process I realized just how few Google services I'm still using.
+
+Personally, I don't have the vendetta against Google that a lot of people seem to have, but I do think in terms of privacy, they are questionable. But things are to the point now that if you use Google services, you are consciously signing up for that (whether it's right or wrong is a debate for another day, and yes I think it's wrong). For me, the biggest part of the de-Googling thing is to show that you don't have to use Google services to use the internet.
+
+But more on this later.
+
+### Projects
+
+Observant people may have noticed my Github profile has been a little quiet. I'm still working on interesting projects, though I did have to take a step back the past few weeks. I'm not planning to post many new updates in the near future about them, however, because I've started a new, larger project.
+
+In a nutshell, I'm thinking of merging my larger projects into one project with its own site and purpose. I started on some of the core infrastructure over break, and have since returned to programming. Even though I have a lot in place, I'm probably not going to open it up until the summer or later this year because I want time to refine it and build it.
+
+That doesn't mean this site is dead. I still plan to keep writing, although I'm probably going to start shifting away from the purely technical tutorials I've been doing and focus more on real life :)
+
+Stay tuned, and for those who visit, thanks for reading!

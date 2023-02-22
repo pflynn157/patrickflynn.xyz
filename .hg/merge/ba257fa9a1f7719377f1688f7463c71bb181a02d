@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Memory and Counting in Hardware</h2>
+<p><br />
+
+Electronics have been a secondary hobby of mine for a little while now... though I admit, I'm not too great at it. Actually, its more like an on-and-off thing. I'm trying to make it more of an on thing because it can be an interesting venture. I've done a few projects in the past with Raspberry Pi's and VHDL, which is a start.
+<br /><br />
+Depending on what you want to do, having some sort of memory is an ideal start. I don't have any memory elements other than shift registers, but they can be used like regular set-and-release memory just as easily. And the other nice thing about them is that you can chain them together, which means you can basically make your memory as big or small as you want. For a starter project, I made a 16-bit binary counter. Okay, its really not <i>that</i> impressive; basically, the microcontroller does the counting and math, and the shift registers and a bunch of LED's are used to display the current number.
+<br /><br />
+Here's an image of it running:
+<br /><br />
+<img class="img-fluid" src="assets/images/arduino_counter-1024x768.jpg"></img>
+<br /><br />
+Know what the number is? 663. 2^9 + 2^7 + 2^4 + 2^2 + 2^1 + 2^0 = 663. The counter is big-endian.
+<br /><br />
+And for the curious, that's a cell phone charger powering it. Yes, I had to program it at my computer, but the computer was in a room with horrible lighting.
+<br /><br />
+Okay, so as far as parts list goes, here's what I used:
+<br /><br />
+<ul>
+<li> Arduino- any model is fine, but I only have a Micro</li>
+<li> (x2) SN74HC595N (8-bit shift register)</li>
+<li> (x16) LED lights</li>
+<li> (x16) 220 ohm resistors (this doesn't have to be exact, but it shouldn't be much if any lower)</li>
+<li> Wires</li>
+</ul>
+<br /><br />
+As you can see, I have two types of wire- the regular jumper wires and some thicker doorbell wire. The doorbell wire is great. It is not too hard to work with, and you can buy this huge strand from Lowe's for $10 that will last forever.
+<br /><br />
+<h3>Building the Circuit</h3>
+<br /><br />
+Here's a diagram of the shift register pinout:
+<br /><br />
+<img class="img-fluid" src="assets/images/74HC595_pinout.png"></img>
+<br /><br />
+Unfortunately, I don't have a drawing or anything of my circuit, so I will describe it as best as I can.
+<br /><br />
+For the first shift register:
+<br /><br />
+<ul>
+<li> Connect VCC and GND to voltage and ground, respectively</li>
+<li> Connect OE to to ground</li>
+<li> Connect SRCLR to voltage</li>
+<li> Connect SER to the arduino (on mine, its pin 2). This is the data pin.</li>
+<li> Connect RCLK to the arduino (on mine, pin 3). This is the latch pin.</li>
+<li> Connect SRCLK to the arduino (on mine, pin 4). This is the clock pin.</li>
+</ul>
+<br /><br />
+The second shift register is similar. But because we want to control both at once, there are a few important differences.
+<br /><br />
+<ul>
+<li> Connect SER to the Qh' pin on the first register</li>
+<li> Connect the RCLK and SRCLK to the RCLK and SRCLK of the first register</li>
+</ul>
+<br /><br />
+On both registers, pins Qa - Qh will connect to LEDs. The overall connect for the LEDs will be `shift register pin -&gt; resistor -&gt; LED -&gt; ground`.
+<br /><br />
+<h3>Programming</h3>
+<br /><br />
+I'm going to assume you know the basics of Arduino programming. If you have the program installed and know you to compile and upload the example program for making the onboard LED blink, you're good to continue.
+<br /><br />
+I'll post the entire code below, but this is the general idea for programming a shift register. A single shift register works with 1 byte, or 8 bits, which corresponds to the `byte` type in the Arduino language.
+<br /><br />
+<ul>
+<li> Set the latch pin to 0.</li>
+<li> Enter a loop and write out the byte of data.</li>
+<li> Set the latch pin to 1.</li>
+</ul>
+<br /><br />
+And the algorithm for the loop is (on each loop iteration):
+<br /><br />
+<ul>
+<li> Set the clock pin to low.</li>
+<li> Set the data pin to the current bit. The current bit is the `data & (1 &lt;&lt; i)` where `data` is your byte value, and `i` is your loop index.</li>
+<li> Set the clock pin to high.</li>
+<li> Set the data pin to low (so we can have a stable signal).</li>
+</ul>
+<br /><br />
+The principle is exactly the same whether you have one shift register or 10. In our case we have two, which means we can display 16 bits of data, which corresponds to a `short` in the Arduino language (and all other languages that have it...). The easiest way to do this is first put the algorithm in a separate function, which we will call `writeOut(byte shiftData)`. Then, after you set the latch pin to 0, make two calls to `writeOut`, the first call with one half of the data, the second call with the other half. Then raise the latch pin. Both shift registers will then be populated. If you have 10 shift registers, you would make 10 function calls in between lowering and raising the latch.
+<br /><br />
+If you're wondering about order, think of it as a top-down thing. The first function call will the be the last shift register, and the last function call will be the first shift register. Get it? Shift register...
+<br /><br />
+<h3>Source Code</h3>
+<br /><br />
+A few points of interest:
+<br /><br />
+<ul>
+<li> If you have a different Arduino or whatever, make sure to change the pin numbers.</li>
+<li> The `data_block` arrays after the pin sets are two examples you can play with to understand how shift registers work. These are run through the shift registers before counting begins.</li>
+<li> So where did that 65536 come from? This is a 16-bit binary counter, which means we can count up to 2^16 = 65536. By the way, this is an unsigned counter.</li>
+</ul>
+<br /><br />
+So how did we get the number given that its a short (16-bit type)? We had to separate it into bytes. If you look in the for loop where we count up to 65536, you will notice we broke it down into two byte values. The first byte (`byte half1`) is equal to the current number shifted right 8 times. This gets the first 8 bits of the short, which is written to the second shift register. The second byte is simply set equal to the short itself. Because it is a smaller value, the first 8 bits are dropped by the compiler, leaving us only with the low 8 bits. These are written to the first shift register.
+<br /><br />
+Finally, even though the delays are small, it will take a long long time to count all the way up to 65536. Be prepared to wait if you want to see the entire loop iteration. I took the picture in the original post before I began writing anything, and it was at 663. Now, its been over half an hour, I've written this post, and it is at around 34000. And its used about a quarter of that cell phone battery's charge.
+<br /><br />
+I wonder how long it would take to do an integer.... :)
+<br /><br />
+Here's the code:
+<br /><br />
+<code>
+<br />int&nbsp;latchPin&nbsp;=&nbsp;3;<br />int&nbsp;clockPin&nbsp;=&nbsp;4;<br />int&nbsp;dataPin&nbsp;=&nbsp;2;<br /><br />const&nbsp;int&nbsp;LENGTH&nbsp;=&nbsp;4;<br /><br />byte&nbsp;data_block1[LENGTH];<br />byte&nbsp;data_block2[LENGTH];<br /><br />void&nbsp;setup()&nbsp;{<br />&nbsp;&nbsp;Serial.begin(9600);<br /><br />&nbsp;&nbsp;pinMode(latchPin,&nbsp;OUTPUT);<br />&nbsp;&nbsp;pinMode(clockPin,&nbsp;OUTPUT);<br />&nbsp;&nbsp;pinMode(dataPin,&nbsp;OUTPUT);<br /><br />&nbsp;&nbsp;digitalWrite(latchPin,&nbsp;LOW);<br />&nbsp;&nbsp;digitalWrite(clockPin,&nbsp;LOW);<br />&nbsp;&nbsp;digitalWrite(dataPin,&nbsp;LOW);<br /><br />&nbsp;&nbsp;//&nbsp;Holds&nbsp;data<br />&nbsp;&nbsp;data_block1[0]&nbsp;=&nbsp;0xFF;<br />&nbsp;&nbsp;data_block1[1]&nbsp;=&nbsp;0x0F;<br />&nbsp;&nbsp;data_block1[2]&nbsp;=&nbsp;0xF0;<br />&nbsp;&nbsp;data_block1[3]&nbsp;=&nbsp;0x00;<br /><br />&nbsp;&nbsp;data_block2[0]&nbsp;=&nbsp;0xFF;<br />&nbsp;&nbsp;data_block2[1]&nbsp;=&nbsp;0xF0;<br />&nbsp;&nbsp;data_block2[2]&nbsp;=&nbsp;0x0F;<br />&nbsp;&nbsp;data_block2[3]&nbsp;=&nbsp;0x00;<br />}<br /><br />void&nbsp;writeOut(byte&nbsp;shiftData)&nbsp;{<br />&nbsp;&nbsp;int&nbsp;pinState&nbsp;=&nbsp;0;<br /><br />&nbsp;&nbsp;for&nbsp;(int&nbsp;i&nbsp;=&nbsp;7;&nbsp;i&gt;=0;&nbsp;i--)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(clockPin,&nbsp;LOW);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(shiftData&nbsp;&&nbsp;(1&nbsp;&lt;&lt;&nbsp;i))&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pinState&nbsp;=&nbsp;1;<br />&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pinState&nbsp;=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(dataPin,&nbsp;pinState);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(clockPin,&nbsp;HIGH);<br />&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(dataPin,&nbsp;LOW);<br />&nbsp;&nbsp;}<br />}<br /><br />void&nbsp;loop()&nbsp;{<br />&nbsp;&nbsp;for&nbsp;(int&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&lt;LENGTH;&nbsp;i++)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(latchPin,&nbsp;LOW);<br />&nbsp;&nbsp;&nbsp;&nbsp;writeOut(data_block1[i]);<br />&nbsp;&nbsp;&nbsp;&nbsp;writeOut(data_block2[i]);<br />&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(latchPin,&nbsp;HIGH);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;delay(500);<br />&nbsp;&nbsp;}<br /><br />&nbsp;&nbsp;delay(1000);<br /><br />&nbsp;&nbsp;for&nbsp;(short&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&lt;65536;&nbsp;i++)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;byte&nbsp;half1&nbsp;=&nbsp;i&nbsp;&gt;&gt;&nbsp;8;<br />&nbsp;&nbsp;&nbsp;&nbsp;byte&nbsp;half2&nbsp;=&nbsp;i;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(latchPin,&nbsp;LOW);<br />&nbsp;&nbsp;&nbsp;&nbsp;writeOut(half1);<br />&nbsp;&nbsp;&nbsp;&nbsp;writeOut(half2);<br />&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(latchPin,&nbsp;HIGH);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;delay(100);<br />&nbsp;&nbsp;}<br />}<br /></code>
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

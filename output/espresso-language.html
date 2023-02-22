@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h1>Espresso Language</h1>
+<p><br />
+
+While the Espresso language is stable enough for me to be producing this initial documentation, it isn't stable, and things could change and break. As I said in the introduction, the language is a fork of Orka designed to run on the Java Virtual Machine, so the two are very similar. This page gives an overview of the language, and will be updated as the project progresses.
+<br /><br />
+<h3>The Class File</h3>
+<br /><br />
+This is important to note. If you've programmed in Java before, you're probably used to declaring a class like this:
+<br /><br />
+<code>
+<br />public&nbsp;class&nbsp;HelloWorld&nbsp;{<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Code&nbsp;here...<br />}<br /></code>
+<br /><br />
+This is not necessary in Espresso. A class named after the input file is implicitly created. All functions and member variables are part of this class.
+<br /><br />
+<h3>Methods</h3>
+<br /><br />
+There are two types of methods in Espresso: Functions and Routines.
+<br /><br />
+Functions are members of the class. They are non-static, meaning the class has to be created before they can be called. Functions can be public, protected, or private, with the visibility following the same rules as Java. Here are examples of functions:
+<br /><br />
+<code>
+<br />public&nbsp;func&nbsp;sayHello&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;println("Hello!");<br />&nbsp;&nbsp;&nbsp;&nbsp;this.sayHello2();<br />&nbsp;&nbsp;&nbsp;&nbsp;this.sayHello3();<br />end<br /><br />protected&nbsp;func&nbsp;sayHello2&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;println("Protected:&nbsp;Hello!!!");<br />end<br /><br />private&nbsp;func&nbsp;sayHello3&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;println("Private:&nbsp;Hello!!!");<br />end<br /></code>
+<br /><br />
+Routines are static methods. Like functions, they can be public, protected, or private, but unlike functions, they can be called without the class being instantiated. The main routine of your function could look like this:
+<br /><br />
+<code>
+<br />routine&nbsp;main(args&nbsp;:&nbsp;str[])&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;println("Hello,&nbsp;World!");<br />end<br /></code>
+<br /><br />
+<h3>Strings and Println</h3>
+<br /><br />
+Later, you'll begin to notice the string type, but in the meantime, have you noticed all the "println"s in our example?
+<br /><br />
+"Println" is a wrapper around the Java "System.out.println" function. The built-in string type is a wrapper around Java's String object. The reason for this is because these functions are used so much that it's easier to provide these convenience facilities. For the println, currently only printing strings and integers are supported. Concatenation, however, isn't supported.
+<br /><br />
+Later on, I'll provide an improved method for loading external libraries, but for right now, keep this in mind.
+<br /><br />
+<h3>Variables</h3>
+<br /><br />
+Espresso supports the same primitive types as Orka, but for now, only integers, strings, and some objects are supported. The syntax roughly follows this format:
+<br /><br />
+<code>
+<br />var&nbsp;&lt;name&gt;&nbsp;:&nbsp;&lt;type&gt;&nbsp;:=&nbsp;&lt;optional&nbsp;expression&gt;<br /></code>
+<br /><br />
+"int" and "str" can be used to represent integers and strings respectively. For example, an integer expression could look like this:
+<br /><br />
+<code>
+<br />var&nbsp;x&nbsp;:&nbsp;int&nbsp;:=&nbsp;y&nbsp;*&nbsp;22&nbsp;+&nbsp;3;<br /></code>
+<br /><br />
+If you wish to initialize an object, you can do so as in the example below:
+<br /><br />
+<code>
+<br />public&nbsp;func&nbsp;sayHello&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;println("Hello!");<br />end<br /><br />routine&nbsp;main(args&nbsp;:&nbsp;str[])&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;clazz&nbsp;:&nbsp;Inner;<br />&nbsp;&nbsp;&nbsp;&nbsp;clazz.sayHello();<br />end<br /></code>
+<br /><br />
+<h3>Operators</h3>
+<br /><br />
+Currently, operators are only supported on integers right now. The following arithmetic operators are supported:
+<br /><br />
+<ul>
+<li> +</li>
+<li> -</li>
+<li> *</li>
+<li> /</li>
+<li> %</li>
+</ul>
+<br /><br />
+And the following logical/bitwise operators are supported:
+<br /><br />
+<ul>
+<li> & (AND)</li>
+<li> | (OR)</li>
+<li> ^ (XOR)</li>
+<li> &lt;&lt; (shift left)</li>
+<li> &gt;&gt; (shift right)</li>
+</ul>
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

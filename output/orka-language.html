@@ -1,0 +1,204 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h1>Orka Language</h1>
+<p><br />
+
+Welcome to the documenation for the Orka language!
+<br /><br />
+This is meant to give an overview, not to go deep into any complexities. I do this partly in case I decide to change anything. That being said though, I don't plan on changing any of the syntax. I'm largely happy with how everything is, and I hate breaking things, so you can mostly count on this staying this same.
+<br /><br />
+<h3>Functions</h3>
+<br /><br />
+In general, functions have this structure:
+<br /><br />
+<code>
+<br />func&nbsp;main&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;println("Hello,&nbsp;world!");<br />end<br /></code>
+<br /><br />
+The "is" keyword specifies the start of a function, while "end" specifies where it stops. A return type can be specified like this:
+<br /><br />
+<code>
+<br />func&nbsp;main&nbsp;-&gt;&nbsp;int&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;println("Hello,&nbsp;world!");<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />end<br /></code>
+<br /><br />
+If no return type is specified, the function is assumed to be void. Returns are automatically inserted by the compiler.
+<br /><br />
+Arguments and function calls are much like in other languages. If a function is being used that is located in a different library or file, the "func" keyword can be replaced with "extern".
+<br /><br />
+<code>
+<br />extern&nbsp;printf(line:str,&nbsp;x:int);<br /><br />func&nbsp;getNumber(x:int,&nbsp;y:int)&nbsp;-&gt;&nbsp;int&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;20&nbsp;+&nbsp;x&nbsp;+&nbsp;y;<br />end<br /><br />func&nbsp;main&nbsp;-&gt;&nbsp;int&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;x&nbsp;:&nbsp;int&nbsp;:=&nbsp;getNumber(23,&nbsp;10);<br />&nbsp;&nbsp;&nbsp;&nbsp;printf("X:&nbsp;%d\n",&nbsp;x);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />end<br /></code>
+<br /><br />
+<h3>Datatypes and Variables</h3>
+<br /><br />
+Orka has the following datatypes:
+<br /><br />
+<ul>
+<li> byte / ubyte -&gt; byte values</li>
+<li> short / ushort -&gt; word (usually 16-bit) values</li>
+<li> int / uint -&gt; dword (usually 32-bit) values</li>
+<li> int64 / uint64 -&gt; qword (usually 64-bit) values</li>
+<li> char -&gt; char literals</li>
+<li> str -&gt; string literals</li>
+<li> bool -&gt; true/false values</li>
+</ul>
+<br /><br />
+Variables are built using this syntax: var &lt;name&gt; : &lt;type&gt; := &lt;expression&gt;;
+<br /><br />
+<code>
+<br />var&nbsp;x&nbsp;:&nbsp;int&nbsp;:=&nbsp;20;<br /></code>
+<br /><br />
+Notice the assignment operator. We do not use the "=" operator for assignments; that is reserved for equality comparisons. Rather, we use the ":=" operator, like in Go or Ada.
+<br /><br />
+<h3>Arrays</h3>
+<br /><br />
+Arrays are similar to variables. When you declare an array, arrays are dynamically and automatically allocated on the heap. They have this syntax: var &lt;name&gt; : &lt;type&gt;[&lt;size expression&gt;];
+<br /><br />
+<code>
+<br />var&nbsp;numbers&nbsp;:&nbsp;int[5];<br /></code>
+<br /><br />
+Array sets and accesses are similar to that of other languages. Below is a full example of a program with array use:
+<br /><br />
+<code>
+<br />func&nbsp;main&nbsp;-&gt;&nbsp;int&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;numbers&nbsp;:&nbsp;int[5];<br />&nbsp;&nbsp;&nbsp;&nbsp;numbers[2]&nbsp;:=&nbsp;242;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;x&nbsp;:&nbsp;int&nbsp;:=&nbsp;numbers[2];<br />&nbsp;&nbsp;&nbsp;&nbsp;printf("%d\n",&nbsp;x);<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />end<br /></code>
+<br /><br />
+<h3>Enumerations</h3>
+<br /><br />
+Enumerations are similar to those in C; they are little more than named integer values. While you can specify the type you want the enumeration to represent, this is not implemented yet. Enumerations are fully handled at compile time.
+<br /><br />
+An enum declaration is done outside a function, and looks like this:
+<br /><br />
+<code>
+<br />enum&nbsp;Vals&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;A,<br />&nbsp;&nbsp;&nbsp;&nbsp;B,<br />&nbsp;&nbsp;&nbsp;&nbsp;C<br />end<br /></code>
+<br /><br />
+Enumeration values can be assigned to variables like this:
+<br /><br />
+<code>
+<br />var&nbsp;x&nbsp;:&nbsp;int&nbsp;=&nbsp;Vals::B;<br /></code>
+<br /><br />
+<h3>Structures</h3>
+<br /><br />
+Structures look similar to those of other languages, but they have what I consider an important feature: you can specify initial values. Structure declarations require that you specify an inital value, which is set at compile time.
+<br /><br />
+A structure declaration looks like this:
+<br /><br />
+<code>
+<br />struct&nbsp;S1&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;:&nbsp;int&nbsp;:=&nbsp;10;<br />&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;:&nbsp;int&nbsp;:=&nbsp;20;<br />end<br /></code>
+<br /><br />
+Inside a function, a structure variable is declared like this:
+<br /><br />
+<code>
+<br />struct&nbsp;s&nbsp;:&nbsp;S1;<br /></code>
+<br /><br />
+And the members can be set and accessed like this:
+<br /><br />
+<code>
+<br />var&nbsp;v1&nbsp;:&nbsp;int&nbsp;:=&nbsp;s.x;<br />s.x&nbsp;:=&nbsp;25;<br /></code>
+<br /><br />
+<h3>Conditionals</h3>
+<br /><br />
+Conditionals are very similar to other languages:
+<br /><br />
+<code>
+<br />if&nbsp;x&nbsp;&gt;&nbsp;20&nbsp;then<br />&nbsp;&nbsp;&nbsp;&nbsp;println("X&nbsp;greater&nbsp;than&nbsp;20.");<br />elif&nbsp;x&nbsp;&gt;&nbsp;10&nbsp;then<br />&nbsp;&nbsp;&nbsp;&nbsp;println("X&nbsp;greater&nbsp;than&nbsp;10.");<br />elif&nbsp;x&nbsp;&gt;&nbsp;5&nbsp;then<br />&nbsp;&nbsp;&nbsp;&nbsp;println("X&nbsp;greater&nbsp;than&nbsp;5.");<br />else<br />&nbsp;&nbsp;&nbsp;&nbsp;println("IDK");<br />end<br /></code>
+<br /><br />
+Like in other languages, it is completely valid to omit an elif or else statement. Also, note the presence of the "then" keyword in the "if" and "elif" blocks. These are required before the conditional body.
+<br /><br />
+Conditionals can also be constructed with a single argument, as below. The value compared to in these cases will either be "1" or "true", depending on the type.
+<br /><br />
+<code>
+<br />var&nbsp;x&nbsp;:&nbsp;bool&nbsp;:=&nbsp;true;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />if&nbsp;x&nbsp;then<br />&nbsp;&nbsp;&nbsp;&nbsp;println("True");<br />else<br />&nbsp;&nbsp;&nbsp;&nbsp;println("False");<br />end<br /></code>
+<br /><br />
+The following are the valid conditional operators:
+<br /><br />
+<ul>
+<li> \= (Equal to)</li>
+<li> != (Not equal to)</li>
+<li> \&gt; (Greater than)</li>
+<li> &lt; (Less than)</li>
+<li> \&gt;= (Greater than or equal to)</li>
+<li> &lt;= (Less than or equal to)</li>
+</ul>
+<br /><br />
+<br /><br />
+<h3>Loops</h3>
+<br /><br />
+There are four kinds of loops in Orka: the while loop, the repeat loop, the for loop, and the for-all loop. All loops have the "break" and "continue" keywords, which function in the same way as other languages.
+<br /><br />
+A while loop looks like this:
+<br /><br />
+<code>
+<br />while&nbsp;x&nbsp;&lt;&nbsp;10&nbsp;do&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;printf("X:&nbsp;%d\n",&nbsp;x);<br />&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;:=&nbsp;x&nbsp;+&nbsp;1;<br />end<br /></code>
+<br /><br />
+A repeat loop is basically an infinite loop. You are responsible for making sure it breaks out at some point; otherwise, it will run forever. A repeat loop looks like this:
+<br /><br />
+<code>
+<br />var&nbsp;i&nbsp;:&nbsp;int&nbsp;:=&nbsp;0;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />repeat<br />&nbsp;&nbsp;&nbsp;&nbsp;printf("%d|",&nbsp;i);<br />&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;:=&nbsp;i&nbsp;+&nbsp;2;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;i&nbsp;=&nbsp;22&nbsp;then&nbsp;break;&nbsp;end<br />end<br /></code>
+<br /><br />
+For loops are probably closest in looks to Ada. For loops can have the optional "step" keyword, which specifies the increment amount. Finally, the ranges can be either variables or constants. For loops look like this:
+<br /><br />
+<code>
+<br />for&nbsp;i&nbsp;in&nbsp;0&nbsp;..&nbsp;10&nbsp;do<br />&nbsp;&nbsp;&nbsp;&nbsp;numbers[i]&nbsp;:=&nbsp;0;<br />end<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />for&nbsp;i&nbsp;in&nbsp;0&nbsp;..&nbsp;10&nbsp;step&nbsp;2&nbsp;do<br />&nbsp;&nbsp;&nbsp;&nbsp;numbers[i]&nbsp;:=&nbsp;100;<br />end<br /></code>
+<br /><br />
+For-all loops are range loops; they are used for iterating over arrays. The index variable is the current array element, while the second value is the array to be iterated over. They look like this:
+<br /><br />
+<code>
+<br />forall&nbsp;i&nbsp;in&nbsp;numbers&nbsp;do<br />&nbsp;&nbsp;&nbsp;&nbsp;printf("%d\n",&nbsp;i);<br />end<br /></code>
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

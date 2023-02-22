@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Corelib vs Nolib</h2>
+<p><br />
+
+After the fall semester ended last year, I began working more on a programming language/compiler project I had started. While previous languages I constructed did have a standard library, I decided to take a slightly different approach, which I'm going to describe here. I've been using this approach in subsequent projects. Hopefully someone will find this interesting...
+<br /><br />
+One of the goals of my new language was to create a safe environment, meaning (among other things) the programmer doesn't have to worry about things like allocation and deallocation. That is a big problem with C in that you have to remember to deallocate anything you allocate. It makes sense, and in some cases you need this level of control, but for your average userspace application, it is easy to forget this extra step. And when you do, bad things happen.
+<br /><br />
+Originally, my approach was to use Linux system calls. I figured out how to allocate and free memory using the mmap syscall; when the compiler did not use the C library, it would generate this call. You can probably see the problem with this however: it is not portable. I also had this problem in a few other areas. For instance, when the program exits, everything needs to be deallocated first (the approach was similar: have a keyword for exit, then generate a system call). String operations were the most problematic. There's no system call for that, and it would be way too complicated to arbitrarily generate code for a string comparison or a string length function (another goal is to make string handling much easier to work with).
+<br /><br />
+A standard library like most languages have is a good idea, but if its not on the user's system, or its the wrong version, or whatever, bad things can happen there too.
+<br /><br />
+I think a good compromise around this is to have two libraries: a core library, and a standard library.
+<br /><br />
+<h3>Nolib</h3>
+<br /><br />
+Nolib (aka, no library) is the C approach. In some cases, it makes sense to have absolutely no overhead. A good case is with operating systems or applications that interact directly with the hardware. But when it comes to userland, having no library is the wrong approach.
+<br /><br />
+This is basically the reason why I don't love using C, especially for compiler work. A lot of what I like to do deals with parsing strings, which can really be a pain in C. The C library has some basic functions to get you started, but when it comes to resizing and all that, its just too much.
+<br /><br />
+<h3>What About Go?</h3>
+<br /><br />
+Go's approach is to statically link the entire standard library to the smallest application.
+<br /><br />
+This is a <i>horrible</i> idea.
+<br /><br />
+If you look at Go's standard library, it has a lot of stuff. Everything from dealing with different types of text to compressed archives to networking. If I'm writing a compiler, I don't need the networking interface compiled into the executable. Go's approach results in huge executables. On the upside, you never have to worry about DLL hell and APIs breaking, but honestly, when it comes to a programming language's standard library, you really shouldn't have this issue.
+<br /><br />
+<h3>The Corelib</h3>
+<br /><br />
+As I said, the approach I've been using is to create a core library and a standard library. I'm sure I'm not the inventor of this, but off the top of my head, I can't think of anything that does this. Here's the idea.
+<br /><br />
+The core library contains the most basic functions, such as malloc, free, strcmp, strlen, exit, and maybe a printing function (for just strings, not printf). These functions are all small and self-contained. The string functions are written purely in the implementation language. All the others make appropriate system calls- basically becoming wrappers around them. There is header that defines all the system call numbers for the current architecture, which can be conditionally included.
+<br /><br />
+The core library is built as a static library; that way, any library or executable will have these basic functions already in them. It will create slightly larger binaries, but in today's world the extra space is negligible (especially if we think Go is a good idea...). It would also be faster since you don't have the extra step of dynamically loading a library.
+<br /><br />
+The standard library contains all the nice functions like printf, string conversion, file system, and so forth. This is built as a shared library since it will probably get to be pretty big.
+<br /><br />
+<h3>Static vs Shared Libraries</h3>
+<br /><br />
+So what's the difference between a static and a shared library?
+<br /><br />
+A static library is compiled into the executable when it is linked. When you build the static library, you are basically just creating an archive of the object files, which are copied into the user's executable when it is built.
+<br /><br />
+A shared library is a separate entity on the disk. When the executable is built, information is included that points to the shared libraries' location. When the program is run, both the program and the shared library are loaded into memory, and any linkages are resolved.
+<br /><br />
+<h3>Conclusion</h3>
+<br /><br />
+As I said at the beginning, this post was meant to be more of random thought. My current project has been an interesting journey, especially now that I'm at the stage where I can start implementing the core libraries. When you get to that point, you know you've come a long way :)
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

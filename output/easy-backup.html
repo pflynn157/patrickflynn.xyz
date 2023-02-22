@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Easy Backup</h2>
+<p><br />
+
+While storage media has vastly improved in reliability, that doesn't mean your data is safe. If you've paid attention to technology news, even from a high level, there are plenty of horror stories of people losing data, especially to ransomware. But even if you are on a low-risk platform or in a low-risk environment, things can happen, so you should have your data on a regular backup schedule.
+<br /><br />
+While there are probably plenty of good backup tools out there, you don't need anything fancy. Whether you're on Linux or Windows, a simple script will do the trick. In this post, I'm going to share the scripts I use on my machines.
+<br /><br />
+What's special about these scripts is they do not do full backups, except for the first time. They do incremental backups, meaning they only backup stuff that's changed since the last backup. They also do a mirror copy, with the source (your computer) being the master copy. That way, provided you do regular backups, the backup will exactly mirror your computer.
+<br /><br />
+<h3>Backing up Linux</h3>
+<br /><br />
+On Linux, we will use a tool called RSync. In my experience, RSync comes preinstalled on most if not all common distros, so no extra step is required. You could do one command that backups up the whole home folder, but then you will backup a ton of extra settings and application-specific gunk. Its up to you, but I wouldn't recommend it.
+<br /><br />
+The command we use is:
+<br /><br />
+<code>
+<br />rsync&nbsp;-av&nbsp;--delete&nbsp;$HOME/Documents&nbsp;$BACKUP<br /></code>
+<br /><br />
+The "-a" flag stands for "archive mode", which is a shorthand for a bunch of other flags- one of them being the very import recursive flag, which copies all sub files and sub folders. The "-v" stands for "verbose". Just me, but I like to see what's going on. The "--delete" is used to mirror the destination (the backup) with the source; it means that anything in the backup folder that is not on your computer gets deleted.
+<br /><br />
+Here is my full script:
+<br /><br />
+<code>
+<br />#!/bin/bash<br />BACKUP="/run/media/patrick/Backup/xps-dev-main"<br />if&nbsp;[[&nbsp;!&nbsp;-d&nbsp;$BACKUP&nbsp;]]&nbsp;;&nbsp;then<br />&nbsp;&nbsp;&nbsp;&nbsp;mkdir&nbsp;$BACKUP<br />fi<br />rsync&nbsp;-av&nbsp;--delete&nbsp;$HOME/Arduino&nbsp;$BACKUP<br />rsync&nbsp;-av&nbsp;--delete&nbsp;$HOME/Desktop&nbsp;$BACKUP<br />rsync&nbsp;-av&nbsp;--delete&nbsp;$HOME/Documents&nbsp;$BACKUP<br />rsync&nbsp;-av&nbsp;--delete&nbsp;$HOME/Downloads&nbsp;$BACKUP<br />rsync&nbsp;-av&nbsp;--delete&nbsp;$HOME/scripts&nbsp;$BACKUP<br />rsync&nbsp;-av&nbsp;--delete&nbsp;$HOME/.ssh&nbsp;$BACKUP/ssh<br />echo&nbsp;"Done"<br /></code>
+<br /><br />
+<h3>Backing up Windows</h3>
+<br /><br />
+Backing up Windows is a similar process with a similar command. In this case, however, we use Robocopy instead of Rsync. Once again, in my experience robocopy is pre-installed on recent versions of Windows.
+<br /><br />
+Here is the command we use. A very good explanation of the flags (if you're interested) can be found at this link: <a href="https://superuser.com/questions/814102/robocopy-command-to-do-an-incremental-backup">https://superuser.com/questions/814102/robocopy-command-to-do-an-incremental-backup</a>
+<br /><br />
+<code>
+<br />robocopy&nbsp;C:\Users\patrick\Documents&nbsp;D:\laptop\Documents&nbsp;/MIR&nbsp;/FFT&nbsp;/R:3&nbsp;/W:10&nbsp;/Z&nbsp;/NP&nbsp;/NDL<br /></code>
+<br /><br />
+And, here is my full script. Notice the "pause" at the bottom. On Windows, you can double-click a batch script, and it will open the command prompt for you, which is nice. But it will close it automatically when its done. This is not a good idea in case there are any errors. The "pause" command will keep the command prompt open until you hit a key.
+<br /><br />
+<code>
+<br />@echo&nbsp;off<br />echo&nbsp;"Beginning&nbsp;backup..."<br />robocopy&nbsp;C:\Users\patrick\Archive&nbsp;D:\laptop\Archive&nbsp;/MIR&nbsp;/FFT&nbsp;/R:3&nbsp;/W:10&nbsp;/Z&nbsp;/NP&nbsp;/NDL<br />robocopy&nbsp;C:\Users\patrick\Desktop&nbsp;D:\laptop\Desktop&nbsp;/MIR&nbsp;/FFT&nbsp;/R:3&nbsp;/W:10&nbsp;/Z&nbsp;/NP&nbsp;/NDL<br />robocopy&nbsp;C:\Users\patrick\Documents&nbsp;D:\laptop\Documents&nbsp;/MIR&nbsp;/FFT&nbsp;/R:3&nbsp;/W:10&nbsp;/Z&nbsp;/NP&nbsp;/NDL<br />robocopy&nbsp;C:\Users\patrick\Downloads&nbsp;D:\laptop\Downloads&nbsp;/MIR&nbsp;/FFT&nbsp;/R:3&nbsp;/W:10&nbsp;/Z&nbsp;/NP&nbsp;/NDL<br />robocopy&nbsp;C:\Users\patrick\Music&nbsp;D:\laptop\Music&nbsp;/MIR&nbsp;/FFT&nbsp;/R:3&nbsp;/W:10&nbsp;/Z&nbsp;/NP&nbsp;/NDL<br />robocopy&nbsp;"C:\Users\patrick\Project&nbsp;Archive"&nbsp;"D:\laptop\Project&nbsp;Archive"&nbsp;/MIR&nbsp;/FFT&nbsp;/R:3&nbsp;/W:10&nbsp;/Z&nbsp;/NP&nbsp;/NDL<br />robocopy&nbsp;C:\Users\patrick\Pictures&nbsp;D:\laptop\Pictures&nbsp;/MIR&nbsp;/FFT&nbsp;/R:3&nbsp;/W:10&nbsp;/Z&nbsp;/NP&nbsp;/NDL<br />echo&nbsp;"Done"<br />pause<br /></code>
+<br /><br />
+<h3>Conclusion</h3>
+<br /><br />
+Hopefully you found this post useful. Stay safe, and stay backed up.
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

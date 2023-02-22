@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Adventures with VHDL</h2>
+<p><br />
+
+As part of one of my classes I took for my minor, I learned some basic VHDL. Actually, I think VHDL is the optional part (so far, I've been learning it pretty much on my own, though the introduction came from the class). I've wanted to learn a hardware descriptor language for some time. I tried Verilog, but I had a hard time finding good tutorials on how to use it, and for some reason I never really looked at VHDL (maybe Verilog scared me away). This may be a slightly unpopular opinion, but I really like VHDL. The reason is the reason why most people dislike it: its basically a subset of Ada, which is a language I'm familiar with and admire.
+<br /><br />
+Anyway, I finally managed to get a simple circuit to run: a full adder, which I eventually made into an 8-bit adder. It is signed, meaning you can use it as either an adder or a subtractor. I'll come back to this in a minute. Here's what it looks like:
+<br /><br />
+<code>
+<br />library&nbsp;IEEE;<br />use&nbsp;IEEE.std_logic_1164.all;<br /><br />--&nbsp;A&nbsp;single&nbsp;bit&nbsp;full&nbsp;adder<br />entity&nbsp;full_adder&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;port&nbsp;(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a,&nbsp;b,&nbsp;ci&nbsp;:&nbsp;in&nbsp;std_logic;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s,&nbsp;co&nbsp;:&nbsp;out&nbsp;std_logic<br />&nbsp;&nbsp;&nbsp;&nbsp;);<br />end&nbsp;full_adder;<br /><br />library&nbsp;IEEE;<br />use&nbsp;IEEE.std_logic_1164.all;<br /><br />--&nbsp;An&nbsp;8-bit&nbsp;adder<br />entity&nbsp;adder&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;port&nbsp;(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vec1&nbsp;:&nbsp;in&nbsp;std_logic_vector(7&nbsp;downto&nbsp;0);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vec2&nbsp;:&nbsp;in&nbsp;std_logic_vector(7&nbsp;downto&nbsp;0);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;out_vec&nbsp;:&nbsp;out&nbsp;std_logic_vector(7&nbsp;downto&nbsp;0);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;co&nbsp;:&nbsp;out&nbsp;std_logic<br />&nbsp;&nbsp;&nbsp;&nbsp;);<br />end&nbsp;adder;<br /><br />--&nbsp;The&nbsp;logic&nbsp;for&nbsp;the&nbsp;single-bit&nbsp;adder<br />architecture&nbsp;rtl_full_adder&nbsp;of&nbsp;full_adder&nbsp;is<br />begin<br />&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;&lt;=&nbsp;(a&nbsp;xor&nbsp;b)&nbsp;xor&nbsp;ci;<br />&nbsp;&nbsp;&nbsp;&nbsp;co&nbsp;&lt;=&nbsp;((a&nbsp;xor&nbsp;b)&nbsp;and&nbsp;ci)&nbsp;or&nbsp;(a&nbsp;and&nbsp;b);<br />end&nbsp;rtl_full_adder;<br /><br />--&nbsp;The&nbsp;logic&nbsp;for&nbsp;the&nbsp;8-bit&nbsp;adder<br />architecture&nbsp;rtl_adder&nbsp;of&nbsp;adder&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;component&nbsp;full_adder<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;port&nbsp;(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a,&nbsp;b,&nbsp;ci&nbsp;:&nbsp;in&nbsp;std_logic;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s,&nbsp;co&nbsp;:&nbsp;out&nbsp;std_logic<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br />&nbsp;&nbsp;&nbsp;&nbsp;end&nbsp;component;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;signal&nbsp;c&nbsp;:&nbsp;std_logic_vector(8&nbsp;downto&nbsp;0);<br />begin<br />&nbsp;&nbsp;&nbsp;&nbsp;op1&nbsp;:&nbsp;full_adder&nbsp;port&nbsp;map(a&nbsp;=&gt;&nbsp;vec1(0),&nbsp;b&nbsp;=&gt;&nbsp;vec2(0),&nbsp;ci&nbsp;=&gt;&nbsp;'0',&nbsp;s&nbsp;=&gt;&nbsp;out_vec(0),&nbsp;co&nbsp;=&gt;&nbsp;c(1));<br />&nbsp;&nbsp;&nbsp;&nbsp;op2&nbsp;:&nbsp;full_adder&nbsp;port&nbsp;map(a&nbsp;=&gt;&nbsp;vec1(1),&nbsp;b&nbsp;=&gt;&nbsp;vec2(1),&nbsp;ci&nbsp;=&gt;&nbsp;c(1),&nbsp;s&nbsp;=&gt;&nbsp;out_vec(1),&nbsp;co&nbsp;=&gt;&nbsp;c(2));<br />&nbsp;&nbsp;&nbsp;&nbsp;op3&nbsp;:&nbsp;full_adder&nbsp;port&nbsp;map(a&nbsp;=&gt;&nbsp;vec1(2),&nbsp;b&nbsp;=&gt;&nbsp;vec2(2),&nbsp;ci&nbsp;=&gt;&nbsp;c(2),&nbsp;s&nbsp;=&gt;&nbsp;out_vec(2),&nbsp;co&nbsp;=&gt;&nbsp;c(3));<br />&nbsp;&nbsp;&nbsp;&nbsp;op4&nbsp;:&nbsp;full_adder&nbsp;port&nbsp;map(a&nbsp;=&gt;&nbsp;vec1(3),&nbsp;b&nbsp;=&gt;&nbsp;vec2(3),&nbsp;ci&nbsp;=&gt;&nbsp;c(3),&nbsp;s&nbsp;=&gt;&nbsp;out_vec(3),&nbsp;co&nbsp;=&gt;&nbsp;c(4));<br />&nbsp;&nbsp;&nbsp;&nbsp;op5&nbsp;:&nbsp;full_adder&nbsp;port&nbsp;map(a&nbsp;=&gt;&nbsp;vec1(4),&nbsp;b&nbsp;=&gt;&nbsp;vec2(4),&nbsp;ci&nbsp;=&gt;&nbsp;c(4),&nbsp;s&nbsp;=&gt;&nbsp;out_vec(4),&nbsp;co&nbsp;=&gt;&nbsp;c(5));<br />&nbsp;&nbsp;&nbsp;&nbsp;op6&nbsp;:&nbsp;full_adder&nbsp;port&nbsp;map(a&nbsp;=&gt;&nbsp;vec1(5),&nbsp;b&nbsp;=&gt;&nbsp;vec2(5),&nbsp;ci&nbsp;=&gt;&nbsp;c(5),&nbsp;s&nbsp;=&gt;&nbsp;out_vec(5),&nbsp;co&nbsp;=&gt;&nbsp;c(6));<br />&nbsp;&nbsp;&nbsp;&nbsp;op7&nbsp;:&nbsp;full_adder&nbsp;port&nbsp;map(a&nbsp;=&gt;&nbsp;vec1(6),&nbsp;b&nbsp;=&gt;&nbsp;vec2(6),&nbsp;ci&nbsp;=&gt;&nbsp;c(6),&nbsp;s&nbsp;=&gt;&nbsp;out_vec(6),&nbsp;co&nbsp;=&gt;&nbsp;c(7));<br />&nbsp;&nbsp;&nbsp;&nbsp;op8&nbsp;:&nbsp;full_adder&nbsp;port&nbsp;map(a&nbsp;=&gt;&nbsp;vec1(7),&nbsp;b&nbsp;=&gt;&nbsp;vec2(7),&nbsp;ci&nbsp;=&gt;&nbsp;c(7),&nbsp;s&nbsp;=&gt;&nbsp;out_vec(7),&nbsp;co&nbsp;=&gt;&nbsp;c(8));<br />&nbsp;&nbsp;&nbsp;&nbsp;co&nbsp;&lt;=&nbsp;c(8);<br />end&nbsp;rtl_adder;<br /></code>
+<br /><br />
+Its actually not as scary as it looks; even without the background, it should be pretty easy to understand how it works. Binary addition works the same way we humans add numbers- we start with the digit on the right, and work left. The full adder is the smaller circuit that performs the logic operation to add two bits (three if you have carry). In base-2, 0+0 = 0, 0 + 1 = 1, 1 + 0 = 1, 1 + 1 = 0 carry 1, and 1 + 1 + 1 = 1 carry 1 (that extra 1 would be the carry; in all other cases, you can assume its zero). In the 8-bit adder, we simply use the full adder on each bit.
+<br /><br />
+As I mentioned earlier, this implements a signed adder. That means the first bit will be treated as the sign bit. Like all other adders, this uses the 2's complement representation of negative numbers. Because it is a signed adder, it also works as a subtractor. Although we often think of subtraction as a separate operation, to a computer there is no such thing. Computers perform addition on signed numbers. So if you wanted to do 10 - 5, to a computer it would be 10 + (-5). For our use, it is a complicated way to do it, but it yields the same result.
+<br /><br />
+I think the idea with VHDL testbenches is to test all values, but I wanted to try something once I found VHDL had text IO like other languages. If you use the IEEE standard logic types, you can convert integers to and from the bit vectors. Connect this with some input and output, and you have a simple calculator:
+<br /><br />
+<img class="img-fluid" src="assets/images/vhdl_calc.png"></img>
+<br /><br />
+And below is the code if you want to try it out. I am using GHDL to build and run this, so I also included the commands I used. Also note, because its 8-bit, you can add numbers until their sum is less than or equal to 127 (binary: 01111111). Anything greater will invert the most significant bit, which will result in a negative number.
+<br /><br />
+<code>
+<br />ghdl&nbsp;-a&nbsp;adder.vhdl<br /><br />ghdl&nbsp;-a&nbsp;--ieee=synopsys&nbsp;test.vhdl<br />ghdl&nbsp;-e&nbsp;--ieee=synopsys&nbsp;adder_tb<br />ghdl&nbsp;-r&nbsp;--ieee=synopsys&nbsp;adder_tb&nbsp;--ieee-asserts=disable<br /></code>
+<code>
+<br />library&nbsp;IEEE;<br />use&nbsp;IEEE.std_logic_1164.all;<br />use&nbsp;IEEE.std_logic_signed.all;<br />use&nbsp;IEEE.std_logic_arith.all;<br />use&nbsp;IEEE.numeric_std.all;<br />use&nbsp;std.textio.all;<br /><br />--&nbsp;A&nbsp;testbench&nbsp;has&nbsp;no&nbsp;ports.<br />entity&nbsp;adder_tb&nbsp;is<br />end&nbsp;adder_tb;<br /><br />architecture&nbsp;behav&nbsp;of&nbsp;adder_tb&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;constant&nbsp;WIDTH&nbsp;:&nbsp;integer&nbsp;:=&nbsp;8;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;Declaration&nbsp;of&nbsp;the&nbsp;component&nbsp;that&nbsp;will&nbsp;be&nbsp;instantiated.<br />&nbsp;&nbsp;&nbsp;&nbsp;component&nbsp;adder<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;port&nbsp;(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vec1&nbsp;:&nbsp;in&nbsp;std_logic_vector(WIDTH-1&nbsp;downto&nbsp;0);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vec2&nbsp;:&nbsp;in&nbsp;std_logic_vector(WIDTH-1&nbsp;downto&nbsp;0);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;out_vec&nbsp;:&nbsp;out&nbsp;std_logic_vector(WIDTH-1&nbsp;downto&nbsp;0);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;co&nbsp;:&nbsp;out&nbsp;std_logic<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br />&nbsp;&nbsp;&nbsp;&nbsp;end&nbsp;component;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;Specifies&nbsp;which&nbsp;entity&nbsp;is&nbsp;bound&nbsp;with&nbsp;the&nbsp;component.<br />&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;add0:&nbsp;adder&nbsp;use&nbsp;entity&nbsp;work.adder;<br />&nbsp;&nbsp;&nbsp;&nbsp;signal&nbsp;vec1,&nbsp;vec2,&nbsp;out_vec&nbsp;:&nbsp;std_logic_vector(WIDTH-1&nbsp;downto&nbsp;0);<br />&nbsp;&nbsp;&nbsp;&nbsp;signal&nbsp;co&nbsp;:&nbsp;std_logic;<br /><br />begin<br />&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;Component&nbsp;instantiation.<br />&nbsp;&nbsp;&nbsp;&nbsp;add0:&nbsp;adder&nbsp;port&nbsp;map&nbsp;(vec1&nbsp;=&gt;&nbsp;vec1,&nbsp;vec2&nbsp;=&gt;&nbsp;vec2,&nbsp;out_vec&nbsp;=&gt;&nbsp;out_vec,&nbsp;co&nbsp;=&gt;&nbsp;co);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;This&nbsp;process&nbsp;does&nbsp;the&nbsp;real&nbsp;job.<br />&nbsp;&nbsp;&nbsp;&nbsp;process<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;For&nbsp;input<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;variable&nbsp;in_buf1&nbsp;:&nbsp;line;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;variable&nbsp;in_buf2&nbsp;:&nbsp;line;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;variable&nbsp;in_num1&nbsp;:&nbsp;integer;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;variable&nbsp;in_num2&nbsp;:&nbsp;integer;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;variable&nbsp;val1&nbsp;:&nbsp;std_logic_vector(WIDTH-1&nbsp;downto&nbsp;0);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;variable&nbsp;val2&nbsp;:&nbsp;std_logic_vector(WIDTH-1&nbsp;downto&nbsp;0);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;For&nbsp;output<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;variable&nbsp;l&nbsp;:&nbsp;line;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;variable&nbsp;out_num&nbsp;:&nbsp;integer;<br />&nbsp;&nbsp;&nbsp;&nbsp;begin<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;Get&nbsp;all&nbsp;the&nbsp;input<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(l,&nbsp;String'("Enter&nbsp;two&nbsp;numbers"));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;writeline(output,&nbsp;l);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;readline(input,&nbsp;in_buf1);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read(in_buf1,&nbsp;in_num1);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;readline(input,&nbsp;in_buf2);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read(in_buf2,&nbsp;in_num2);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;val1&nbsp;:=&nbsp;conv_std_logic_vector(in_num1,&nbsp;WIDTH);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;val2&nbsp;:=&nbsp;conv_std_logic_vector(in_num2,&nbsp;WIDTH);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait&nbsp;for&nbsp;50&nbsp;ns;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;Do&nbsp;the&nbsp;calculations<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vec1&nbsp;&lt;=&nbsp;val1;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vec2&nbsp;&lt;=&nbsp;val2;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait&nbsp;for&nbsp;50&nbsp;ns;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;Output&nbsp;everything<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(l,&nbsp;String'("Num1:&nbsp;"));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(l,&nbsp;to_bitvector(val1));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(l,&nbsp;String'("&nbsp;|&nbsp;Num2:&nbsp;"));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(l,&nbsp;to_bitvector(val2));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;writeline(output,&nbsp;l);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;out_num&nbsp;:=&nbsp;conv_integer(out_vec);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(l,&nbsp;String'(""));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;writeline(output,&nbsp;l);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(l,&nbsp;String'("Result:&nbsp;"));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(l,&nbsp;out_num);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;writeline(output,&nbsp;l);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(l,&nbsp;String'("Output:&nbsp;"));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(l,&nbsp;to_bitvector(out_vec));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;writeline(output,&nbsp;l);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait;<br />&nbsp;&nbsp;&nbsp;&nbsp;end&nbsp;process;<br /><br />end&nbsp;behav;<br /></code>
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

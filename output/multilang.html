@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h1>Multilang</h1>
+<p><br />
+
+Multilang is a natural language project I dd back over Christmas break to fullfill a personal need and what I think is a larger need for language learners. When you are learning a language, one of the most essential components is a language to language dictionary, ie a French-English-French dictionary. And of course, while these are great tools, they can be big and daunting. For me at least, this is an annoying problem- to constantly have to flip through a dictionary.
+<br /><br />
+A theme-based dictionary, such as an English-French theme dictionary, is one idea of improvement. Its based on two premises. First, the majority of everyday spoken language is comparetively small to the language as a whole. Of any given language, only about one to two thousand words make up the bulk of what you need to know. Secondly, it is often helpful to think in these. Words can be grouped into different categories, and if you're trying to translate a work, you can narrow things down significantly if you know what category your word belongs to. Even if you're not a language learner per se, having this theme division can be interesting for comparing languages.
+<br /><br />
+My multilang project builds on this idea. In this project, I devised a list of thirty or so categories, and then group the 1000 most used English words into these categories. With this done, we can then translate these sorted words into other languages.
+<br /><br />
+On a technical level, this backbone of this is a large CSV file. The file contains the word list, which is sorted by category. The categories are defined by their abbreviations. From there, we can add a column per language. A Python processing script generates a latex file for each language, which can then be compiled into the final PDF.
+<br /><br />
+I believe in the freedom of information, and the freedom and power of learning, so this entire project is free. There are dictionaries for two languages- French and Ido- and in-process dictionaries for two more: Hindi and Italian.
+<br /><br />
+Note that this project is very much subject to improvement, so I welcome any suggestions aabout the organization or the project as a whole.
+<br /><br />
+Here are the downloads:
+<br /><br />
+<a href="/assets/english_ido_dict.pdf">Download: English to Ido</a>
+<br /><br />
+<a href="/assets/ido_english_dict.pdf">Download: Ido to English</a>
+<br /><br />
+<a href="/assets/Ido.pdf">Download: Ido (Complete)</a>
+<br /><br />
+<a href="/assets/French.pdf">Download: French (Complete)</a>
+<br /><br />
+<a href="/assets/Hindi.pdf">Download: Hindi (Partial)</a>
+<br /><br />
+<a href="/assets/Italian.pdf">Download: Italian (Very partial)</a>
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

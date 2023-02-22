@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h1>Projects</h1>
+<p><br />
+
+Staying busy is not usually a huge issue for me. In the almost seven years since I've started programming, I've worked on a wide variety of projects. While many of them are simple exploratory projects, some have evolved into usable applications.
+<br /><br />
+However, software isn't the only thing I do. I have several other interests as well. This page is the "home page", if you will, of all my projects.
+<br /><br />
+<h3>Software Projects</h3>
+<br /><br />
+<ul>
+<li> <a href="/diya.html">Diya Website Generator</a></li>
+<li> <a href="/orka.html">Orka Programming Language & Compiler</a></li>
+<li> <a href="/tiny-lang.html">Tiny Programming Language & Compiler</a></li>
+<li> <a href="/llir.html">LLIR compiler backend framework</a></li>
+<li> <a href="/minilex.html">MiniLex lexical analyzer generator</a></li>
+<li> <a href="/espresso.html">JVM-based Espresso Programming Language & Compiler</a></li>
+<li> <a href="https://git.sr.ht/~pflynn157/quik">Quik Programming Language & Compiler</a></li>
+<li> <a href="/desktop-applications.html">Desktop Applications</a></li>
+<li> <a href="/android-apps.html">Android Applications</a></li>
+<li> <a href="https://git.sr.ht/~pflynn157/riscv-as">RISC-V Flat Binary Assembler</a></li>
+<li> <a href="/risc-v-toolchain.html">RISC-V Toolchain and Assembler</a></li>
+</ul>
+<br /><br />
+<h3>Hardware</h3>
+<br /><br />
+<ul>
+<li> <a href="/risc-v-cpu.html">RISC-V 32-bit CPU core</a></li>
+<li> <a href="https://git.sr.ht/~pflynn157/legv8-cpu">LegV8 CPU</a></li>
+</ul>
+<br /><br />
+<h3>Photography</h3>
+<br /><br />
+<ul>
+<li> A collection of my <a href="/photos.html">best photos</a>.</li>
+<li> <a href="/dallas.html">My 2022 Dallas Trip</a></li>
+<li> <a href="/photography-fall-2022.html">Fall 2022</a></li>
+</ul>
+<br /><br />
+<h3>Writings and Tutorials</h3>
+<br /><br />
+<ul>
+<li> <a href="/raspberry-pi-router.html">Raspberry Pi Router</a></li>
+<li> <a href="/installing-pi-hole.html">Installing Pi-Hole</a></li>
+<li> <a href="/arm64-on-qemu.html">Arm64 on Qemu</a></li>
+<li> <a href="/lex-the-entry-to-a-compiler.html">Creating a Lexical Analyzer</a></li>
+<li> <a href="/linux-system-calls-the-base-of-a-standard-library.html">Working with Linux System Calls</a></li>
+<li> <a href="/disassembling-a-dell-inspiron-laptop.html">Disassembling a Dell Laptop</a></li>
+</ul>
+<br /><br />
+<h3>Other</h3>
+<br /><br />
+<ul>
+<li> <a href="/multilang.html">Theme-Based Language Dictionaries</a></li>
+<li> <a href="/dakkar-conlang.html">A Simple Constructed Language</a></li>
+<li> <a href="/iberian.html">Iberian- Another Constructed Language</a></li>
+<li> <a href="/book-log.html">My Book Log</a></li>
+<li> I love <a href="/puzzles.html">jigsaw puzzles</a></li>
+</ul>
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

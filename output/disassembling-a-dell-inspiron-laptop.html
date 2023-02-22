@@ -1,0 +1,123 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Disassembling a Dell Inspiron Laptop</h2>
+<p><br />
+
+I am long-time Dell computer user. My first computer was a large Dell desktop originally running Windows XP, and then Linux Mint when I inherited it. I had an HP after that, which was a complete piece of junk, and after that for college, I got a Dell Inspiron laptop. Since then, I've also bought a Dell XPS for development and personal home use (thanks to its many drives). My family also uses Dell, with two members having Dell Inspirons as well.
+<br /><br />
+While I have a lot of good to say about Dell machines, the only thing that annoys me is the drives aren't always the best for the money. When I bought mine, it had a 2TB hard drive, which is great if you need the space, but for most else it is painfully slow. My mom, who has 20 years of family photos, also had a similar problem (only in her case, the drive was too small). I upgraded my drive about a year after getting mine, and this past weekend, I swapped it out into her laptop and got a new drive for myself.
+<br /><br />
+Today, I'm going to give a quick overview on how to disassemble one of these laptops. The Dell Inspirons have a similar structure regardless of the model, so you should be good to follow through regardless of what you have. In my case, I have a Dell Inspiron 7573.
+<br /><br />
+<h3>Disclaimer...</h3>
+<br /><br />
+I've taken apart Inspiron laptops several times, and I've never had an issue. You shouldn't either if you follow instructions and pay attention to what you are doing.
+<br /><br />
+That said, I am not responsible if you mess up your computer by doing this. If something bothers you, don't do it. You have been warned.
+<br /><br />
+<h3>Disassembly</h3>
+<br /><br />
+First, you need to unscrew the bottom. The screws near the edge near the front where it curves come out, but depending on the model, the rest may or may not come out (some cases have some kind of prevention mechanism to keep you from losing the screws). On my 7573, they stayed in, but in my mom's lower-end machine, they came out. Just be careful not to lose them.
+<br /><br />
+<img class="img-fluid" src="assets/images/step1-768x1024.jpg"></img>
+<br /><br />
+Getting the cover off is tricky. Start by lifting it open from the back corners, by the hinges:
+<br /><br />
+<img class="img-fluid" src="assets/images/step2-1024x768.jpg"></img>
+<br /><br />
+Do this on both sides, and when its up enough, you should be able to lift it near the front. Although it sounds counter-intuitive, the case actually opens on the front first, and lifts off the back. Some sources may recommend using tools, but I've been fine just using my hands. Once you get it open, you will see the inside:
+<br /><br />
+<img class="img-fluid" src="assets/images/step3-1024x768.jpg"></img>
+<br /><br />
+Before you do anything to it, remove the battery. There are two screws holding it in on each side (so four total):
+<br /><br />
+<img class="img-fluid" src="assets/images/step5-768x1024.jpg"></img>
+<br /><br />
+<img class="img-fluid" src="assets/images/step4-768x1024.jpg"></img>
+<br /><br />
+When you get the screws out, unplug it from the motherboard. The cord on the battery stays attached to the battery, not the motherboard:
+<br /><br />
+<img class="img-fluid" src="assets/images/step6-1024x768.jpg"></img>
+<br /><br />
+The Inspirons have ports for regular SATA drives and NVMe SSDs. There are two types of NVMe SSDs: the full-length ones, and the half-length ones (I'm sure there's an actual technical name for it, but I'm not sure). Full-length SSDs will go right in, but the half-length will not unless you have a brace. My mom's computer came with a brace, but it didn't fit mine, and I couldn't find one so I ended up just getting a new SATA SSD.
+<br /><br />
+The case for the SATA drive looks like this:
+<br /><br />
+<img class="img-fluid" src="assets/images/step7-768x1024.jpg"></img>
+<br /><br />
+The number of screws holding it will depend on the model, but it should be self-evident what screws are which. Unhook the drive (if you have an existing one), unscrew the case, and pull it out.
+<br /><br />
+The drive will be screwed into the case, so just pull out the four screws holding it in- two on each side:
+<br /><br />
+<img class="img-fluid" src="assets/images/step8-1024x768.jpg"></img>
+<br /><br />
+This is what your machine will look like with the battery and hard drive out. I include it for reference purposes. On the 7573, the NVMe port is that black area between the fan and the HDD area. On my mom's computer, it was located on the side near the front, I think near the battery. If you're looking to upgrade the RAM, it is under that big black square near the opposite side from the fan.
+<br /><br />
+<img class="img-fluid" src="assets/images/step9-768x1024.jpg"></img>
+<br /><br />
+When you are finished, simply put it all back together in reverse order. If you put a new drive in, make sure to have a USB ready so you can install the OS on it. If not, you'll get stuck in a BIOS loop when you turn it on. I'm not sure what newer models do, but old models would just run in a loop forever until you turn the computer off.
+<br /><br />
+<h3>Conclusion</h3>
+<br /><br />
+Although taking a laptop apart may seem like a scary process, its actually really easy. While I don't have experience taking other models apart, they should be fairly similar to work on. Regardless of what you have, hopefully this gives you a good starting point.
+<br /><br />
+Until next time!
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

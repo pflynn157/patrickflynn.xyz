@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h1>LLIR</h1>
+<p><br />
+
+LLIR is one of my newest projects and is in some ways a companion to Tiny Lang. So what is LLIR? LLIR is a midend/backend compiler framework, similar in design and concept to LLVM.
+<br /><br />
+So why did I create this? The short answer is because LLVM is great, but also big and complex.
+<br /><br />
+When I started Tiny Lang and other related projects that used LLVM, I did so because using LLVM would allow me to focus on the frontend and the language, without worrying about debugging all stages. Indeed, this is where LLVM’s strong point is. However, for some of my personal research, I want to be able to interact closely with the underlying hardware. In theory, one can do this with LLVM, but in reality the framework is huge and complicated, so doing so is less than practical. My solution to this was to create LLIR. Because I love the design of LLVM, I wanted to create something similar in design, but not a complete clone. The most noticeable difference will be how the IR is structured (in LLVM, everything is based on Values, where as in LLIR there are separate types for instructions, operands, and so forth). The difference lies more in my needs than because I think one is necessarily a better design.
+<br /><br />
+The source code can be found <a href="https://github.com/pflynn157/llir">here</a>.
+<br /><br />
+<h3>The Status</h3>
+<br /><br />
+LLIR is definitely new software. Between the alpha, beta, and release classifications, I would probably have to label this alpha software. At the moment, only the x86-64 architecture is supported. And while the IR itself is mostly complete and working, there are bugs in some areas, particularly in how structures are addressed.
+<br /><br />
+That being said, the framework is complete enough to work in non-trivial applications. There is a fairly complete suite of tests, and it works fully with Tiny Lang (all the Tiny Lang tests build and pass using LLIR).
+<br /><br />
+<h3>Documentation</h3>
+<br /><br />
+API documentation coming soon!
+<br /><br />
+<h3>How To Use</h3>
+<br /><br />
+At the moment, I unfortunately don’t have any tutorials beside the documentation and examples on how to use this. The documentation is the best way to understand how to use the API, and the “examples” directory in the source code repository is the best way to see the framework in action.
+<br /><br />
+There are two components in LLIR. The first is the C++ framework itself. In most cases, if you are constructing a compiler, this is what you would want to use. The other part is the LLIR language compiler. This parses and compiles straight LLIR code.
+<br /><br />
+<h3>Examples</h3>
+<br /><br />
+This is an example of Hello World in LLIR:
+<br /><br />
+<code>
+<br />#module&nbsp;hello<br />&nbsp;<br />extern&nbsp;void&nbsp;puts(%0:*i8);<br />&nbsp;<br />global&nbsp;i32&nbsp;main()&nbsp;{<br />entry:<br />&nbsp;&nbsp;call&nbsp;void&nbsp;puts($STR0("Hi!"));<br />&nbsp;&nbsp;ret&nbsp;i32&nbsp;2;<br />}<br /></code>
+<br /><br />
+This is an example of the C++ framework. It generates a simple program that returns 0.
+<br /><br />
+<code>
+<br />#include&nbsp;&lt;iostream&gt;<br />#include&nbsp;&lt;cstdlib&gt;<br />#include&nbsp;&lt;sys/stat.h&gt;<br />#include&nbsp;&lt;sys/types.h&gt;<br />&nbsp;<br />#include&nbsp;&lt;llir.hpp&gt;<br />#include&nbsp;&lt;irbuilder.hpp&gt;<br />#include&nbsp;&lt;amd64/amd64.hpp&gt;<br />using&nbsp;namespace&nbsp;LLIR;<br />&nbsp;<br />int&nbsp;main(int&nbsp;argc,&nbsp;char&nbsp;**argv)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;Module&nbsp;*mod&nbsp;=&nbsp;new&nbsp;Module("test1");<br />&nbsp;&nbsp;&nbsp;&nbsp;IRBuilder&nbsp;*builder&nbsp;=&nbsp;new&nbsp;IRBuilder(mod);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;func&nbsp;main:<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;0<br />&nbsp;&nbsp;&nbsp;&nbsp;Type&nbsp;*i32Type&nbsp;=&nbsp;Type::createI32Type();<br />&nbsp;&nbsp;&nbsp;&nbsp;Function&nbsp;*mainFunc&nbsp;=&nbsp;Function::Create("main",&nbsp;Linkage::Global,&nbsp;i32Type);<br />&nbsp;&nbsp;&nbsp;&nbsp;mod-&gt;addFunction(mainFunc);<br />&nbsp;&nbsp;&nbsp;&nbsp;builder-&gt;setCurrentFunction(mainFunc);<br />&nbsp;&nbsp;&nbsp;&nbsp;builder-&gt;createBlock("entry");<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;Operand&nbsp;*i32&nbsp;=&nbsp;builder-&gt;createI32(0);<br />&nbsp;&nbsp;&nbsp;&nbsp;builder-&gt;createRet(i32Type,&nbsp;i32);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;mod-&gt;print();<br />&nbsp;&nbsp;&nbsp;&nbsp;mod-&gt;transform();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Generate&nbsp;a&nbsp;binary<br />&nbsp;&nbsp;&nbsp;&nbsp;mkdir("./test_bin",&nbsp;0700);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;LLIR::Amd64Writer&nbsp;*writer&nbsp;=&nbsp;new&nbsp;LLIR::Amd64Writer(mod);<br />&nbsp;&nbsp;&nbsp;&nbsp;writer-&gt;compile();<br />&nbsp;&nbsp;&nbsp;&nbsp;writer-&gt;writeToFile("/tmp/test1.s");<br />&nbsp;&nbsp;&nbsp;&nbsp;system("gcc&nbsp;/tmp/test1.s&nbsp;-o&nbsp;./test_bin/test1");<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />}<br /></code>
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

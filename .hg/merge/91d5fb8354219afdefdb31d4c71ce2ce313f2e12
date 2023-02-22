@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h1>Arm64 on Qemu</h1>
+<p><br />
+
+I think I wrote a little bit about this at one point, but one of my new low-level interests is Arm. Partly because of my work in the HPC field, I've found the new Arm supercomputer in Japan to be really interesting. I find it really interesting how what was the architecture of smartphones is now making its way into other fields. Its even coming into the PC market- look at the new Apple computers. But from an even more personal perspective, I've found RISC architectures really interesting. I grew up (so to speak) on x86- and therefore, CISC architectures. Writing a compiler to generate CISC code is really easy; adapting that same code to RISC is an can be challenging.
+<br /><br />
+Out of work and personal needs, I've been trying to get some emulators working for non-x86 architectures. I do have a Raspberry Pi 4, and while it is usable, its a little slow, and doesn't have any SVE support (SVE is Arm's new SIMD architecture). So far, I have MIPS32, RiscV64, Power 10, and AArch64 emulators up and running. The MIPS32 and AArch64 work pretty well; the RISC-V is getting there, and the POWER 10 really sucks (I'm working on it though). Today, I'm going to cover how to set up Ubuntu 20.04 on QEMU.
+<br /><br />
+<h3>Words of Warning</h3>
+<br /><br />
+Virtualization is always slower than bare metal. Before you start giving me examples on how well Virtualbox works on your computer, yes you're probably right. But the reason why you can run an entire guest system on Virtualbox with really good speed is because the VM and the host system are x86 based, so the VM doesn't have to do as much translation. For different architectures, every single instruction has to be translated to an x86 instruction. On its own, its still really fast, but when you have an entire operating system on top of it, you will start to notice the difference.
+<br /><br />
+I'm not saying this to scare you off. If you have a powerful computer, you can allocate resources to reduce this overhead quite a bit, but you will still notice. Its good enough for real work, but I wouldn't plan on running any huge builds too often, or doing things too resource-intensive.
+<br /><br />
+<h3>Words of Credit</h3>
+<br /><br />
+I like to think I'm a genius, but let's be realistic: I'm not. Therefore, let us give credit where it is due. I initially got things going by following this article: <a href="https://futurewei-cloud.github.io/ARM-Datacenter/qemu/how-to-launch-aarch64-vm/">https://futurewei-cloud.github.io/ARM-Datacenter/qemu/how-to-launch-aarch64-vm/</a>. A lot of stuff is copied from there, so I wish to emphasize that most credit should be given to that author, not to me.
+<br /><br />
+The reason why I wrote my own article is A) so it would be easily accessible for me, and B) because I did have to make enough changes to warrant a rewrite. The article is a little old; if you follow it, you will end up with Ubuntu 18.04. If you follow mine, you end up with Ubuntu 20.04 with SVE.
+<br /><br />
+<h3>Getting Started</h3>
+<br /><br />
+First, you need to install these packages (note: I'm on Linux Mint. If you're not on Linux Mint/Ubuntu/Debian, you may have to change the package names):
+<br /><br />
+sudo apt-get install qemu-system-arm qemu-efi-aarch64 qemu-utils
+<br /><br />
+Next, create the boot images and the hard drive:
+<br /><br />
+<code>
+<br />dd&nbsp;if=/dev/zero&nbsp;of=flash1.img&nbsp;bs=1M&nbsp;count=64<br />dd&nbsp;if=/dev/zero&nbsp;of=flash0.img&nbsp;bs=1M&nbsp;count=64<br />dd&nbsp;if=/usr/share/qemu-efi-aarch64/QEMU_EFI.fd&nbsp;of=flash0.img&nbsp;conv=notrunc<br /><br />qemu-img&nbsp;create&nbsp;ubuntu-image.img&nbsp;20G<br /></code>
+<br /><br />
+To download Ubuntu 20.04:
+<br /><br />
+<code>
+<br />wget&nbsp;http://ports.ubuntu.com/ubuntu-ports/dists/focal/main/installer-arm64/current/legacy-images/netboot/mini.iso<br /></code>
+<br /><br />
+Note that the site in question is an FTP site. If you want a different image, go for it.
+<br /><br />
+<h3>Install Ubuntu</h3>
+<br /><br />
+Use this command to start the installation:
+<br /><br />
+<code>
+<br />qemu-system-aarch64&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-nographic&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-machine&nbsp;virt,gic-version=max&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-m&nbsp;4G&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-cpu&nbsp;max&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-smp&nbsp;4&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-netdev&nbsp;user,id=vnet,hostfwd=:127.0.0.1:0-:22&nbsp;-device&nbsp;virtio-net-pci,netdev=vnet&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-drive&nbsp;file=ubuntu-image.img,if=none,id=drive0,cache=writeback&nbsp;-device&nbsp;virtio-blk,drive=drive0,bootindex=0&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-drive&nbsp;file=mini.iso,if=none,id=drive1,cache=writeback&nbsp;-device&nbsp;virtio-blk,drive=drive1,bootindex=1&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-drive&nbsp;file=flash0.img,format=raw,if=pflash&nbsp;-drive&nbsp;file=flash1.img,format=raw,if=pflash&nbsp;<br /></code>
+<br /><br />
+Few notes here. First, the `-m 4G` represents how much memory is allocated to the machine. The original article said to use 512M. That took <i>FOREVER</i> on my computer, so I would highly recommend to scale this up (once I scaled it, it only took like 15 minutes). The `-smp 4` represents the number of CPU cores to allocate to the virtual machine.
+<br /><br />
+Just follow the prompts and instructions to install the system. It's really easy, so I'm not going to walk you through it. When you get to the end where it asks about additional software, I would only recommend doing the SSH server. Don't install a desktop system unless you're feeling adventurous. It will be slow. And quite frankly, I have no idea how you would run it... Maybe VNC?
+<br /><br />
+<h3>Boot Ubuntu</h3>
+<br /><br />
+One you finished installing, you can use this command to launch the VM. You should put this in a script to make it easier to launch each time.
+<br /><br />
+<code>
+<br />qemu-system-aarch64&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-nographic&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-machine&nbsp;virt,gic-version=max&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-m&nbsp;8G&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-cpu&nbsp;max,pmu=off,sve=on,sve256=on&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-smp&nbsp;6&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-netdev&nbsp;user,id=vnet,hostfwd=tcp::5556-:22&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-device&nbsp;virtio-net-pci,netdev=vnet&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-drive&nbsp;file=ubuntu-image.img,if=none,id=drive0,cache=writeback&nbsp;-device&nbsp;virtio-blk,drive=drive0,bootindex=0&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;-drive&nbsp;file=flash0.img,format=raw,if=pflash&nbsp;-drive&nbsp;file=flash1.img,format=raw,if=pflash&nbsp;<br /></code>
+<br /><br />
+Again, I made a few changes from the original article. I scaled the memory and SMP up to my specs, so <i>make sure</i> to check that before you run it. If you scale up to more than your computer can handle, it may freeze.
+<br /><br />
+Notice the "sve" arguments in the "-cpu" line. This is where you can control the SVE vector lane size. SVE vectors start at 128-bits and increment from there by 128 up to 2048-bits. Also notice the line that begins with "-netdev". This allows you to SSH into the VM. For some reason, even if you're terminal is maximized, QEMU doesn't use the whole thing. SSH makes it more usable. The "5556-:22" sets the SSH port. So, to SSH in, you can use the following command:
+<br /><br />
+<code>
+<br />ssh&nbsp;user@localhost&nbsp;-p&nbsp;5556<br /></code>
+<br /><br />
+Replace "user" with whatever user you created during installation.
+<br /><br />
+<h3>Conclusion</h3>
+<br /><br />
+If all goes well, you shouldn't have any issues getting this up and working. So far this seems to run pretty well (even if it makes my computer run up a lot in the process :-). As I get other machines to work, I'll post updates.
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

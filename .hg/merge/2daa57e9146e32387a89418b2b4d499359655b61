@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Intro to VHDL</h2>
+<p><br />
+
+Welcome everyone! Today we’re going to dive into VHDL, or hardware development. VHDL is actually one of my more recent interests. Although I first learned it and did some basic projects about a year ago, it wasn’t until this past semester that I really got deep into it when I created my first CPUs.
+<br /><br />
+In this post, I’m going to introduce you to VHDL. I will talk about what it is used for, the overall concepts behind it, and conclude with a basic example. Please note that I assume some basic level of knowledge behind hardware and computer architecture. Electrical engineering knowledge isn’t required, but you should know roughly how a CPU works and the basics of digital logic.
+<br /><br />
+Even if you don’t, I hope this post can at least give you a starting point with what you need to know if you are interested. Let’s dive in!
+<br /><br />
+<h2>Hardware Descriptor Languages</h2>
+<br /><br />
+VHDL and its close cousin, Verilog, are hardware descriptor languages (HDL). Fundamentally, VHDL and Verilog are very similar. The difference lies primarily in the syntax. VHDL is a modified subset of the Ada programming language, and according to the professor I learned this from, VHDL is more commonly used in academia. Verilog is meant to be more concise, and in a way resembles the C-style languages. While Verilog has its place in academia, it is more commonly used in industry.
+<br /><br />
+So what is a hardware descriptor language?
+<br /><br />
+Hardware descriptor languages are programming languages, but not in the conventional sense. A programming language is meant to program a computer. They hide the dirty details of the hardware and operating system interaction, allowing the programmer a clean interface to do what they need to do. You can think of a programming language modeling an idea for what you want the hardware to do.
+<br /><br />
+Hardware descriptor languages describe the operation of a piece of hardware. They are not programming languages in the sense that they can be used for a programming task, ie viewing files. Hardware descriptor languages allow hardware to be modeled in an easy-to-understand way and tested thoroughly for correctness.
+<br /><br />
+We’ll take this thought and dive deeper in a second. But first, why do I use VHDL?
+<br /><br />
+Some of it is because VHDL is the first HDL that I learned and am more likely to use while I’m at school. I can go learn Verilog, but it doesn’t do me a lot of good if all my school projects require me use VHDL. The second reason is because I am familiar with Ada and really enjoy it. I find VHDL easier to understand because of its verbose nature.
+<br /><br />
+<h2>Constructing Hardware</h2>
+<br /><br />
+It is not an unreasonable thought to think that hardware, specifically CPUs, are designed with big circuit diagrams. To an extent they are, but the electrical part of CPUs are only half the process. The first step to designing a piece of hardware is model the logic.
+<br /><br />
+CPUs are built on the principles of Boolean algebra. I will only touch on the basics here. Boolean algebra recognizes only two values: 0 and 1, also known as “true” and “false”, or “on” and “off”. This latter representation is why we can build computers. An electrical circuit can only be in one of two states: on or off. There is either current flowing through a circuit, or there is not.
+<br /><br />
+Using these two values, we can start constructing the basic operations of Boolean algebra: AND, OR, XOR, and NOT. AND, OR, and XOR all take at least two inputs and have one output. The output of “AND” is only true if all inputs are true. OR is only true if at least one of the inputs are true. XOR is only true if at least one BUT not all the inputs are true. Finally, NOT simply inverts these inputs.
+<br /><br />
+In normal math, whether algebra, calculus, or geometry, all complicated operations start with the four basic operations: add, subtract, multiply, and divide. In the same way, more complicated operations can be built in Boolean algebra using the basic AND, OR, XOR, and NOT operations. These operations can be built all the way up until you have a CPU.
+<br /><br />
+HDLs are designed to model hardware from a Boolean algebra perspective. While you can use the basic logical operations, HDLs give you a number of constructs to make programming and modeling both easier and more accurate. Once you have a piece of hardware built, you can fully test it and see how it will perform.
+<br /><br />
+This is the first step in designing. After your hardware works from a digital perspective, then you can move on to the electrical portion. This is where the physical properties of the hardware are determined, and eventually constructed. Because there is an almost 1:1 translation between HDLs and the underlying hardware components, the transition, if you will, is not huge.
+<br /><br />
+HDLs can also be used to program a newer type of hardware, FPGAs (field programmable gate arrays). Most computer hardware is programmed in the sense that it loads and executes a program. For example, a CPU is not changed by a program it runs. Rather, it only performs tasks it is instructed to do within the confines of its architecture. An FPGA, by contrast, is literally programmable hardware. Using an HDL, you define what operations the hardware can do. In theory and actuality, an FPGA can be programmed as a specific hardware architecture (ie, RISC-V), and then execute a normal software program as a conventional CPU would.
+<br /><br />
+<h2>A Simple Example</h2>
+<br /><br />
+If I didn’t completely lose you at this point, let’s dive in to a simple example. This example is meant more to demonstrate how VHDL works rather than principles of digital logic. In this example, we will construct a simple AND gate. However, this AND gate is clocked, meaning that a new output is produced only when the clock pulse goes high.
+<br /><br />
+First, let’s construct the AND gate component:
+<br /><br />
+<code>
+<br />library&nbsp;ieee;<br />use&nbsp;ieee.std_logic_1164.all;<br /><br />--&nbsp;Define&nbsp;the&nbsp;signature&nbsp;of&nbsp;the&nbsp;2-input&nbsp;AND&nbsp;gate<br />entity&nbsp;AND2&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;port(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clk&nbsp;:&nbsp;in&nbsp;std_logic;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A:&nbsp;in&nbsp;std_logic;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B:&nbsp;in&nbsp;std_logic;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;F:&nbsp;out&nbsp;std_logic<br />&nbsp;&nbsp;&nbsp;&nbsp;);<br />end&nbsp;AND2;&nbsp;&nbsp;<br /><br />--&nbsp;Define&nbsp;the&nbsp;implementation&nbsp;of&nbsp;the&nbsp;2-input&nbsp;AND&nbsp;gate<br />architecture&nbsp;basic&nbsp;of&nbsp;AND2&nbsp;is&nbsp;<br />begin<br />&nbsp;&nbsp;&nbsp;&nbsp;process&nbsp;(clk)<br />&nbsp;&nbsp;&nbsp;&nbsp;begin<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;F&nbsp;&lt;=&nbsp;A&nbsp;and&nbsp;B;<br />&nbsp;&nbsp;&nbsp;&nbsp;end&nbsp;process;<br />end&nbsp;architecture;<br /></code>
+<br /><br />
+The code is very likely self-explanatory, but let me talk about VHDL more specifically. Every VHDL component is composed of two parts: an entity, and an architecture. The entity describes how the component looks from the outside. It lists the input ports and the output ports. The architecture describes how the component operates- the internal functions.
+<br /><br />
+Now, let’s create the test bench:
+<br /><br />
+<code>
+<br />library&nbsp;ieee;<br />use&nbsp;ieee.std_logic_1164.all;<br /><br />entity&nbsp;and_tb&nbsp;is<br />end&nbsp;and_tb;<br /><br />architecture&nbsp;behavior&nbsp;of&nbsp;and_tb&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;Declare&nbsp;our&nbsp;component<br />&nbsp;&nbsp;&nbsp;&nbsp;component&nbsp;AND2<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;port(clk,&nbsp;A,&nbsp;B&nbsp;:&nbsp;in&nbsp;std_logic;&nbsp;F&nbsp;:&nbsp;out&nbsp;std_logic);<br />&nbsp;&nbsp;&nbsp;&nbsp;end&nbsp;component;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;Bind&nbsp;to&nbsp;the&nbsp;component<br />&nbsp;&nbsp;&nbsp;&nbsp;signal&nbsp;clk,&nbsp;A,&nbsp;B,&nbsp;F&nbsp;:&nbsp;std_logic&nbsp;:=&nbsp;'0';<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;Clock&nbsp;period&nbsp;definitions<br />&nbsp;&nbsp;&nbsp;&nbsp;constant&nbsp;clk_period&nbsp;:&nbsp;time&nbsp;:=&nbsp;10&nbsp;ns;<br />begin<br />&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;Initialize&nbsp;component<br />&nbsp;&nbsp;&nbsp;&nbsp;uut:&nbsp;AND2&nbsp;port&nbsp;map(clk&nbsp;=&gt;&nbsp;clk,&nbsp;A&nbsp;=&gt;&nbsp;A,&nbsp;B&nbsp;=&gt;&nbsp;B,&nbsp;F&nbsp;=&gt;&nbsp;F);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;Clock&nbsp;process&nbsp;definitions<br />&nbsp;&nbsp;&nbsp;&nbsp;I_clk_process&nbsp;:&nbsp;process<br />&nbsp;&nbsp;&nbsp;&nbsp;begin<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clk&nbsp;&lt;=&nbsp;'0';<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait&nbsp;for&nbsp;clk_period/2;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clk&nbsp;&lt;=&nbsp;'1';<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait&nbsp;for&nbsp;clk_period/2;<br />&nbsp;&nbsp;&nbsp;&nbsp;end&nbsp;process;<br />&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;Test&nbsp;process<br />&nbsp;&nbsp;&nbsp;&nbsp;stim_proc:&nbsp;process<br />&nbsp;&nbsp;&nbsp;&nbsp;begin<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;hold&nbsp;reset&nbsp;state&nbsp;for&nbsp;100&nbsp;ns.<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait&nbsp;for&nbsp;100&nbsp;ns;&nbsp;&nbsp;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait&nbsp;for&nbsp;clk_period*10;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;i&nbsp;in&nbsp;0&nbsp;to&nbsp;3&nbsp;loop<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;&lt;=&nbsp;'0';<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B&nbsp;&lt;=&nbsp;'0';<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait&nbsp;for&nbsp;clk_period;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;&lt;=&nbsp;'0';<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B&nbsp;&lt;=&nbsp;'1';<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait&nbsp;for&nbsp;clk_period;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;&lt;=&nbsp;'1';<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B&nbsp;&lt;=&nbsp;'0';<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait&nbsp;for&nbsp;clk_period;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;&lt;=&nbsp;'1';<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B&nbsp;&lt;=&nbsp;'1';<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait&nbsp;for&nbsp;clk_period;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;&lt;=&nbsp;'0';<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B&nbsp;&lt;=&nbsp;'0';<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait&nbsp;for&nbsp;clk_period;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end&nbsp;loop;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;end&nbsp;process;<br />end&nbsp;architecture;<br /></code>
+<br /><br />
+The test bench is used for testing the component. While a VHDL component is supposed to directly model a piece of hardware, a VHDL test bench does not necessarily do the same. Although still part of the VHDL language, the VHDL test bench allows the use of more conventional programming constructs to make testing easier.
+<br /><br />
+Notice in the test bench that there are two processes. A process is an independent operation or function that can affect the component we are testing. The first process is the clock. It alternates between high and low, and sends the current pulse to the AND gate we are testing. The second process tests the actual values. Within processes, we can wait on others. For example, after setting the inputs of the AND gate, we want to wait for the clock to emit a high pulse before checking the output (remember that the AND gate only changes its output based on the clock- it doesn’t matter if the inputs change first).
+<br /><br />
+Although there are several VHDL IDEs and compilers, I generally use GHDL which can be found in the repositories of all major distributions. I also use GtkWave to view the results. Although VHDL test benches do have facilities to print to the screen, as you get into more complicated circuit modeling, you will want to view the internal signals of your component.
+<br /><br />
+Here’s the Makefile I use to build and run:
+<br /><br />
+<code>
+<br />#&nbsp;The&nbsp;files<br />FILES&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;src/and.vhdl<br />SIMDIR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;sim<br />SIMFILES&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;test/and_tb.vhdl<br /><br />#&nbsp;GHDL<br />GHDL_CMD&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;ghdl<br />GHDL_FLAGS&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;--ieee=synopsys&nbsp;--warn-no-vital-generic<br />GHDL_WORKDIR&nbsp;=&nbsp;--workdir=sim&nbsp;--work=work<br />GHDL_STOP&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;--stop-time=500ns<br /><br />#&nbsp;For&nbsp;visualization<br />VIEW_CMD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/usr/bin/gtkwave<br /><br />#&nbsp;The&nbsp;commands<br />all:<br />&nbsp;&nbsp;&nbsp;&nbsp;make&nbsp;compile<br />&nbsp;&nbsp;&nbsp;&nbsp;make&nbsp;run<br /><br />compile:<br />&nbsp;&nbsp;&nbsp;&nbsp;mkdir&nbsp;-p&nbsp;sim<br />&nbsp;&nbsp;&nbsp;&nbsp;ghdl&nbsp;-a&nbsp;$(GHDL_FLAGS)&nbsp;$(GHDL_WORKDIR)&nbsp;$(FILES)<br />&nbsp;&nbsp;&nbsp;&nbsp;ghdl&nbsp;-a&nbsp;$(GHDL_FLAGS)&nbsp;$(GHDL_WORKDIR)&nbsp;$(SIMFILES)<br />&nbsp;&nbsp;&nbsp;&nbsp;ghdl&nbsp;-e&nbsp;-o&nbsp;sim/and_tb&nbsp;$(GHDL_FLAGS)&nbsp;$(GHDL_WORKDIR)&nbsp;and_tb<br /><br />run:<br />&nbsp;&nbsp;&nbsp;&nbsp;cd&nbsp;sim;&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;ghdl&nbsp;-r&nbsp;$(GHDL_FLAGS)&nbsp;and_tb&nbsp;$(GHDL_STOP)&nbsp;--wave=wave.ghw;&nbsp;\<br />&nbsp;&nbsp;&nbsp;&nbsp;cd&nbsp;..<br /><br />view:<br />&nbsp;&nbsp;&nbsp;&nbsp;gtkwave&nbsp;sim/wave.ghw<br /><br />clean:<br />&nbsp;&nbsp;&nbsp;&nbsp;$(GHDL_CMD)&nbsp;--clean&nbsp;--workdir=sim<br /></code>
+<br /><br />
+And here’s the output in GtkWave. As you can see, our AND gate adheres perfectly to the AND truth table.
+<br /><br />
+<img class="img-fluid" src="assets/images/vhdl1_view-1024x557.png"></img>
+<br /><br />
+<h2>Conclusion</h2>
+<br /><br />
+This concludes our intro the VHDL. The example I used is actually the starting code for all my VHDL projects, so you are welcome to use it. VHDL is a topic I really enjoy, so I will likely write more about it later on. Hopefully this made sense to you, and hopefully you found it helpful.
+<br /><br />
+Thanks for reading!
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

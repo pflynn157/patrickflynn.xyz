@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h1>Diya</h1>
+<p><br />
+
+This is one of my newer projects and my first non-compiler project in a while. Diya is a static website generator, specifically the one I built for generating this website right now.
+<br /><br />
+<br /><br />
+<h3>Why?</h3>
+<br /><br />
+As you probably know, there are several static website generators out there, many of which are really good- and I will be the first to acknowledge that. And if you don't want to deal with the complexity of setting up a static website, there is WordPress, which is one of the best website creators out there. So what motivated me to create my own?
+<br /><br />
+The first reason was simply for learning purposes. I wanted to make my personal website my own, but coding the entire thing and moving the 20ish pages and 50+ posts from the past few years would have been a <i>ton</i> of work. I'm pretty familiar with Python, and thanks to my compiler background, parsing and processing text isn't an issue for me, so I figured I could put together a fairly decent-looking website and build a decent site generator without much work. And depending on how you look at it, I was right. This certainly isn't the greatest looking site out there, but it works well enough, and I'm happy with it.
+<br /><br />
+The second reason, and the reason I made this a separate project, is like many software projects out there, I have a problem with the complexity of that which currently exists. The Pelican website generator is the best in my opinion, but I really don't like the themes, and I find it hard to work with. The most popular, Jekyll, has better themes, but dragging in the massive mess of Ruby is more than I care to deal with. There are other generators, for example Hugo, but besides their implementation languages, I really don't see any different between them and the ones I've already tried. I decided to fork the generator that I had written for this site, and make it a separate project, and to keep it deliberately simple and easy to use, so others could easily come behind me and fork it and use it for their needs.
+<br /><br />
+<br /><br />
+<h3>Documentation</h3>
+<br /><br />
+This section contains all the documentation on how to use Diya.
+<br /><br />
+<h4>Configuration</h4>
+<br /><br />
+The config file: config.py.
+<br /><br />
+The only required field in the "config" file is "name". All the fields available are:
+<br /><br />
+<ul>
+<li> name = &lt;string&gt;</li>
+<li> custom_links = [ (name, link), ... ]</li>
+<li> output = &lt;string&gt;</li>
+<li> base = &lt;string&gt;</li>
+<li> pages = &lt;string&gt;</li>
+<li> post = &lt;string&gt;</li>
+</ul>
+<br /><br />
+The default folder structure is as follows:
+<br /><br />
+<ul>
+<li> ./base -&gt; The base theme folder, contains the HTML files for each part of the website</li>
+<li> ./data/assets -&gt; For files and photos that are not processed but copied directly for the site's use</li>
+<li> ./data/pages -&gt; Site pages</li>
+<li> ./data/posts -&gt; Site posts</li>
+<li> ./output -&gt; Where the generated website goes.</li>
+</ul>
+<br /><br />
+<br /><br />
+<h4>Pages</h4>
+<br /><br />
+The structure of a page is as follows:
+<br /><br />
+<code>
+<br />---<br />title:&nbsp;Page&nbsp;Title<br />date:&nbsp;"2023-02-11"<br />template:&nbsp;page<br />output:&nbsp;mypage<br />menu:&nbsp;false<br />---<br /><br />Content...&nbsp;And&nbsp;content...&nbsp;and&nbsp;more&nbsp;content<br /></code>
+<br /><br />
+Any content between the "---" markers are page metadata. The fields are as follows:
+<br /><br />
+<ul>
+<li> title -&gt; The page title, as displayed on the actual page.</li>
+<li> date -&gt; The date in year-month-day format (not actually used at the moment, but required to be included).</li>
+<li> template -&gt; The template from the "base" directory to use.</li>
+<li> output -&gt; The name of the output html file (without the ".html" extension).</li>
+<li> menu -&gt; Whether the page should be included on the navigation menu.</li>
+</ul>
+<br /><br />
+<br /><br />
+<h4>Posts</h4>
+<br /><br />
+The structure of a post is as follows:
+<br /><br />
+<code>
+<br />---<br />title:&nbsp;"New&nbsp;Site"<br />date:&nbsp;"2021-06-16"<br />---<br /></code>
+<br /><br />
+As with pages, content between the "---" markers are metadata. The only two metadata items required for posts are "title" and "date", which should be fairly self-explanatory...
+<br /><br />
+<br /><br />
+<br /><br />
+<h3>Technical Details</h3>
+<br /><br />
+The dependecies are very minimal. All you need is Python 3, and the Python-HTTP library.
+<br /><br />
+Creating a custom theme is easy. Every theme must contain this structure (assuming you're in a theme directory, which defaults to "base"):
+<br /><br />
+<ul>
+<li> ./css -&gt; For stylesheets</li>
+<li> ./js -&gt; Any Javascript</li>
+<li> ./base.html -&gt; The base of all website pages</li>
+<li> ./blog.html -&gt; The blog page (where all posts are displayed)</li>
+<li> ./blog_roll_item.html -&gt; A snippet for the blog roll items within the list on the blog.html page</li>
+<li> ./page.html -&gt; The base for all pages</li>
+<li> ./post.html -&gt; The base for all posts</li>
+</ul>
+<br /><br />
+You can add additional template files for pages. The default "template: page" metadata item tells the generator to default to "page.html". However, if you change this and provide an appropriate html template file to go with it, you can have alternate page types.
+<br /><br />
+The pages are marked by specific HTML comments. These comments tell the generator where to put certain items, such as text content, titles, navigation items, and so forth. If you create your own theme, each page must have these respective items:
+<br /><br />
+<h4>base.html</h4>
+<br /><br />
+<ul>
+<li> NAME -&gt; The website title, which goes in the HTML &lt;title&gt;&lt;/title&gt; tags.</li>
+<li> NAME_NAVBAR -&gt; The website title, as displayed in the website navigation menu.</li>
+<li> NAVBAR -&gt; The location for internal page links within the navigation menu (as specified by the "menu" metadata item).</li>
+<li> CUSTOM_NAVBAR -&gt; The location for custom, user-defined links within the navigation menu.</li>
+<li> TEMPLATE -&gt; The main body area, where derived template content goes (ie, page content, post content, etc).</li>
+</ul>
+<br /><br />
+<h4>blog.html</h4>
+<br /><br />
+<ul>
+<li> PREVIEW<i>ITEM -> The location for blog post previews within the blog-roll list.
+
+#### blog\</i>roll_item.html</li>
+</ul>
+<br /><br />
+Note that anything here should be a list item.
+<br /><br />
+<ul>
+<li> PREVIEW_TITLE -&gt; The post title.</li>
+<li> PREVIEW_DATE -&gt; The post published date.</li>
+<li> PREVIEW -&gt; The post excerpt text.</li>
+</ul>
+<br /><br />
+<h4>page.html</h4>
+<br /><br />
+<ul>
+<li> PAGE_TITLE -&gt; The page title.</li>
+<li> PAGE_CONTENT -&gt; The page content.</li>
+</ul>
+<br /><br />
+<h4>post.html</h4>
+<br /><br />
+<ul>
+<li> POST_TITLE -&gt; The post title.</li>
+<li> POST_CONTENT -&gt; The post content.</li>
+</ul>
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

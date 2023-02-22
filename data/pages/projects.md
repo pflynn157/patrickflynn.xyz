@@ -1,0 +1,54 @@
+---
+title: "Projects"
+date: "2021-06-16"
+template: page
+output: projects
+---
+
+Staying busy is not usually a huge issue for me. In the almost seven years since I've started programming, I've worked on a wide variety of projects. While many of them are simple exploratory projects, some have evolved into usable applications.
+
+However, software isn't the only thing I do. I have several other interests as well. This page is the "home page", if you will, of all my projects.
+
+### Software Projects
+
+- [Diya Website Generator](/diya.html)
+- [Orka Programming Language & Compiler](/orka.html)
+- [Tiny Programming Language & Compiler](/tiny-lang.html)
+- [LLIR compiler backend framework](/llir.html)
+- [MiniLex lexical analyzer generator](/minilex.html)
+- [JVM-based Espresso Programming Language & Compiler](/espresso.html)
+- [Quik Programming Language & Compiler](https://github.com/pflynn157/quik)
+- [Desktop Applications](/desktop-applications.html)
+- [Android Applications](/android-apps.html)
+- [RISC-V Flat Binary Assembler](https://github.com/pflynn157/riscv-as)
+- [RISC-V Toolchain and Assembler](/risc-v-toolchain.html)
+
+### Hardware
+
+- [RISC-V 32-bit CPU core](/risc-v-cpu.html)
+- [LegV8 CPU](https://github.com/pflynn157/legv8-cpu)
+
+### Photography
+
+- A collection of my [best photos](/photos.html).
+- [My 2022 Dallas Trip](/dallas.html)
+- [Fall 2022](/photography-fall-2022.html)
+
+### Writings and Tutorials
+
+- [Raspberry Pi Router](/raspberry-pi-router.html)
+- [Installing Pi-Hole](/installing-pi-hole.html)
+- [Arm64 on Qemu](/arm64-on-qemu.html)
+- [Creating a Lexical Analyzer](/lex-the-entry-to-a-compiler.html)
+- [Working with Linux System Calls](/linux-system-calls-the-base-of-a-standard-library.html)
+- [Disassembling a Dell Laptop](/disassembling-a-dell-inspiron-laptop.html)
+
+### Other
+
+- [Theme-Based Language Dictionaries](/multilang.html)
+- [A Simple Constructed Language](/dakkar-conlang.html)
+- [Iberian- Another Constructed Language](/iberian.html)
+- [My Book Log](/book-log.html)
+- I love [jigsaw puzzles](/puzzles.html)
+
+

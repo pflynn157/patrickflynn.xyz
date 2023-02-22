@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h1>Tiny Lang</h1>
+<p><br />
+
+Tiny Lang is yet another one of my programming languages. Whereas my others have been primarily learning projects, this one is meant to fill a specific need (at least my need...). Tiny Lang is a minimalist programming language specification that is meant to be easily implemented and used either as a teaching tool or for experimentation. The latter purpose fills my need.
+<br /><br />
+Why did I create this?
+<br /><br />
+The most immediate reason to fulfill a personal need. When Christmas break started, I began working on several inter-related hardware projects. I had a programming language idea (a few actually), but I didn't have a compiler that would be a suitable starting point. The closest I had was Orka, but it contains a number of high-level constructs. Ida was another possibility, but it also contains some high-level constructs, and the expression parser is broken, to put it simply. In both cases, these compilers were meant as compiler learning projects, and not something I could take and use elsewhere, especially in low-level hardware environments.
+<br /><br />
+The solution looked like it would be writing yet another compiler from scratch. I actually began doing that, but after implementing a basic lexer, I got stuck trying to figure out what language to implement. C is not something I want to deal with, so it began looking like I would end up doing another Orka- or Ida-like language. My Orka frontend is very good, but again because it implements high-level constructs, using Orka as a starting point meant at least a day of trimming out crap. And then probably another day designing a basic language.
+<br /><br />
+This is when Tiny Lang was born. I decided to create a very simple, deliberately crippled yet still usable programming language that could be the base for future projects. Because Orka was a language I like, and because its compiler is working rather well and is still easy to fork, I decided to use that as the starting point. I first designed the spec of what the Tiny language should look like, and then I forked Orka and simplified the compiler to create a reference implementation.
+<br /><br />
+The specification can be found <a href="/tiny-lang-specification.html">here</a>, and the source code can be found <a href="https://git.sr.ht/~pflynn157/tiny-lang">here</a>.
+<br /><br />
+<h2>How Is It Different From C?</h2>
+<br /><br />
+This is a fair question: is Tiny a different language from C? A simplified version? Or C with a different syntax?
+<br /><br />
+The answer: all and neither.
+<br /><br />
+In terms of what Tiny has in the language, it is very similar to C. It has basic functions, all the basic signed/unsigned integer types, the basic mathematical operations, variables, arrays, and structures. In fact, Tiny and C are largely compatible with each other when implemented as a systems programming language.
+<br /><br />
+However, there are very important differences:
+<br /><br />
+<ul>
+<li> <i>Not a compiled language</i>: Although Tiny certainly can be a compiled language (the reference implementation is an actual compiler), Tiny can be run as an interpreted language as well. C contains fine memory control, something you don't need or even want in an interpreted language. Tiny abstracts some key concepts away that C makes visible.</li>
+<li> <i>Limited Language</i>: Although Tiny is a complete language, I deliberately crippled it in some areas. It is complete in that it contains variables, arrays, conditionals, loops, functions, structures, and so forth. However, it is crippled in that the syntax is very rigid, and in some cases common constructs are missing. For instance, there is only a "while" loop in Tiny (you can do anything with a while loop that more advanced loops allow you to do).</li>
+<li> <i>Modern Language</i>: While it is a limited language, it does contains some modern features through abstraction (or more specifically, syntatic sugar). Because booleans are so widely used, I included a specific boolean type, something C lacks (a boolean is syntatic sugar around integers). I also included a string type and basic string handling support. Strings are nothing more than character arrays, or byte ("i8") arrays, making the implementation easy. There is also in-built support for string comparisons and string concatenation (in its compiled form, this is handled with the standard library).</li>
+<li> <i>Built-In Functions:</i> The language contains a few built-in functions that make use easier. The most important is the "print/println" functions, which work like "printf."</li>
+<li> <i>Defined Standard Library:</i> In addition to the language spec, there is also a defined standard library. This library contains the defined built-in functions along with additional functions that make Tiny more useful. The language also contains an "import" construct that can be interpreted based on your implementation.</li>
+<li> <i>Strings, Arrays, and Pointers:</i> We already discussed the built-in string handling. As far as arrays and pointers go (ie, pointers to structure declarations), all pointers are allocated on the heap and passed by reference to functions. C allows manual control over this, which can make learning and use more difficult. Tiny abstracts this away, and calculates the proper malloc amount call.</li>
+</ul>
+<br /><br />
+<h2>Does it Work?</h2>
+<br /><br />
+Yes!
+<br /><br />
+As mentioned, the reference implementation is a fork (a "downward fork"?) of Orka. Orka's compiler is a fully working, LLVM-based compiler, so forking the project to create the reference implementation was basically a matter of removing things.
+<br /><br />
+In the project, there is an example directory with some small programs written in Tiny: a clone of the Unix "echo", a clone of the Unix "cat", a math practice program, and a simple Tic-Tac-Toe program.
+<br /><br />
+<h2>Example</h2>
+<br /><br />
+Here's an example that can read and write files:
+<br /><br />
+<code>
+<br />import&nbsp;std.io;<br />import&nbsp;std.fs;<br /><br />func&nbsp;main()&nbsp;-&gt;&nbsp;i32&nbsp;is<br />&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;fd&nbsp;:&nbsp;i32&nbsp;:=&nbsp;fs_open("../first.ok",&nbsp;1);<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;fd&nbsp;=&nbsp;0&nbsp;then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;println("Unable&nbsp;to&nbsp;open.");<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;1;<br />&nbsp;&nbsp;&nbsp;&nbsp;end<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;fs_eof(fd)&nbsp;=&nbsp;false&nbsp;do<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;c&nbsp;:&nbsp;char&nbsp;:=&nbsp;fs_get(fd);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;fs_eof(fd)&nbsp;=&nbsp;false&nbsp;then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print("%c",&nbsp;c);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br />&nbsp;&nbsp;&nbsp;&nbsp;end<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;fs_close(fd);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;#<br />&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Now,&nbsp;write<br />&nbsp;&nbsp;&nbsp;&nbsp;#<br />&nbsp;&nbsp;&nbsp;&nbsp;fd&nbsp;:=&nbsp;fs_open("/tmp/test.txt",&nbsp;2);<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;fd&nbsp;=&nbsp;0&nbsp;then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;println("Unable&nbsp;to&nbsp;open&nbsp;for&nbsp;write.");<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;1;<br />&nbsp;&nbsp;&nbsp;&nbsp;end<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;fs_writeln(fd,&nbsp;"Hello!");<br />&nbsp;&nbsp;&nbsp;&nbsp;fs_writeln(fd,&nbsp;"How&nbsp;are&nbsp;you?");<br />&nbsp;&nbsp;&nbsp;&nbsp;fs_close(fd);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;#<br />&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Try&nbsp;binary&nbsp;writing<br />&nbsp;&nbsp;&nbsp;&nbsp;#<br />&nbsp;&nbsp;&nbsp;&nbsp;fd&nbsp;:=&nbsp;fs_open("/tmp/first.bin",&nbsp;2);<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;fd&nbsp;=&nbsp;0&nbsp;then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;println("Unable&nbsp;to&nbsp;open&nbsp;test2.");<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;1;<br />&nbsp;&nbsp;&nbsp;&nbsp;end<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;bytes&nbsp;:&nbsp;u8[5];<br />&nbsp;&nbsp;&nbsp;&nbsp;bytes[0]&nbsp;:=&nbsp;0xA1;<br />&nbsp;&nbsp;&nbsp;&nbsp;bytes[1]&nbsp;:=&nbsp;0xA2;<br />&nbsp;&nbsp;&nbsp;&nbsp;bytes[2]&nbsp;:=&nbsp;0xA3;<br />&nbsp;&nbsp;&nbsp;&nbsp;bytes[3]&nbsp;:=&nbsp;0xA4;<br />&nbsp;&nbsp;&nbsp;&nbsp;bytes[4]&nbsp;:=&nbsp;0xA5;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;fs_write(fd,&nbsp;bytes,&nbsp;1,&nbsp;5);<br />&nbsp;&nbsp;&nbsp;&nbsp;fs_close(fd);<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;<br />end<br /></code>
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+

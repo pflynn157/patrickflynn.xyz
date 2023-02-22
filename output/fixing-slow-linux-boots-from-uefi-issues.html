@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<title>Caffeine and Code</title>
+        
+        <!-- Import bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Custom stylesheets -->
+        <link href="css/global.css" rel="stylesheet">
+        
+        <!-- Properties -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <!-- The navigation bar -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid" id="navbar_logo">
+                <a class="navbar-brand" href="/index.html">
+		Caffeine and Code
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar_main">
+                <ul class="navbar-nav me-auto">
+                    <!-- Single nav items like this -->
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>-->
+                    
+		<li class="nav-item">		<a class="nav-link" href="index.html">Home</a>		</li>		<li class="nav-item">		<a class="nav-link" href="blog.html">Blog</a>		</li>		<li class="nav-item">		<a class="nav-link" href="contact.html">Contact</a>		</li>		<li class="nav-item">		<a class="nav-link" href="projects.html">Projects</a>		</li>                    
+		<li class="nav-item">		<a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>		</li>		<li class="nav-item">		<a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>		</li>                    
+                    <!--<li class="nav-item">
+                        <a class="nav-link" href="https://www.linkedin.com/in/patrick-flynn4664/">LinkedIn</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://git.sr.ht/~pflynn157/">SourceHut</a>
+                    </li>-->
+                    
+                    <!-- Drop down like this
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Source Code</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://hg.sr.ht/~pflynn157/">SourceHut (Mercurial)</a></li>
+                            <li><a class="dropdown-item" href="https://git.sr.ht/~pflynn157/">SourceHut (Git)</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/pflynn157">Github</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul>
+            </div>
+        </nav>
+        
+<div class="container pt-5">
+<h2>Fixing Slow Linux Boots from UEFI Issues</h2>
+<p><br />
+
+The joys of dealing with UEFI...
+<br /><br />
+Okay, I actually don't know enough about either UEFI or the old BIOS to really have an opinion on which is better, but I do have my opinions on which was easier to deal with. UEFI isn't actually that big of a deal, but having the extra partition for booting can be annoying to put is simply.
+<br /><br />
+I'm writing this post more for myself in case I have this issue again, but for the two people out there who might also end up with this issue, this post could be for you.
+<br /><br />
+I generally wipe and reset my computers 1-2 times a year just to keep them clean and running nicely. Now that the semester (and the year) is just about over, I've been in the process of doing that, and I just about have it done. I re-configured my desktop to boot Manjaro, Linux Mint, Kubuntu, and Windows 10 (yes I joined the dark side). After installing Mint, I ran into a weird issue where it was taking upwards of 5 minutes on an SSD to boot- something that usually takes under a minute. After picking through the logs and doing some google searches, I figured out the issue.
+<br /><br />
+If you are booting multiple systems and one is taking an extremely long time to boot, open the log application (most distros have one), and see if you see anything like this:
+<br /><br />
+<img class="img-fluid" src="assets/images/logs.png"></img>
+<br /><br />
+This means that the kernel is unable to find a partition and/or disk to mount. Generally, this would get messed up when you are installing the other operating systems you are booting. The reason why it stalls the rest of the boot sequence is because its searching all the disks, which can take some time.
+<br /><br />
+If that is the case, run this command:
+<br /><br />
+<code>
+<br />sudo&nbsp;blkid<br /></code>
+<br /><br />
+You should see an output like this:
+<br /><br />
+<img class="img-fluid" src="assets/images/disk_list-1024x151.png"></img>
+<br /><br />
+Yes I have a lot going on. This will vary by how you set up your system, but you will need the UUID of whichever partition everything else boots from. In my case, the main boot partition is on "/dev/nvme0n1p1".
+<br /><br />
+Now, run this command (I know, I know, you shouldn't run GUIs as root like this. I was too lazy to figure out how to copy and paste in Nano):
+<br /><br />
+<code>
+<br />sudo&nbsp;xed&nbsp;/etc/fstab<br /></code>
+<br /><br />
+For safety, I would comment out what was there originally, copy-and-paste, and then change the UUID to the proper one:
+<br /><br />
+<img class="img-fluid" src="assets/images/editor-1024x667.png"></img>
+<br /><br />
+That's it! You should be able to reboot, and your system should boot up rapidly! In my case, it dropped to a solid 40 seconds.
+<br /><br />
+Thanks for reading!
+<br /><br />
+<br /><br />
+<br /><br /><br /></p>
+</div>
+    </body>
+</html>
+
